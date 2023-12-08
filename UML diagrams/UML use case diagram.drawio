@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-12-08T18:32:42.435Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="WPuy34ygzKBHm80x2b4r" version="22.1.7" type="github">
+<mxfile host="app.diagrams.net" modified="2023-12-08T18:35:52.953Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="mwI3G26anmU4Kw7KNTNS" version="22.1.7" type="github">
   <diagram name="Pagina-1" id="CpfnppU9-VtZ_XKb45yN">
-    <mxGraphModel dx="574" dy="333" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="583" math="0" shadow="0">
+    <mxGraphModel dx="819" dy="476" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="583" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -119,25 +119,8 @@
             <mxPoint x="520" y="150" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Bf5LCouzRFLms9WQWrtb-30" value="Select platform" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="495" y="300" width="100" height="51" as="geometry" />
-        </mxCell>
         <mxCell id="Bf5LCouzRFLms9WQWrtb-31" value="Add game in library" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="199" width="120" height="51" as="geometry" />
-        </mxCell>
-        <mxCell id="Bf5LCouzRFLms9WQWrtb-32" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.089;exitY=0.815;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="Bf5LCouzRFLms9WQWrtb-31" target="Bf5LCouzRFLms9WQWrtb-30">
-          <mxGeometry x="0.3443" y="-27" width="160" relative="1" as="geometry">
-            <mxPoint x="740" y="320" as="sourcePoint" />
-            <mxPoint x="710" y="340" as="targetPoint" />
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Bf5LCouzRFLms9WQWrtb-33" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="Bf5LCouzRFLms9WQWrtb-30" target="Bf5LCouzRFLms9WQWrtb-11">
-          <mxGeometry x="-0.0866" y="-5" width="160" relative="1" as="geometry">
-            <mxPoint x="330" y="260" as="sourcePoint" />
-            <mxPoint x="240" y="280" as="targetPoint" />
-            <mxPoint as="offset" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="Bf5LCouzRFLms9WQWrtb-34" value="Add game to whishlist" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="272" width="140" height="48" as="geometry" />
