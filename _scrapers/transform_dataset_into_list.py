@@ -19,7 +19,7 @@ def transform_json_structure(input_file_path, output_file_path):
         return f"Si è verificato un errore: {e}"
 
 # Percorsi dei file (da modificare in base al percorso effettivo del file)
-input_file_path = './games_dataset_reviews.json'  # Percorso del file JSON originale
+input_file_path = './../dataset/games_dataset_reviews.json'  # Percorso del file JSON originale
 output_file_path = './games_dataset_reviews_transformed.json'  # Percorso del file JSON trasformato
 
 # Chiamare la funzione per trasformare la struttura del JSON
