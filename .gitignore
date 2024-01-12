@@ -1,5 +1,4 @@
 *.env
 *.svg
 *.png
-games_dataset_reviews.json
-games_dataset_reviews_transformed.json
+*dataset*.json
