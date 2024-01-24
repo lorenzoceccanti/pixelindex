@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a287e56-04c1-4b9a-8749-3a7123454b5e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Diagrams/GraphDB structure (complete).drawio" beforeDir="false" afterPath="$PROJECT_DIR$/../../Diagrams/GraphDB structure (complete).drawio" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +16,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -68,6 +70,8 @@
       <workItem from="1705849651835" duration="14421000" />
       <workItem from="1705870782215" duration="778000" />
       <workItem from="1705932690181" duration="4258000" />
+      <workItem from="1706031964898" duration="3433000" />
+      <workItem from="1706102932074" duration="771000" />
     </task>
     <servers />
   </component>
