@@ -2,6 +2,7 @@
 
 package it.unipi.largescale.pixelindex;
 
+import it.unipi.largescale.pixelindex.dao.UserMongoDAO;
 import it.unipi.largescale.pixelindex.model.*;
 
 import java.time.LocalDate;
@@ -33,6 +34,10 @@ public class Main {
         r.setAuthor("A001");
         r.setRating(RatingKind.RECOMMENDED);
         System.out.println(r.toString());
+
+        // Prova connessione MONGO remoto
+        UserMongoDAO uMongoDao = new UserMongoDAO();
+        uMongoDao.makeLogin("pippo", "boh");
 
     }
 }
