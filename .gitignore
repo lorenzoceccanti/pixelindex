@@ -3,3 +3,4 @@
 *.png
 *dataset*.json
 *.zip
+*.class
