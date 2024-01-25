@@ -145,14 +145,14 @@ public class UserMongoDAO extends BaseMongoDAO implements UserDAO{
     }
 
     @Override
-    public RegisteredUser register(RegisteredUser ru){
+    public RegisteredUser register(User u){
         MongoDatabase db;
         try (MongoClient mongoClient = beginConnection()) {
 
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
 
-            Document doc = new Document("username", ru.getUsername())
+            Document doc = new Document("username", u.getUsername())
                     .append("hashedPassword"
         return ru;
     }

@@ -10,7 +10,7 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 
-public class Encryptor {
+public class Crypto {
     private static byte[] generateSalt() {
         byte[] salt = new byte[16];
         SecureRandom random = new SecureRandom();

@@ -4,7 +4,7 @@ package it.unipi.largescale.pixelindex;
 
 import it.unipi.largescale.pixelindex.dao.UserMongoDAO;
 import it.unipi.largescale.pixelindex.model.*;
-import it.unipi.largescale.pixelindex.security.Encryptor;
+import it.unipi.largescale.pixelindex.security.Crypto;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,19 +19,14 @@ public class Main {
         RegisteredUser registered = new RegisteredUser("ITA");
         registered.setName("Alessandro");
         registered.setSurname("Ceccanti");
-        /*Moderator mod = new Moderator("ENG");
-        mod.setName("Alessandro");
-        mod.setSurname("Ceccanti");
-        mod.setUsername("ale1968");
-        mod.setDateOfBirth(date);
-        mod.setEmail("cecca2@live.it");*/
+        registered.setUsername("ale1968");
+        registered.setHashedPassword(Crypto.hashPassword("pippo"));
+        registered.setDateOfBirth(date);
+        registered.setEmail("cecca2@live.it");
 
-        mod.setHashedPassword(Encryptor.hashPassword("pippo"));
-        mod.setId("A001");
-
-        User u = mod;
-        System.out.println(u.toString());
-
+        User u = registered;
+        UserMongoDAO userMongoDAO = new UserMongoDAO();
+        userMongoDAO.register(u);
 
         // Prova enumerato
         Review r = new Review();
