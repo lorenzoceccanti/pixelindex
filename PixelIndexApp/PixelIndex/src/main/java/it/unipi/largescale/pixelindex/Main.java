@@ -37,6 +37,9 @@ public class Main {
 
         // Prova connessione MONGO remoto
         UserMongoDAO uMongoDao = new UserMongoDAO();
+
+        User u = new RegisteredUser();
+
         uMongoDao.makeLogin("maskedgingerjock", "ciao");
 
     }

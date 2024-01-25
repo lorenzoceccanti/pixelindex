@@ -46,10 +46,6 @@ public abstract class BaseMongoDAO {
         String MONGO_USER = params.get(2).trim();
         String MONGO_PASS = params.get(3).trim();
 
-        System.out.print("SERVER_ADDRESS: " + SERVER_ADDRESS);
-        System.out.print(" MONGO_PORT : " + MONGO_PORT);
-        System.out.print(" MONGO USER: " + MONGO_USER);
-        System.out.println(" MONGO_PASS: " + MONGO_PASS);
         String connectionString = String.format("mongodb://%s:%s@%s:%d/", MONGO_USER, MONGO_PASS, SERVER_ADDRESS,
                 MONGO_PORT);
         mongoclient = MongoClients.create(
