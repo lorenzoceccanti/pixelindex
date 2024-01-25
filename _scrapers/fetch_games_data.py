@@ -65,8 +65,8 @@ def populate_steam_app_id(offset):
         print(response.text)
         raise RequestFailedException(f"Request failed with status code: {response.status_code}")
     for elem in response.json():
-        if elem["category"] == 1 and elem["game"] in data and "url" in elem:
-            data[elem["game"]]["steam"] = elem["url"].split("/")[-1]
+        if elem["category"] == 1 and elem["game"] in data:
+            data[elem["game"]]["steam"] = elem["uid"]
     return response.json()
 # Function to Populate Steam App IDs in a Loop
 def populate_steam_app_ids_loop():
