@@ -20,6 +20,16 @@
 			<artifactId>mongodb-driver-sync</artifactId>
 			<version>4.11.1</version>
 		</dependency>
+		<dependency>
+			<groupId>de.codeshelf.consoleui</groupId>
+			<artifactId>consoleui</artifactId>
+			<version>0.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.1stleg</groupId>
+			<artifactId>jnativehook</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 	</dependencies>
     <build>
   	<plugins>
