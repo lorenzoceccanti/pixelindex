@@ -2,7 +2,7 @@
 
 package it.unipi.largescale.pixelindex;
 
-import it.unipi.largescale.pixelindex.dao.UserMongoDAO;
+import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
 import it.unipi.largescale.pixelindex.model.*;
 import it.unipi.largescale.pixelindex.security.Crypto;
 
@@ -24,25 +24,11 @@ public class Main {
         registered.setDateOfBirth(date);
         registered.setEmail("cecca2@live.it");
 
-        User u = registered;
-        UserMongoDAO userMongoDAO = new UserMongoDAO();
-        userMongoDAO.register(u);
+        RegisteredUserMongoDAO userMongoDAO = new RegisteredUserMongoDAO();
+        // userMongoDAO.register(registered);
 
-        // Prova enumerato
-        Review r = new Review();
-        r.setId("R001");
-        r.setAuthor("A001");
-        r.setRating(RatingKind.RECOMMENDED);
-        System.out.println(r.toString());
-
-        // Prova connessione MONGO remoto
-        UserMongoDAO uMongoDao = new UserMongoDAO();
-
-
-        User u = new RegisteredUser();
-
-
-        uMongoDao.makeLogin("maskedgingerjock", "ciao");
+        if(userMongoDAO.makeLogin("ale1968", "pippo") != null)
+            System.out.println("successo");
 
     }
 }
