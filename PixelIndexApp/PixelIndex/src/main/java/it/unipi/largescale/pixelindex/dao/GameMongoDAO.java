@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.dao;
 
+import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.model.Genre;
@@ -10,17 +11,20 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.util.List;
 
 public class GameMongoDAO extends BaseMongoDAO implements GameDAO {
 
     @Override
-    public Game getGameById(String id) {
+    public Game getGameById(String id) throws DAOException {
         Game gameObject = null;
         try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
-            Document query = new Document("_id", id);
+            ObjectId objectId = new ObjectId(id);
+            Document query = new Document("_id", objectId);
             Document result = collection.find(query).first();
             if (result != null) {
                 gameObject = new Game();
@@ -73,7 +77,7 @@ public class GameMongoDAO extends BaseMongoDAO implements GameDAO {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DAOException("Error retrieving game by ID " + e);
         }
         return gameObject;
     }
