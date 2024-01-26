@@ -27,10 +27,11 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
 
 
     @Override
-    public RegisteredUser makeLogin(String username, String password)
+    public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException
     {
         // Questa è una semplice prova
         MongoDatabase db;
+        List<Document> results = null;
         try (MongoClient mongoClient = beginConnection()) {
 
             db = mongoClient.getDatabase("pixelindex");
@@ -41,7 +42,10 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
                     Projections.include("hashedPassword", "username", "name", "surname",
                             "role", "language", "dateOfBirth")
             );
-            List<Document> results = usersCollection.find(myMatch).projection(projectionFields).into(new ArrayList<>());
+            results = usersCollection.find(myMatch).projection(projectionFields).into(new ArrayList<>());
+        }catch(Exception e) {
+            System.out.println("Error in connecting to MongoDB");
+        }
             Document document = results.get(0);
             String hashedPassword = document.getString("hashedPassword");
             RegisteredUser u = null;
@@ -75,11 +79,6 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
             } else {
                 throw new WrongPasswordException();
             }
-        } catch(Exception ex)
-        {
-            System.out.println("Error in connecting to MongoDB: login failed");
-        }
-        return null;
     }
 
     @Override

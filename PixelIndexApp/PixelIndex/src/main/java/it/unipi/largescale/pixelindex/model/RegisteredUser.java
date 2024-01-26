@@ -12,7 +12,6 @@ public class RegisteredUser extends User{
     private String email;
 
     public RegisteredUser(){
-
     }
 
     public RegisteredUser(String language){
