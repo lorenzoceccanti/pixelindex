@@ -6,3 +6,4 @@
 *.class
 *.pem
 *.pkcs12
+workspace.xml
