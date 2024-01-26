@@ -3,49 +3,60 @@
 package it.unipi.largescale.pixelindex;
 
 import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
+import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
+import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.*;
 import it.unipi.largescale.pixelindex.security.Crypto;
+import it.unipi.largescale.pixelindex.service.RegisteredUserService;
+import it.unipi.largescale.pixelindex.service.ServiceLocator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Main {
     public static void main(String[] args) {
+
+        RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
+
+        // Registration use case
+        /*
+        UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
+        userRegistrationDTO.setName("Alessandro");
+        userRegistrationDTO.setSurname("Ceccanti");
+        userRegistrationDTO.setUsername("ale1968");
+        userRegistrationDTO.setPassword("pippo");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("1968-10-12", formatter);
-        System.out.println("Hello world!");
-        System.out.println("myDOB: " + date);
+        userRegistrationDTO.setDateOfBirth(date);
+        userRegistrationDTO.setEmail("cecca2@live.it");
 
-        RegisteredUser registered = new RegisteredUser("ITA");
-        registered.setName("Alessandro");
-        registered.setSurname("Ceccanti");
-        registered.setUsername("ale1968");
-        registered.setHashedPassword(Crypto.hashPassword("pippo"));
-        registered.setDateOfBirth(date);
-        registered.setEmail("cecca2@live.it");
+        AuthUserDTO authUserDTO = registeredUserService.register(userRegistrationDTO, "italian");
+        System.out.println("Registration done");
+         */
 
-        RegisteredUserMongoDAO userMongoDAO = new RegisteredUserMongoDAO();
-        RegisteredUser element = null;
-        // userMongoDAO.register(registered);
-
+        // Login use case w/ personal info
+        AuthUserDTO authUserDTO = null;
         try{
-            element = userMongoDAO.makeLogin("ale1968", "pippo");
-        }catch(WrongPasswordException ex)
+            authUserDTO = registeredUserService.makeLogin("ale1968", "pippo");
+            System.out.println("Welcome " + authUserDTO.getName());
+            System.out.println("Your personal information:");
+            System.out.println(authUserDTO);
+        }catch(UserNotFoundException ex)
         {
-            System.out.println("ale1968: wrong password");
-        }
-        // Controllo quali funzionalità sbloccare, se quelle da moderatore o quelle da utente comune
-        if(element instanceof Moderator)
+            System.out.println("Login failed: The provided username doesn't match any registration");
+
+        }catch(WrongPasswordException ex2)
         {
-            System.out.println("Full Functionalities");
-        } else if(element instanceof RegisteredUser){
-            System.out.println("Limited functionalities");
-        } else{
-            System.out.println("None");
+            System.out.println("Login failed: The password provided is wrong");
         }
 
 
+        // Further use case to implement: login as moderator
+        // The following only for testing purposes, the correct way to proceed is to have only the DTOs
+        /*
+        RegisteredUser element = null;
         Moderator moderator = new Moderator("italian");
         moderator.setUsername("mod001");
         moderator.setName("Mod");
@@ -73,5 +84,6 @@ public class Main {
         } else{
             System.out.println("None");
         }
+        */
     }
 }

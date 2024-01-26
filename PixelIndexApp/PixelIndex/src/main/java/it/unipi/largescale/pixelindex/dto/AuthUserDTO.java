@@ -9,6 +9,7 @@ public class AuthUserDTO {
     private String surname;
     private LocalDate dateOfBirth;
     private String email;
+    private String role;
 
     public String getId() {
         return id;
@@ -34,6 +35,14 @@ public class AuthUserDTO {
         return email;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -48,5 +57,22 @@ public class AuthUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }
