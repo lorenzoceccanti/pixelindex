@@ -4,6 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Moderator;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
@@ -16,11 +17,10 @@ import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
-
+public class RegisteredUserMongoDAO extends BaseMongoDAO implements RegisteredUserDAO {
 
     @Override
-    public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException
+    public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException
     {
         // Questa è una semplice prova
         MongoDatabase db;
@@ -33,12 +33,15 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
             Bson myMatch = (eq("username", username));
             Bson projectionFields = Projections.fields(
                     Projections.include("hashedPassword", "username", "name", "surname",
-                            "role", "language", "dateOfBirth")
+                            "role", "language", "dateOfBirth", "email")
             );
             results = usersCollection.find(myMatch).projection(projectionFields).into(new ArrayList<>());
         }catch(Exception e) {
             System.out.println("Error in connecting to MongoDB");
         }
+            // Checking the emptiness of the array
+            if(results.isEmpty())
+                throw new UserNotFoundException();
             Document document = results.get(0);
             String hashedPassword = document.getString("hashedPassword");
             RegisteredUser u = null;
@@ -55,6 +58,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
                     ru.setSurname(document.getString("surname"));
                     ru.setRole(document.getString("role"));
                     ru.setLanguage(document.getString("language"));
+                    ru.setEmail(document.getString("email"));
                     ru.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
                     u = ru;
                 } else if(role.equals("moderator")) {
@@ -65,6 +69,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
                     mo.setSurname(document.getString("surname"));
                     mo.setRole(document.getString("role"));
                     mo.setLanguage(document.getString("language"));
+                    mo.setEmail(document.getString("email"));
                     mo.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
                     u = mo;
                 }
