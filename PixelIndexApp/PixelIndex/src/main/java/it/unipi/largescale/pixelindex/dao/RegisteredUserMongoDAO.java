@@ -7,23 +7,16 @@ import com.mongodb.client.model.Projections;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Moderator;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
+import it.unipi.largescale.pixelindex.utils.Utils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import it.unipi.largescale.pixelindex.security.Crypto;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
 public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
-
-    public static LocalDate convertDateToLocalDate(Date date) {
-        Instant instant = date.toInstant();
-        return instant.atZone(ZoneId.systemDefault()).toLocalDate();
-    }
 
 
     @Override
@@ -62,7 +55,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
                     ru.setSurname(document.getString("surname"));
                     ru.setRole(document.getString("role"));
                     ru.setLanguage(document.getString("language"));
-                    ru.setDateOfBirth(convertDateToLocalDate(document.getDate("dateOfBirth")));
+                    ru.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
                     u = ru;
                 } else if(role.equals("moderator")) {
                     Moderator mo = new Moderator();
@@ -72,7 +65,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO implements UserDAO{
                     mo.setSurname(document.getString("surname"));
                     mo.setRole(document.getString("role"));
                     mo.setLanguage(document.getString("language"));
-                    mo.setDateOfBirth(convertDateToLocalDate(document.getDate("dateOfBirth")));
+                    mo.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
                     u = mo;
                 }
                 return u;
