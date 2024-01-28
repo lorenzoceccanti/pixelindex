@@ -2,7 +2,7 @@ package it.unipi.largescale.pixelindex.dto;
 
 import java.time.LocalDate;
 
-public class SearchGameDTO {
+public class GameSearchDTO {
     private String name;
     private LocalDate releaseDate;
 
