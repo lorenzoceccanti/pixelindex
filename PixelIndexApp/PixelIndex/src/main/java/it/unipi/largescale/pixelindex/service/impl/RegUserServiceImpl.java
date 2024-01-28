@@ -1,9 +1,12 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
-import it.unipi.largescale.pixelindex.dao.RegisteredUserDAO;
-import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAO;
+import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
+import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
+import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserNeo4jDAOImpl;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
+import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
@@ -11,16 +14,22 @@ import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 
 public class RegUserServiceImpl implements RegisteredUserService {
-    private RegisteredUserDAO registeredUserDAO;
+    private RegisteredUserMongoDAOImpl registeredUserDAO;
     UserRegistrationDTO registrationDTO = new UserRegistrationDTO();
 
     public RegUserServiceImpl(){
-        this.registeredUserDAO = new RegisteredUserMongoDAO();
+        this.registeredUserDAO = new RegisteredUserMongoDAOImpl();
     }
 
     @Override
-    public AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException {
-        RegisteredUser registeredUser = registeredUserDAO.makeLogin(username, password);
+    public AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, ConnectionException {
+        RegisteredUser registeredUser = null;
+        try{
+            registeredUser = registeredUserDAO.makeLogin(username, password);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
         AuthUserDTO authUserDTO = new AuthUserDTO();
         authUserDTO.setId(registeredUser.getId());
         authUserDTO.setUsername(registeredUser.getUsername());
@@ -34,7 +43,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage){
+    public AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage) throws ConnectionException{
         RegisteredUser registeringUser = new RegisteredUser(preferredLanguage);
         registeringUser.setUsername(userRegistrationDTO.getUsername());
         registeringUser.setName(userRegistrationDTO.getName());
@@ -43,12 +52,28 @@ public class RegUserServiceImpl implements RegisteredUserService {
         registeringUser.setDateOfBirth(userRegistrationDTO.getDateOfBirth());
         registeringUser.setEmail(userRegistrationDTO.getEmail());
 
-        RegisteredUser registeredUser = registeredUserDAO.register(registeringUser);
+        RegisteredUser registeredUser = null;
+        try{
+            registeredUser = registeredUserDAO.register(registeringUser);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
         AuthUserDTO authUserDTO = new AuthUserDTO();
         authUserDTO.setName(registeredUser.getName());
         authUserDTO.setSurname(registeredUser.getSurname());
         authUserDTO.setDateOfBirth(registeredUser.getDateOfBirth());
         authUserDTO.setEmail(registeredUser.getEmail());
+
+        // ££ registrazione in Neo4J ££
+        RegisteredUserNeo4jDAOImpl registeredUserNeo = new RegisteredUserNeo4jDAOImpl();
+        try{
+            registeredUserNeo.register(userRegistrationDTO.getUsername());
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
+
         return authUserDTO;
     }
 }

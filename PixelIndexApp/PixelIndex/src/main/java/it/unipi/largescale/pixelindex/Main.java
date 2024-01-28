@@ -2,42 +2,24 @@
 
 package it.unipi.largescale.pixelindex;
 
-import it.unipi.largescale.pixelindex.dao.impl.BaseNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
-import org.neo4j.driver.Driver;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Main {
-    private static List<String> tryNeo(){
-        try(
-                Driver neoDriver = BaseNeo4jDAO.beginConnection();
-                var session = neoDriver.session()
-        ){
-            return session.executeRead( tx -> {
-                List<String> usernames = new ArrayList<>();
-                var result = tx.run("MATCH (u:User) RETURN u.username LIMIT 3;");
-                while(result.hasNext()){
-                    usernames.add(result.next().get(0).asString());
-                }
-                return usernames;
-            });
-        }
-    }
     public static void main(String[] args) {
 
         RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
 
-        // Registration use case
+        // Registration use case: MONGODB and Neo4j: check RegUserServiceImpl
 
         UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
         userRegistrationDTO.setName("Alessandro");
@@ -49,12 +31,16 @@ public class Main {
         userRegistrationDTO.setDateOfBirth(date);
         userRegistrationDTO.setEmail("cecca2@live.it");
 
-        AuthUserDTO authUserDTO = registeredUserService.register(userRegistrationDTO, "italian");
-        System.out.println("Registration done");
-
+        try{
+            AuthUserDTO authUserDTO = registeredUserService.register(userRegistrationDTO, "italian");
+        }catch(ConnectionException ex)
+        {
+            System.out.println(ex.getMessage());
+            // System.exit(1);
+        }
 
         // Login use case w/ personal info
-        authUserDTO = null;
+        AuthUserDTO authUserDTO = null;
         try{
             authUserDTO = registeredUserService.makeLogin("ale1968", "pippo");
             System.out.println("Welcome " + authUserDTO.getName());
@@ -68,15 +54,10 @@ public class Main {
         {
             System.out.println("Login failed: The password provided is wrong");
         }
-
-        // NEO4J remoto
-        List<String> usernames = tryNeo();
-        System.out.println("Username list");
-        for(int i=0; i<usernames.size(); i++)
+        catch(ConnectionException ex3)
         {
-            System.out.print(usernames.get(i));
+            System.out.println(ex3.getMessage());
         }
-        System.out.print("\n");
 
 
         // Further use case to implement: login as moderator
