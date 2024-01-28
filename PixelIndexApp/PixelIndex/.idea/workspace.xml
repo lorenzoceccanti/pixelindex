@@ -6,12 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2a287e56-04c1-4b9a-8749-3a7123454b5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/RegisteredUserMongoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/RegisteredUserMongoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/RegisteredUserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dto/AuthUserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dto/AuthUserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/RegisteredUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/RegisteredUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/ServiceLocator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/ServiceLocator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/BaseMongoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/BaseMongoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../run/PixelIndex-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../run/PixelIndex-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +81,10 @@
       <workItem from="1706189471091" duration="7056000" />
       <workItem from="1706197044351" duration="12576000" />
       <workItem from="1706216284718" duration="7781000" />
-      <workItem from="1706279420075" duration="14855000" />
+      <workItem from="1706279420075" duration="15077000" />
+      <workItem from="1706367261019" duration="627000" />
+      <workItem from="1706448856358" duration="2655000" />
+      <workItem from="1706455131117" duration="6718000" />
     </task>
     <servers />
   </component>

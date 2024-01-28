@@ -4,37 +4,25 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public abstract class BaseMongoDAO {
 
     private static final String ENV_FILE = ".env";
     private static final String PEM_FILE = "mongodb.pem";
-    private static String envPayload;
     private static MongoClient mongoclient;
 
-
-    private static void retrieveEnv(){
-        try(BufferedReader reader = new BufferedReader(new FileReader(ENV_FILE))){
-            char[] buf = new char[1024];
-            reader.read(buf);
-            envPayload = String.valueOf(buf);
-            // System.out.println(envPayload);
-        } catch(IOException ex){
-            System.out.println("retrieveEnv(): Error in opening the .env file");
-        }
-    }
-
     public static MongoClient beginConnection(){
+
         String[] var = new String[2];
         ArrayList<String> params = new ArrayList<>();
-        retrieveEnv();
+        String envPayload = Utils.retrieveEnv();
         StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
         while(tokens.hasMoreTokens())
         {
