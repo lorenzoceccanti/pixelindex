@@ -7,3 +7,4 @@
 *.pem
 *.pkcs12
 workspace.xml
+*.cer
