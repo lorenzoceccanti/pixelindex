@@ -2,14 +2,11 @@
 
 package it.unipi.largescale.pixelindex;
 
-import it.unipi.largescale.pixelindex.dao.BaseNeo4jDAO;
-import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
+import it.unipi.largescale.pixelindex.dao.impl.BaseNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
-import it.unipi.largescale.pixelindex.model.*;
-import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import org.neo4j.driver.Driver;

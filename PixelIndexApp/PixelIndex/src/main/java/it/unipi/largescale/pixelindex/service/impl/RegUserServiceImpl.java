@@ -1,13 +1,12 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.RegisteredUserDAO;
-import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
+import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAO;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
-import it.unipi.largescale.pixelindex.model.User;
 import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 

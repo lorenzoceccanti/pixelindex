@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.impl;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

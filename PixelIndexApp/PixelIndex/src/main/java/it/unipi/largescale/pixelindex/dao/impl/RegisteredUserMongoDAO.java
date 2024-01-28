@@ -1,9 +1,11 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.impl;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import it.unipi.largescale.pixelindex.dao.RegisteredUserDAO;
+import it.unipi.largescale.pixelindex.dao.impl.BaseMongoDAO;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Moderator;

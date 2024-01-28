@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.impl;
 
 import it.unipi.largescale.pixelindex.utils.Utils;
 import org.neo4j.driver.*;
