@@ -9,4 +9,6 @@ import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 public interface RegisteredUserService {
     AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, ConnectionException;
     AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage) throws ConnectionException;
+
+
 }

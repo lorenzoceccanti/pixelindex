@@ -76,4 +76,6 @@ public class RegUserServiceImpl implements RegisteredUserService {
 
         return authUserDTO;
     }
+
+
 }
