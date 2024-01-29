@@ -2,9 +2,11 @@
 *.svg
 *.png
 *dataset*.json
+dataset/*.csv
 *.zip
 *.class
 *.pem
 *.pkcs12
 workspace.xml
 *.cer
+.dump/*
