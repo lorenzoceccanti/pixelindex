@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2a287e56-04c1-4b9a-8749-3a7123454b5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/RegisteredUserNeo4jDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/RegisteredUserNeo4jDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/impl/RegisteredUserMongoDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/impl/RegisteredUserMongoDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/impl/RegisteredUserNeo4jDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/dao/impl/RegisteredUserNeo4jDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/RegisteredUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/RegisteredUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/impl/RegUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/it/unipi/largescale/pixelindex/service/impl/RegUserServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +81,8 @@
       <workItem from="1706448856358" duration="2655000" />
       <workItem from="1706455131117" duration="13085000" />
       <workItem from="1706475985427" duration="6610000" />
-      <workItem from="1706536379307" duration="6929000" />
+      <workItem from="1706536379307" duration="7180000" />
+      <workItem from="1706561821877" duration="2052000" />
     </task>
     <servers />
   </component>
