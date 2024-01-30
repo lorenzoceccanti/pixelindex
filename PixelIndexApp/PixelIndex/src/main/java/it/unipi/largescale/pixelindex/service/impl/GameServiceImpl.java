@@ -2,7 +2,7 @@ package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.GameNeo4jDAO;
-import it.unipi.largescale.pixelindex.dto.GameSearchDTO;
+import it.unipi.largescale.pixelindex.dto.GameDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Game;
@@ -19,7 +19,7 @@ public class GameServiceImpl implements GameService {
         this.gameNeo4jDAO = new it.unipi.largescale.pixelindex.dao.impl.GameNeo4jDAOImpl();
     }
 
-    public List<GameSearchDTO> searchGames(String name) throws ConnectionException {
+    public List<GameDTO> searchGames(String name) throws ConnectionException {
         List<Game> games = null;
         try {
             games = gameMongoDAO.getGamesByName(name);
@@ -27,12 +27,12 @@ public class GameServiceImpl implements GameService {
             throw new ConnectionException(e);
         }
 
-        List<GameSearchDTO> searchResult = new ArrayList<>();
+        List<GameDTO> searchResult = new ArrayList<>();
         for(Game game : games) {
-            GameSearchDTO gameSearchDTO = new GameSearchDTO();
-            gameSearchDTO.setName(game.getName());
-            gameSearchDTO.setReleaseDate(game.getReleaseDate());
-            searchResult.add(gameSearchDTO);
+            GameDTO gameDTO = new GameDTO();
+            gameDTO.setName(game.getName());
+            gameDTO.setReleaseDate(game.getReleaseDate());
+            searchResult.add(gameDTO);
         }
         return searchResult;
     }

@@ -2,10 +2,15 @@ package it.unipi.largescale.pixelindex.dto;
 
 import java.time.LocalDate;
 
-public class GameSearchDTO {
+public class GameDTO {
+
+    private String id;
     private String name;
     private LocalDate releaseDate;
 
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -14,6 +19,8 @@ public class GameSearchDTO {
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
+
+    public void setId(String id) { this.id = id; }
 
     public void setName(String name) {
         this.name = name;
