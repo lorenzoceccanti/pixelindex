@@ -37,4 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-*.workspace
+workspace.xml
+/.idea/
