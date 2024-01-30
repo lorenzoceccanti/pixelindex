@@ -25,7 +25,7 @@ public abstract class BaseMongoDAO {
         while(tokens.hasMoreTokens())
         {
             var = tokens.nextToken().split("=", 2);
-            params.add(var[1]);
+            params.add(var.length == 1 ? "" : var[1]);
         }
         String SERVER_ADDRESS = params.get(0).trim();
         int MONGO_PORT = Integer.parseInt(params.get(1).trim());
@@ -50,7 +50,7 @@ public abstract class BaseMongoDAO {
         while(tokens.hasMoreTokens())
         {
             var = tokens.nextToken().split("=", 2);
-            params.add(var[1]);
+            params.add(var.length == 1 ? "" : var[1]);
         }
         String SERVER_ADDRESS = params.get(0).trim();
         int MONGO_PORT = Integer.parseInt(params.get(1).trim());

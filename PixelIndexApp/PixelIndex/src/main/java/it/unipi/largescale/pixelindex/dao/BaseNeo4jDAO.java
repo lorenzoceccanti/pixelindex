@@ -17,7 +17,7 @@ public class BaseNeo4jDAO {
         while(tokens.hasMoreTokens())
         {
             var = tokens.nextToken().split("=", 2);
-            params.add(var[1]);
+            params.add(var.length == 1 ? "" : var[1]);
         }
         String SERVER_ADDRESS = params.get(4).trim();
         int NEO_PORT = Integer.parseInt(params.get(5).trim());
