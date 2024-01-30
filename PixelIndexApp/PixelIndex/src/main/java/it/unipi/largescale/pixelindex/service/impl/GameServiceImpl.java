@@ -15,8 +15,8 @@ public class GameServiceImpl implements GameService {
     private final GameMongoDAO gameMongoDAO;
     private final GameNeo4jDAO gameNeo4jDAO;
     public GameServiceImpl() {
-        this.gameMongoDAO = new it.unipi.largescale.pixelindex.dao.impl.GameMongoDAOImpl();
-        this.gameNeo4jDAO = new it.unipi.largescale.pixelindex.dao.impl.GameNeo4jDAOImpl();
+        this.gameMongoDAO = new GameMongoDAO();
+        this.gameNeo4jDAO = new GameNeo4jDAO();
     }
 
     public List<GameDTO> searchGames(String name) throws ConnectionException {

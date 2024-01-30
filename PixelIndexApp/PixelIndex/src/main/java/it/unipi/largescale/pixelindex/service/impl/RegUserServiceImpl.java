@@ -3,10 +3,9 @@ package it.unipi.largescale.pixelindex.service.impl;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import it.unipi.largescale.pixelindex.dao.impl.BaseMongoDAO;
-import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
-import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
-import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserNeo4jDAOImpl;
+import it.unipi.largescale.pixelindex.dao.BaseMongoDAO;
+import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
+import it.unipi.largescale.pixelindex.dao.RegisteredUserNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -18,14 +17,14 @@ import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 
 public class RegUserServiceImpl implements RegisteredUserService {
-    private RegisteredUserMongoDAOImpl registeredUserDAO;
-    private RegisteredUserNeo4jDAOImpl registeredUserNeo;
+    private RegisteredUserMongoDAO registeredUserDAO;
+    private RegisteredUserNeo4jDAO registeredUserNeo;
     UserRegistrationDTO registrationDTO = new UserRegistrationDTO();
 
 
     public RegUserServiceImpl(){
-        this.registeredUserDAO = new RegisteredUserMongoDAOImpl();
-        this.registeredUserNeo = new RegisteredUserNeo4jDAOImpl();
+        this.registeredUserDAO = new RegisteredUserMongoDAO();
+        this.registeredUserNeo = new RegisteredUserNeo4jDAO();
     }
 
     @Override

@@ -1,12 +1,8 @@
-package it.unipi.largescale.pixelindex.dao.impl;
+package it.unipi.largescale.pixelindex.dao;
 
 import it.unipi.largescale.pixelindex.utils.Utils;
 import org.neo4j.driver.*;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 

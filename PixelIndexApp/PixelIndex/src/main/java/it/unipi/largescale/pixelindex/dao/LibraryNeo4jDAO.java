@@ -1,7 +1,5 @@
 package it.unipi.largescale.pixelindex.dao;
 
-import it.unipi.largescale.pixelindex.dao.impl.BaseNeo4jDAO;
-import it.unipi.largescale.pixelindex.dto.GameDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;

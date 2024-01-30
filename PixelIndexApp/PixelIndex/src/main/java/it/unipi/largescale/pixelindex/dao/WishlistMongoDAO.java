@@ -1,11 +1,9 @@
 package it.unipi.largescale.pixelindex.dao;
 
 import com.mongodb.MongoWriteException;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import it.unipi.largescale.pixelindex.dao.impl.BaseMongoDAO;
 import it.unipi.largescale.pixelindex.dto.GameDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.bson.Document;

@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao.impl;
+package it.unipi.largescale.pixelindex.dao;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -8,9 +8,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
