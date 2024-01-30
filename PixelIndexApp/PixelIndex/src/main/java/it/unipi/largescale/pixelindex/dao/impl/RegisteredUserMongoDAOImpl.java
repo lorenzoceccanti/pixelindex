@@ -2,6 +2,7 @@ package it.unipi.largescale.pixelindex.dao.impl;
 
 import com.mongodb.MongoSocketException;
 import com.mongodb.MongoWriteException;
+import com.mongodb.client.ClientSession;
 import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -84,7 +85,7 @@ public class RegisteredUserMongoDAOImpl extends BaseMongoDAO implements Register
             }
     }
 
-    @Override
+    @Deprecated
     public RegisteredUser register(RegisteredUser u) throws DAOException {
         MongoDatabase db;
         try (MongoClient mongoClient = beginConnection()) {
@@ -110,6 +111,32 @@ public class RegisteredUserMongoDAOImpl extends BaseMongoDAO implements Register
         catch (MongoWriteException ex) {
             throw new DAOException("Already registered user [" + u.getUsername() + "]");
         }
+        return u;
+    }
+
+    @Override
+    public RegisteredUser register(MongoClient mc, RegisteredUser u, ClientSession clientSession) throws DAOException
+    {
+        MongoDatabase db;
+        db = mc.getDatabase("pixelindex");
+        MongoCollection<Document> usersCollection = db.getCollection("users");
+
+        Document doc = new Document("username", u.getUsername())
+                .append("hashedPassword", u.getHashedPassword())
+                .append("dateOfBirth", u.getDateOfBirth())
+                .append("email", u.getEmail())
+                .append("name", u.getName())
+                .append("surname", u.getSurname())
+                .append("role", u.getRole())
+                .append("language", u.getLanguage());
+
+        try{
+            usersCollection.insertOne(clientSession, doc);
+        }catch(MongoWriteException ex)
+        {
+            throw new DAOException("Already registered user [" + u.getUsername() + "]");
+        }
+
         return u;
     }
 }

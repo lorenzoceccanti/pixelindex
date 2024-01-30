@@ -1,5 +1,9 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
+import com.mongodb.client.ClientSession;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import it.unipi.largescale.pixelindex.dao.impl.BaseMongoDAO;
 import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
 import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserMongoDAOImpl;
 import it.unipi.largescale.pixelindex.dao.impl.RegisteredUserNeo4jDAOImpl;
@@ -15,10 +19,13 @@ import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 
 public class RegUserServiceImpl implements RegisteredUserService {
     private RegisteredUserMongoDAOImpl registeredUserDAO;
+    private RegisteredUserNeo4jDAOImpl registeredUserNeo;
     UserRegistrationDTO registrationDTO = new UserRegistrationDTO();
+
 
     public RegUserServiceImpl(){
         this.registeredUserDAO = new RegisteredUserMongoDAOImpl();
+        this.registeredUserNeo = new RegisteredUserNeo4jDAOImpl();
     }
 
     @Override
@@ -52,27 +59,34 @@ public class RegUserServiceImpl implements RegisteredUserService {
         registeringUser.setDateOfBirth(userRegistrationDTO.getDateOfBirth());
         registeringUser.setEmail(userRegistrationDTO.getEmail());
 
+
         RegisteredUser registeredUser = null;
-        try{
-            registeredUser = registeredUserDAO.register(registeringUser);
-        }catch(DAOException ex)
+
+        // Starting a MongoDAO transaction
+        MongoDatabase db;
+        try(MongoClient mongoClient = BaseMongoDAO.beginConnection())
         {
-            throw new ConnectionException(ex);
+           try(ClientSession clientSession = mongoClient.startSession()){
+               clientSession.startTransaction();
+               try{
+                   // User registration, collection users MongoDB
+                   registeredUser = registeredUserDAO.register(mongoClient, registeringUser, clientSession);
+                   // Adding node to Neo4J
+                   registeredUserNeo.register(userRegistrationDTO.getUsername());
+                   clientSession.commitTransaction();
+               }catch(DAOException ex)
+               {
+                   clientSession.abortTransaction();
+                   throw new ConnectionException(ex);
+               }
+           }
         }
+
         AuthUserDTO authUserDTO = new AuthUserDTO();
         authUserDTO.setName(registeredUser.getName());
         authUserDTO.setSurname(registeredUser.getSurname());
         authUserDTO.setDateOfBirth(registeredUser.getDateOfBirth());
         authUserDTO.setEmail(registeredUser.getEmail());
-
-        // ££ registrazione in Neo4J ££
-        RegisteredUserNeo4jDAOImpl registeredUserNeo = new RegisteredUserNeo4jDAOImpl();
-        try{
-            registeredUserNeo.register(userRegistrationDTO.getUsername());
-        }catch(DAOException ex)
-        {
-            throw new ConnectionException(ex);
-        }
 
         return authUserDTO;
     }

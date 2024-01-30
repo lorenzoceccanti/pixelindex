@@ -22,7 +22,7 @@ public class RegisteredUserNeo4jDAOImpl implements RegisteredUserNeo4jDAO {
             });
         }catch(ServiceUnavailableException ex)
         {
-            System.out.println("Cannot reach Neo4j Server");
+            throw new DAOException("Cannot reach Neo4j Server");
         }
     }
 
@@ -47,7 +47,7 @@ public class RegisteredUserNeo4jDAOImpl implements RegisteredUserNeo4jDAO {
             });
         }catch(ServiceUnavailableException ex)
         {
-            System.out.println("Cannot reach Neo4j Server");
+            throw new DAOException("Cannot reach Neo4j Server");
         }
     }
 }
