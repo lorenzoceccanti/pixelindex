@@ -10,3 +10,5 @@ dataset/*.csv
 workspace.xml
 *.cer
 .dump/*
+*.xml
+PixelIndexApp/PixelIndex/.idea/workspace.xml
