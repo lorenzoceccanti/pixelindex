@@ -20,21 +20,11 @@ public class GameServiceImpl implements GameService {
     }
 
     public List<GameDTO> searchGames(String name) throws ConnectionException {
-        List<Game> games = null;
         try {
-            games = gameMongoDAO.getGamesByName(name);
+            return gameNeo4jDAO.getGamesByName(name);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
-
-        List<GameDTO> searchResult = new ArrayList<>();
-        for(Game game : games) {
-            GameDTO gameDTO = new GameDTO();
-            gameDTO.setName(game.getName());
-            gameDTO.setReleaseDate(game.getReleaseDate());
-            searchResult.add(gameDTO);
-        }
-        return searchResult;
     }
 
     public Game getGameById(String id) throws ConnectionException {
