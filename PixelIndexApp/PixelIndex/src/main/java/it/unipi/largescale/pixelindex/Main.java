@@ -95,15 +95,34 @@ public class Main {
         }
         */
 
+
+        // Print number of following/followers of Chang Liu
+        // Chang Liu starts to follow ale1968
         ArrayList<UserSearchDTO> searchResult = new ArrayList<>();
         try{
-            searchResult = registeredUserService.searchUser("cha");
+
+            searchResult = registeredUserService.searchUser("ale1968");
             System.out.println("username | numberOfFollowers | numberOfFollowed");
             for(int i=0; i<searchResult.size(); i++)
                 System.out.println(searchResult.get(i));
+
+            searchResult = registeredUserService.searchUser("chang liu");
+            System.out.println("username | numberOfFollowers | numberOfFollowed");
+            for(int i=0; i<searchResult.size(); i++)
+                System.out.println(searchResult.get(i));
+
+            registeredUserService.unfollowUser("Chang Liu", "ale1968");
+            /*
+            registeredUserService.followUser("Chang Liu", "ale1968");
+            searchResult = registeredUserService.searchUser("Chang Liu");
+            System.out.println("username | numberOfFollowers | numberOfFollowed");
+            for(int i=0; i<searchResult.size(); i++)
+                System.out.println(searchResult.get(i));*/
         }catch(ConnectionException ex)
         {
             System.out.println(ex.getMessage());
         }
+
+
     }
 }
