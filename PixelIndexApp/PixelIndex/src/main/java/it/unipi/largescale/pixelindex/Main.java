@@ -33,31 +33,26 @@ public class Main {
         userRegistrationDTO.setDateOfBirth(date);
         userRegistrationDTO.setEmail("cecca2@live.it");
 
-        try{
+        try {
             AuthUserDTO authUserDTO = registeredUserService.register(userRegistrationDTO, "italian");
-        }catch(ConnectionException ex)
-        {
+        } catch (ConnectionException ex) {
             System.out.println(ex.getMessage());
             // System.exit(1);
         }
 
         // Login use case w/ personal info
         AuthUserDTO authUserDTO = null;
-        try{
+        try {
             authUserDTO = registeredUserService.makeLogin("ale1968", "pippo");
             System.out.println("Welcome " + authUserDTO.getName());
             System.out.println("Your personal information:");
             System.out.println(authUserDTO);
-        }catch(UserNotFoundException ex)
-        {
+        } catch (UserNotFoundException ex) {
             System.out.println("Login failed: The provided username doesn't match any registration");
 
-        }catch(WrongPasswordException ex2)
-        {
+        } catch (WrongPasswordException ex2) {
             System.out.println("Login failed: The password provided is wrong");
-        }
-        catch(ConnectionException ex3)
-        {
+        } catch (ConnectionException ex3) {
             System.out.println(ex3.getMessage());
         }
 
@@ -99,30 +94,38 @@ public class Main {
         // Print number of following/followers of Chang Liu
         // Chang Liu starts to follow ale1968
         ArrayList<UserSearchDTO> searchResult = new ArrayList<>();
-        try{
+        try {
 
             searchResult = registeredUserService.searchUser("ale1968");
             System.out.println("username | numberOfFollowers | numberOfFollowed");
-            for(int i=0; i<searchResult.size(); i++)
+            for (int i = 0; i < searchResult.size(); i++)
                 System.out.println(searchResult.get(i));
 
             searchResult = registeredUserService.searchUser("chang liu");
             System.out.println("username | numberOfFollowers | numberOfFollowed");
-            for(int i=0; i<searchResult.size(); i++)
+            for (int i = 0; i < searchResult.size(); i++)
                 System.out.println(searchResult.get(i));
 
-            registeredUserService.unfollowUser("Chang Liu", "ale1968");
+            // registeredUserService.unfollowUser("Chang Liu", "ale1968");
             /*
             registeredUserService.followUser("Chang Liu", "ale1968");
             searchResult = registeredUserService.searchUser("Chang Liu");
             System.out.println("username | numberOfFollowers | numberOfFollowed");
             for(int i=0; i<searchResult.size(); i++)
                 System.out.println(searchResult.get(i));*/
-        }catch(ConnectionException ex)
-        {
+        } catch (ConnectionException ex) {
             System.out.println(ex.getMessage());
         }
 
-
+        /* Generare 100 segnalazioni a Chang Liu */
+        for (int i = 0; i < 100; i++) {
+            try {
+                registeredUserService.reportUser("lore", "Chang Liu");
+                // registeredUserService.reportUser("Chang Liu", "Chang Liu"); // should fail
+            } catch (ConnectionException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        // Verifica che Chang Liu abbia 50 segnalazioni da utenti diversi lore_0, lore_1, .., lore_49
     }
 }
