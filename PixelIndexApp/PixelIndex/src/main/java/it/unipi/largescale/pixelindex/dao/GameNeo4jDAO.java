@@ -48,7 +48,7 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
                                 "RETURN matchingGame.mongoId AS id, " +
                                 "matchingGame.name AS name, " +
                                 "matchingGame.releaseDate AS releaseDate " +
-                                "LIMIT 100",
+                                "LIMIT 20",
                         parameters("lowerCasePar", lowerCasePar));
 
                 ArrayList<GameDTO> gameDTOArrayList = new ArrayList<>();
