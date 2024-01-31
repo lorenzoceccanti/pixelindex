@@ -8,6 +8,7 @@ import it.unipi.largescale.pixelindex.dao.RegisteredUserMongoDAO;
 import it.unipi.largescale.pixelindex.dao.RegisteredUserNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
@@ -15,6 +16,8 @@ import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
 import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
+
+import java.util.ArrayList;
 
 public class RegUserServiceImpl implements RegisteredUserService {
     private RegisteredUserMongoDAO registeredUserDAO;
@@ -90,5 +93,38 @@ public class RegUserServiceImpl implements RegisteredUserService {
         return authUserDTO;
     }
 
+    @Override
+    public ArrayList<UserSearchDTO> searchUser(String param) throws ConnectionException
+    {
+        ArrayList<UserSearchDTO> authUserDTOs = new ArrayList<>();
+        try{
+            authUserDTOs = registeredUserNeo.searchUser(param);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
+        return authUserDTOs;
+    }
 
+    @Override
+    public void followUser(String usernameSrc, String usernameDst) throws ConnectionException
+    {
+        try{
+            registeredUserNeo.followUser(usernameSrc, usernameDst);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
+    }
+
+    @Override
+    public void unfollowUser(String usernameSrc, String usernameDst) throws ConnectionException
+    {
+        try{
+            registeredUserNeo.unfollowUser(usernameSrc, usernameDst);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
+    }
 }

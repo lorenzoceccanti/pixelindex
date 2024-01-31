@@ -28,4 +28,9 @@ public class UserSearchDTO {
     public void setCountFollower(int countFollower) {
         this.countFollower = countFollower;
     }
+
+    @Override
+    public String toString(){
+        return username + " " + countFollower + " " + countFollowed;
+    }
 }

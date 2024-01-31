@@ -4,6 +4,7 @@ package it.unipi.largescale.pixelindex;
 
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
@@ -12,6 +13,7 @@ import it.unipi.largescale.pixelindex.service.ServiceLocator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 
 public class Main {
@@ -92,5 +94,16 @@ public class Main {
             System.out.println("None");
         }
         */
+
+        ArrayList<UserSearchDTO> searchResult = new ArrayList<>();
+        try{
+            searchResult = registeredUserService.searchUser("cha");
+            System.out.println("username | numberOfFollowers | numberOfFollowed");
+            for(int i=0; i<searchResult.size(); i++)
+                System.out.println(searchResult.get(i));
+        }catch(ConnectionException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
     }
 }
