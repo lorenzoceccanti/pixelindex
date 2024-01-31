@@ -20,13 +20,12 @@ import org.bson.conversions.Bson;
 import it.unipi.largescale.pixelindex.security.Crypto;
 import java.util.*;
 
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
 
 public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
     public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, DAOException
     {
-        // Questa è una semplice prova
         MongoDatabase db;
         List<Document> results = null;
         try (MongoClient mongoClient = beginConnection()) {
@@ -106,5 +105,28 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         }
 
         return u;
+    }
+
+    public void reportUser(String usernameReporting, String usernameReported) throws DAOException
+    {
+        if(usernameReported.equals(usernameReporting))
+            return;
+        MongoDatabase db;
+        try(MongoClient mongoClient = beginConnection())
+        {
+            db = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> usersCollection = db.getCollection("users");
+            Bson myMatch1 = (eq("username", usernameReported));
+            Document or1 = new Document("$expr",new Document("$lt",
+                    Arrays.asList(new Document("$size", "$reported_by"),50)));
+            Document or2 = new Document("reported_by", new Document("$exists",false));
+            Bson or = or(or1, or2);
+            Bson filter = and(myMatch1, or);
+            Document update = new Document("$addToSet", new Document("reported_by", usernameReporting));
+            usersCollection.updateOne(filter, update);
+        }catch(MongoSocketException ex)
+        {
+            throw new DAOException("Error in connecting to MongoDB");
+        }
     }
 }

@@ -20,13 +20,13 @@ import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import java.util.ArrayList;
 
 public class RegUserServiceImpl implements RegisteredUserService {
-    private RegisteredUserMongoDAO registeredUserDAO;
+    private RegisteredUserMongoDAO registeredUserMongo;
     private RegisteredUserNeo4jDAO registeredUserNeo;
     UserRegistrationDTO registrationDTO = new UserRegistrationDTO();
 
 
     public RegUserServiceImpl(){
-        this.registeredUserDAO = new RegisteredUserMongoDAO();
+        this.registeredUserMongo = new RegisteredUserMongoDAO();
         this.registeredUserNeo = new RegisteredUserNeo4jDAO();
     }
 
@@ -34,7 +34,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
     public AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, ConnectionException {
         RegisteredUser registeredUser = null;
         try{
-            registeredUser = registeredUserDAO.makeLogin(username, password);
+            registeredUser = registeredUserMongo.makeLogin(username, password);
         }catch(DAOException ex)
         {
             throw new ConnectionException(ex);
@@ -72,7 +72,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
                clientSession.startTransaction();
                try{
                    // User registration, collection users MongoDB
-                   registeredUser = registeredUserDAO.register(mongoClient, registeringUser, clientSession);
+                   registeredUser = registeredUserMongo.register(mongoClient, registeringUser, clientSession);
                    // Adding node to Neo4J
                    registeredUserNeo.register(userRegistrationDTO.getUsername());
                    clientSession.commitTransaction();
@@ -122,6 +122,16 @@ public class RegUserServiceImpl implements RegisteredUserService {
     {
         try{
             registeredUserNeo.unfollowUser(usernameSrc, usernameDst);
+        }catch(DAOException ex)
+        {
+            throw new ConnectionException(ex);
+        }
+    }
+
+    public void reportUser(String usernameReporting, String usernameReported) throws ConnectionException
+    {
+        try{
+            registeredUserMongo.reportUser(usernameReporting, usernameReported);
         }catch(DAOException ex)
         {
             throw new ConnectionException(ex);
