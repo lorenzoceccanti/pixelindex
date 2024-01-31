@@ -83,9 +83,9 @@ public class RegisteredUserNeo4jDAO {
             Session session = neoDriver.session())
         {
             session.executeWrite(tx -> {
-                tx.run("MATCH (src: User) WHERE src.username = $usernameSrc" +
-                        "MATCH (dst: User) WHERE dst.username = $usernameDst" +
-                        "CREATE (src)-[:FOLLOWS]->(dst);)",
+                tx.run("MATCH (src: User) WHERE src.username = $usernameSrc " +
+                        "MATCH (dst: User) WHERE dst.username = $usernameDst " +
+                        "MERGE (src)-[:FOLLOWS]->(dst);",
                 parameters("usernameSrc", usernameSrc, "usernameDst", usernameDst));
                 return null;
             });
@@ -100,7 +100,7 @@ public class RegisteredUserNeo4jDAO {
             Session session = neoDriver.session())
         {
             session.executeWrite(tx -> {
-                tx.run("MATCH (src:User{username:$usernameSrc})-[r:FOLLOWS]->(dst:User{username:$usernameDst})" +
+                tx.run("MATCH (src:User{username:$usernameSrc})-[r:FOLLOWS]->(dst:User{username:$usernameDst}) " +
                         "DELETE r;", parameters("usernameSrc",usernameSrc, "usernameDst", usernameDst));
                 return null;
             });
