@@ -2,7 +2,7 @@ package it.unipi.largescale.pixelindex.dto;
 
 import java.time.LocalDate;
 
-public class GameDTO {
+public class GamePreviewDTO {
 
     private String id;
     private String name;
@@ -20,7 +20,9 @@ public class GameDTO {
         return releaseDate;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public void setName(String name) {
         this.name = name;

@@ -1,6 +1,6 @@
 package it.unipi.largescale.pixelindex.dao;
 
-import it.unipi.largescale.pixelindex.dto.GameDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import static org.neo4j.driver.Values.parameters;
 public class GameNeo4jDAO extends BaseNeo4jDAO {
 
     public void insertGame(String gameId) throws DAOException {
-        try(Driver neoDriver = beginConnection()) {
+        try (Driver neoDriver = beginConnection()) {
             String query = "CREATE (g:Game {mongoId: $id})";
             Map<String, Object> params = new HashMap<>();
             params.put("id", gameId);
@@ -36,11 +36,11 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    public List<GameDTO> getGamesByName(String name) throws DAOException {
-        ArrayList<GameDTO> games;
+    public List<GamePreviewDTO> getGamesByName(String name) throws DAOException {
+        ArrayList<GamePreviewDTO> games;
         String lowerCasePar = name.toLowerCase();
-        try(Driver neoDriver = BaseNeo4jDAO.beginConnection();
-            Session session = neoDriver.session()) {
+        try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
+             Session session = neoDriver.session()) {
 
             games = session.executeRead(tx -> {
                 Result result = tx.run("MATCH (matchingGame:Game) " +
@@ -51,19 +51,19 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
                                 "LIMIT 20",
                         parameters("lowerCasePar", lowerCasePar));
 
-                ArrayList<GameDTO> gameDTOArrayList = new ArrayList<>();
-                while(result.hasNext()) {
+                ArrayList<GamePreviewDTO> gamePreviewDTOArrayList = new ArrayList<>();
+                while (result.hasNext()) {
                     Record record = result.next();
-                    GameDTO gameDTO = new GameDTO();
-                    gameDTO.setId(record.get("id").asString());
-                    gameDTO.setName(record.get("name").asString());
+                    GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
+                    gamePreviewDTO.setId(record.get("id").asString());
+                    gamePreviewDTO.setName(record.get("name").asString());
                     LocalDate date = LocalDate.parse(record.get("releaseDate").asString());
-                    gameDTO.setReleaseDate(date);
-                    gameDTOArrayList.add(gameDTO);
+                    gamePreviewDTO.setReleaseDate(date);
+                    gamePreviewDTOArrayList.add(gamePreviewDTO);
                 }
-                return gameDTOArrayList;
+                return gamePreviewDTOArrayList;
             });
-        } catch(ServiceUnavailableException ex) {
+        } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         }
         return games;

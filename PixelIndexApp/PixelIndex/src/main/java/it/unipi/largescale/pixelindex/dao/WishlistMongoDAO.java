@@ -4,7 +4,7 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import it.unipi.largescale.pixelindex.dto.GameDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import org.bson.Document;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class WishlistMongoDAO extends BaseMongoDAO {
 
-    public void insertGame(String userId, GameDTO game) throws DAOException {
+    public void insertGame(String userId, GamePreviewDTO game) throws DAOException {
         try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("wishlists");
@@ -58,15 +58,15 @@ public class WishlistMongoDAO extends BaseMongoDAO {
         }
     }
 
-    public List<GameDTO> getGames(String userId) throws DAOException {
-        List<GameDTO> wishlistGames = new ArrayList<>();
+    public List<GamePreviewDTO> getGames(String userId) throws DAOException {
+        List<GamePreviewDTO> wishlistGames = new ArrayList<>();
         try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("wishlists");
 
             Document query = new Document("userId", new ObjectId(userId));
             for (Document doc : collection.find(query)) {
-                GameDTO wishListGame = new GameDTO();
+                GamePreviewDTO wishListGame = new GamePreviewDTO();
                 wishListGame.setId(doc.getObjectId("gameId").toString());
                 wishListGame.setName(doc.getString("name"));
                 wishListGame.setReleaseDate(Utils.convertDateToLocalDate(doc.getDate("releaseDate")));

@@ -1,7 +1,7 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.AnalyticsNeo4jDAO;
-import it.unipi.largescale.pixelindex.dto.GameDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.service.AnalyticsService;
@@ -15,7 +15,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         this.analyticsNeo4jDAO = new AnalyticsNeo4jDAO();
     }
 
-    public List<GameDTO> suggestGames(String username) throws ConnectionException {
+    public List<GamePreviewDTO> suggestGames(String username) throws ConnectionException {
         try {
             return analyticsNeo4jDAO.getSuggestedGames(username);
         } catch (DAOException e) {

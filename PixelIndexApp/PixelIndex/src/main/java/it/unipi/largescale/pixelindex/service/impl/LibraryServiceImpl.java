@@ -1,6 +1,6 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
-import it.unipi.largescale.pixelindex.dto.GameDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.service.LibraryService;
@@ -14,15 +14,16 @@ public class LibraryServiceImpl implements LibraryService {
     public LibraryServiceImpl() {
         libraryNeo4jDAO = new LibraryNeo4jDAO();
     }
-    public void addGame(String username, GameDTO gameDTO) throws ConnectionException {
+
+    public void addGame(String username, GamePreviewDTO gamePreviewDTO) throws ConnectionException {
         try {
-            libraryNeo4jDAO.addGame(username, gameDTO.getId());
+            libraryNeo4jDAO.addGame(username, gamePreviewDTO.getId());
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public void removeGame(String username, GameDTO gameId) throws ConnectionException {
+    public void removeGame(String username, GamePreviewDTO gameId) throws ConnectionException {
         try {
             libraryNeo4jDAO.removeGame(username, gameId.getId());
         } catch (DAOException e) {
@@ -30,7 +31,7 @@ public class LibraryServiceImpl implements LibraryService {
         }
     }
 
-    public List<GameDTO> getGames(String username) throws ConnectionException {
+    public List<GamePreviewDTO> getGames(String username) throws ConnectionException {
         try {
             return libraryNeo4jDAO.getGames(username);
         } catch (DAOException e) {

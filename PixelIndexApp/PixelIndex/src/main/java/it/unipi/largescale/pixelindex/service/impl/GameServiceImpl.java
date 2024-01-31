@@ -2,24 +2,24 @@ package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.GameNeo4jDAO;
-import it.unipi.largescale.pixelindex.dto.GameDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.service.GameService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameServiceImpl implements GameService {
     private final GameMongoDAO gameMongoDAO;
     private final GameNeo4jDAO gameNeo4jDAO;
+
     public GameServiceImpl() {
         this.gameMongoDAO = new GameMongoDAO();
         this.gameNeo4jDAO = new GameNeo4jDAO();
     }
 
-    public List<GameDTO> searchGames(String name) throws ConnectionException {
+    public List<GamePreviewDTO> searchGames(String name) throws ConnectionException {
         try {
             return gameNeo4jDAO.getGamesByName(name);
         } catch (DAOException e) {
