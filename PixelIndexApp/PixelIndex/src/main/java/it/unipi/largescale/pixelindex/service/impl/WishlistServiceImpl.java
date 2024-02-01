@@ -1,39 +1,40 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
+import it.unipi.largescale.pixelindex.dao.WishlistNeo4jDAO;
 import it.unipi.largescale.pixelindex.dao.WishlistMongoDAO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.service.WishlistService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WishlistServiceImpl implements WishlistService {
-    private final WishlistMongoDAO wishlistMongoDAO;
-
+    private final WishlistNeo4jDAO wishlistNeo4jDAO;
     public WishlistServiceImpl() {
-        wishlistMongoDAO = new WishlistMongoDAO();
+        wishlistNeo4jDAO = new WishlistNeo4jDAO();
     }
 
-    public void addGame(String userId, GamePreviewDTO game) throws ConnectionException {
+    public void addGame(String userId, String gameId) throws ConnectionException {
         try {
-            wishlistMongoDAO.insertGame(userId, game);
+            wishlistNeo4jDAO.insertGame(userId, gameId);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public void removeGame(String userId, GamePreviewDTO game) throws ConnectionException {
+    public void removeGame(String userId, String gameId) throws ConnectionException {
         try {
-            wishlistMongoDAO.removeGame(userId, game.getId());
+            wishlistNeo4jDAO.removeGame(userId, gameId);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public List<GamePreviewDTO> getGames(String userId) throws ConnectionException {
+    public ArrayList<GamePreviewDTO> getGames(String username) throws ConnectionException {
         try {
-            return wishlistMongoDAO.getGames(userId);
+            return wishlistNeo4jDAO.getGames(username);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

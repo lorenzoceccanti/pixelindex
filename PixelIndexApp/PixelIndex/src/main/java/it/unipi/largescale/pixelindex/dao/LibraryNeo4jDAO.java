@@ -62,7 +62,7 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                     gamePreviewDTO.setId(record.get("id").asString());
                     gamePreviewDTO.setName(record.get("name").asString());
                     LocalDate date = LocalDate.parse(record.get("releaseDate").asString());
-                    gamePreviewDTO.setReleaseDate(date);
+                    gamePreviewDTO.setReleaseYear(date.getYear());
                     gamePreviewDTOArrayList.add(gamePreviewDTO);
                 }
                 return gamePreviewDTOArrayList;
