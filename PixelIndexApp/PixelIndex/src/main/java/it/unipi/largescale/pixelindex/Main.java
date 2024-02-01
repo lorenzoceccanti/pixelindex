@@ -10,6 +10,7 @@ import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import jdk.jfr.Registered;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,10 +18,9 @@ import java.util.ArrayList;
 
 
 public class Main {
-    public static void main(String[] args) {
 
-        RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
-
+    public static void registration(RegisteredUserService registeredUserService)
+    {
         // Registration use case: MONGODB and Neo4j: check RegUserServiceImpl
 
         UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
@@ -39,7 +39,10 @@ public class Main {
             System.out.println(ex.getMessage());
             // System.exit(1);
         }
+    }
 
+    public static void login(RegisteredUserService registeredUserService)
+    {
         // Login use case w/ personal info
         AuthUserDTO authUserDTO = null;
         try {
@@ -55,42 +58,10 @@ public class Main {
         } catch (ConnectionException ex3) {
             System.out.println(ex3.getMessage());
         }
+    }
 
-
-        // Further use case to implement: login as moderator
-        // The following only for testing purposes, the correct way to proceed is to have only the DTOs
-        /*
-        RegisteredUser element = null;
-        Moderator moderator = new Moderator("italian");
-        moderator.setUsername("mod001");
-        moderator.setName("Mod");
-        moderator.setSurname("SurMod");
-        moderator.setHashedPassword(Crypto.hashPassword("mod!#"));
-        moderator.setDateOfBirth(date);
-        moderator.setEmail("mod@mods.net");
-
-        RegisteredUserMongoDAO moderatorDAO = new RegisteredUserMongoDAO();
-        // moderatorDAO.register(moderator);
-        element = null;
-        try{
-            element = moderatorDAO.makeLogin("mod001","mod!#");
-        }catch(WrongPasswordException ex)
-        {
-            System.out.println("mod001: Wrong password!");
-        }
-
-        // Controllo quali funzionalità sbloccare, se quelle da moderatore o quelle da utente comune
-        if(element instanceof Moderator)
-        {
-            System.out.println("Full Functionalities");
-        } else if(element instanceof RegisteredUser){
-            System.out.println("Limited functionalities");
-        } else{
-            System.out.println("None");
-        }
-        */
-
-
+    public static void showFollowers(RegisteredUserService registeredUserService)
+    {
         // Print number of following/followers of Chang Liu
         // Chang Liu starts to follow ale1968
         ArrayList<UserSearchDTO> searchResult = new ArrayList<>();
@@ -116,7 +87,10 @@ public class Main {
         } catch (ConnectionException ex) {
             System.out.println(ex.getMessage());
         }
+    }
 
+    public static void reportUser(RegisteredUserService registeredUserService)
+    {
         /* Generare 100 segnalazioni a Chang Liu */
         for (int i = 0; i < 100; i++) {
             try {
@@ -127,5 +101,18 @@ public class Main {
             }
         }
         // Verifica che Chang Liu abbia 50 segnalazioni da utenti diversi lore_0, lore_1, .., lore_49
+    }
+
+    public static void main(String[] args) {
+
+        RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
+        // Registration use case
+        registration(registeredUserService);
+        // Login use case
+        login(registeredUserService);
+        // Show followers
+        showFollowers(registeredUserService);
+        // Report User
+        reportUser(registeredUserService);
     }
 }

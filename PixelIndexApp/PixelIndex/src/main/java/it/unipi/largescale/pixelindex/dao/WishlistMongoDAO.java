@@ -24,9 +24,7 @@ public class WishlistMongoDAO extends BaseMongoDAO {
                     .append("gameId", new ObjectId(game.getId()))
                     .append("userId", new ObjectId(userId))
                     .append("gameName", game.getName())
-                    .append("releaseDate", java.util.Date.from(game.getReleaseDate().atStartOfDay()
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toInstant()));
+                    .append("releaseYear", game.getReleaseYear());
 
             try {
                 collection.insertOne(wishlistItem);
@@ -69,7 +67,7 @@ public class WishlistMongoDAO extends BaseMongoDAO {
                 GamePreviewDTO wishListGame = new GamePreviewDTO();
                 wishListGame.setId(doc.getObjectId("gameId").toString());
                 wishListGame.setName(doc.getString("name"));
-                wishListGame.setReleaseDate(Utils.convertDateToLocalDate(doc.getDate("releaseDate")));
+                wishListGame.setReleaseYear(doc.getInteger("releaseYear"));
                 wishlistGames.add(wishListGame);
             }
         } catch (Exception e) {
