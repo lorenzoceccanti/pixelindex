@@ -19,7 +19,7 @@ public class WhishlistNeo4jDAO {
                 tx.run("MATCH (src: User) WHERE src.username = $usernameSrc " +
                                 "MATCH (dst: Game) WHERE dst.mongoId =  $gameIdDst " +
                                 "MERGE (src)-[:ADDS_TO_WHISHLIST]->(dst);",
-                        parameters("usernameSrc", userId, "gameIdDst",gameId);
+                        parameters("usernameSrc", userId, "gameIdDst",gameId));
                 return null;
             });
         }catch(ServiceUnavailableException ex)
