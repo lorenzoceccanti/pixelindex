@@ -11,13 +11,15 @@ import static it.unipi.largescale.pixelindex.utils.Utils.convertDateToLocalDate;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.result.InsertOneResult;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 public class GameMongoDAO extends BaseMongoDAO {
 
@@ -31,14 +33,14 @@ public class GameMongoDAO extends BaseMongoDAO {
         if (result.containsKey("category") && result.getString("category") != null) {
             game.setCategory(result.getString("category"));
         }
-        if (result.containsKey("first_release_date") && result.getString("first_release_date") != null) {
+        if (result.containsKey("first_release_date") && result.getDate("first_release_date") != null) {
             game.setReleaseDate(convertDateToLocalDate(result.getDate("first_release_date")));
         }
-        if (result.containsKey("game_modes") && result.getString("game_modes") != null) {
+        if (result.containsKey("game_modes") && result.getList("game_modes", String.class) != null) {
             List<String> gameModes = result.getList("game_modes", String.class);
             game.setGameModes(gameModes.toArray(new String[0]));
         }
-        if (result.containsKey("genres") && result.getString("genres") != null) {
+        if (result.containsKey("genres") && result.getList("genres", String.class) != null) {
             List<String> genresNames = result.getList("genres", String.class);
             List<Genre> genres = genresNames.stream()
                     .map(name -> {
@@ -49,7 +51,7 @@ public class GameMongoDAO extends BaseMongoDAO {
                     .toList();
             game.setGenres(genres.toArray(new Genre[0]));
         }
-        if (result.containsKey("companies") && result.getString("companies") != null) {
+        if (result.containsKey("companies") && result.getList("companies", String.class) != null) {
             List<String> companiesNames = result.getList("companies", String.class);
             List<Company> companies = (companiesNames.stream()
                     .map(name -> {
@@ -60,16 +62,19 @@ public class GameMongoDAO extends BaseMongoDAO {
                     .toList());
             game.setCompanies(companies.toArray(new Company[0]));
         }
-        if (result.containsKey("languages") && result.getString("languages") != null) {
-            List<String> languages = result.getList("languages", String.class);
+        if (result.containsKey("language_supports") && result.getList("language_supports", String.class) != null) {
+            List<String> languages = result.getList("language_supports", String.class);
             game.setLanguages(languages.toArray(new String[0]));
         }
         if (result.containsKey("summary") && result.getString("summary") != null) {
             game.setSummary(result.getString("summary"));
         }
-        if (result.containsKey("platforms") && result.getString("platforms") != null) {
+        if (result.containsKey("platforms") && result.getList("platforms", String.class) != null) {
             List<String> platforms = result.getList("platforms", String.class);
             game.setPlatforms(platforms.toArray(new String[0]));
+        }
+        if (result.containsKey("status") && result.getString("status") != null) {
+            game.setStatus(result.getString("status"));
         }
         return game;
     }
@@ -94,7 +99,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear) throws DAOException {
         List<Game> games = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
 
@@ -107,8 +112,9 @@ public class GameMongoDAO extends BaseMongoDAO {
                 searchCriteria.add(new Document("companies", new Document("$elemMatch", new Document("$regex", company).append("$options", "i"))));
             }
             if (releaseYear != null) {
-                String yearPattern = "^" + releaseYear;
-                searchCriteria.add(new Document("first_release_date", new Document("$regex", yearPattern).append("$options", "i")));
+                Date startDate = new GregorianCalendar(releaseYear, Calendar.JANUARY, 1).getTime();
+                Date endDate = new GregorianCalendar(releaseYear + 1, Calendar.JANUARY, 1).getTime();
+                searchCriteria.add(new Document("first_release_date", new Document("$gte", startDate).append("$lt", endDate)));
             }
             if (platform != null && !platform.isEmpty()) {
                 searchCriteria.add(new Document("platforms", new Document("$elemMatch", new Document("$regex", platform).append("$options", "i"))));
@@ -127,7 +133,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public Game getGameById(String id) throws DAOException {
         Game gameObject = null;
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             ObjectId objectId = new ObjectId(id);

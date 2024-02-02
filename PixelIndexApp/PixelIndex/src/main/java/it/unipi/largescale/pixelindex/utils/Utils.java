@@ -35,7 +35,7 @@ public class Utils {
         Map<String, String> params = new HashMap<>();
 
         String normalizedSearch = search.replaceAll("\\s+", " ");
-        String[] parts = normalizedSearch.split(" -");
+        String[] parts = normalizedSearch.split("-");
 
         for (String part : parts) {
             if (part.startsWith("c ")) {

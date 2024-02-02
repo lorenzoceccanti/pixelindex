@@ -13,6 +13,7 @@ public class Game {
     private String[] languages;
     private String[] platforms;
     private String summary;
+    private String status;
 
     public String getId() {
         return id;
@@ -41,6 +42,7 @@ public class Game {
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
+    public String getStatus() { return status; }
 
     public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
@@ -92,5 +94,9 @@ public class Game {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
