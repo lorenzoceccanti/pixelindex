@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import it.unipi.largescale.pixelindex.model.Game;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Driver;
@@ -19,11 +20,13 @@ import static org.neo4j.driver.Values.parameters;
 
 public class GameNeo4jDAO extends BaseNeo4jDAO {
 
-    public void insertGame(String gameId) throws DAOException {
+    public void insertGame(Game game) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
-            String query = "CREATE (g:Game {mongoId: $id})";
+            String query = "CREATE (g:Game {mongoId: $id, name: $name, releaseYear: $releaseYear})";
             Map<String, Object> params = new HashMap<>();
-            params.put("id", gameId);
+            parameters("id", game.getId(),
+                    "name", game.getName(),
+                    "releaseYear", game.getReleaseDate().getYear());
 
             try (Session session = neoDriver.session()) {
                 session.executeWrite(tx -> {
@@ -34,38 +37,5 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
         } catch (Exception ex) {
             throw new DAOException(ex);
         }
-    }
-
-    public List<GamePreviewDTO> getGamesByName(String name) throws DAOException {
-        ArrayList<GamePreviewDTO> games;
-        String lowerCasePar = name.toLowerCase();
-        try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
-             Session session = neoDriver.session()) {
-
-            games = session.executeRead(tx -> {
-                Result result = tx.run("MATCH (matchingGame:Game) " +
-                                "WHERE toLower(matchingGame.name) CONTAINS $lowerCasePar " +
-                                "RETURN matchingGame.mongoId AS id, " +
-                                "matchingGame.name AS name, " +
-                                "matchingGame.releaseDate AS releaseDate " +
-                                "LIMIT 20",
-                        parameters("lowerCasePar", lowerCasePar));
-
-                ArrayList<GamePreviewDTO> gamePreviewDTOArrayList = new ArrayList<>();
-                while (result.hasNext()) {
-                    Record record = result.next();
-                    GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
-                    gamePreviewDTO.setId(record.get("id").asString());
-                    gamePreviewDTO.setName(record.get("name").asString());
-                    LocalDate date = LocalDate.parse(record.get("releaseDate").asString());
-                    gamePreviewDTO.setReleaseYear(date.getYear());
-                    gamePreviewDTOArrayList.add(gamePreviewDTO);
-                }
-                return gamePreviewDTOArrayList;
-            });
-        } catch (ServiceUnavailableException ex) {
-            throw new DAOException("Cannot reach Neo4j Server");
-        }
-        return games;
     }
 }

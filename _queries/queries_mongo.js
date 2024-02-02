@@ -12,3 +12,8 @@ db.users.updateOne(
     $addToSet: { reported_by: "Chang Liu" }
   }
 )
+
+/* QUERY DI AGGIORNAMENTO PER BANNARE L'UTENTE */
+db.users.updateOne(
+  
+)

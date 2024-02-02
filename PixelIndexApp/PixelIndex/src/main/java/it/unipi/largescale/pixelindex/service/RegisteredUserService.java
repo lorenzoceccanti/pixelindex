@@ -16,5 +16,4 @@ public interface RegisteredUserService {
     void followUser(String usernameSrc, String usernameDst) throws ConnectionException;
     void unfollowUser(String usernameSrc, String usernameDst) throws ConnectionException;
     void reportUser(String usernameReporting, String usernameReported) throws ConnectionException;
-
 }

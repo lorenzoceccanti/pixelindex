@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
@@ -19,6 +20,7 @@ import org.bson.conversions.Bson;
 
 import it.unipi.largescale.pixelindex.security.Crypto;
 
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.*;
@@ -122,4 +124,31 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             throw new DAOException("Error in connecting to MongoDB");
         }
     }
+
+
+   public void banUser(String username) throws DAOException{
+       // Starting a MongoDAO transaction
+       MongoDatabase db;
+       try (MongoClient mongoClient = BaseMongoDAO.beginConnection()) {
+           try (ClientSession clientSession = mongoClient.startSession()) {
+               clientSession.startTransaction();
+               try {
+                   db = mongoClient.getDatabase("pixelindex");
+                   MongoCollection<Document> usersCollection = db.getCollection("users");
+                   Bson myMatch = eq("username", username);
+                   Document update = new Document("$set", new Document("isBanned", true));
+                   usersCollection.updateOne(clientSession, myMatch, update);
+
+                   MongoCollection<Document> reviewCollection = db.getCollection("reviews");
+                   Bson myMatch2 = eq("author", username);
+                   // Removing all the reviews placed by the user
+                   reviewCollection.deleteMany(clientSession, myMatch2);
+                   clientSession.commitTransaction();
+               } catch (MongoSocketException ex) {
+                   clientSession.abortTransaction();
+                   throw new DAOException(ex);
+               }
+           }
+       }
+   }
 }

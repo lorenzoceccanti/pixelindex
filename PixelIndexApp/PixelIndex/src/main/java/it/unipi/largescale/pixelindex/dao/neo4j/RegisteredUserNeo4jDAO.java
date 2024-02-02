@@ -94,11 +94,29 @@ public class RegisteredUserNeo4jDAO {
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (src:User{username:$usernameSrc})-[r:FOLLOWS]->(dst:User{username:$usernameDst}) " +
+                tx.run("MATCH (src:User {username:$usernameSrc})-[r:FOLLOWS]->(dst:User{username:$usernameDst}) " +
                         "DELETE r;", parameters("usernameSrc", usernameSrc, "usernameDst", usernameDst));
                 return null;
             });
         } catch (ServiceUnavailableException ex) {
+            throw new DAOException("Cannot reach Neo4j Server");
+        }
+    }
+
+    /** Drops an user with all the involved relationships from the graph
+     *
+     * @param username The username to be removed
+     * @throws DAOException
+     */
+    public void deleteUser(String username) throws DAOException{
+        try(Driver neoDriver = BaseNeo4jDAO.beginConnection();
+            Session session = neoDriver.session()){
+            session.executeWrite(tx -> {
+                tx.run("MATCH (u:User {username: $username})-[w:WRITES]->(re:Review) " +
+                        "DETACH DELETE u, re;", parameters("username", username));
+                return null;
+            });
+        }catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         }
     }

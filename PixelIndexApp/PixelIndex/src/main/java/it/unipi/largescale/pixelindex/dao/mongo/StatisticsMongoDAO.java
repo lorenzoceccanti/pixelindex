@@ -40,10 +40,10 @@ public class StatisticsMongoDAO {
                             Aggregates.limit(n)
                     )
             ).into(new ArrayList<>());
-            for (int i = 0; i < results.size(); i++) {
+            for (Document result : results) {
                 UserReportsDTO userReport = new UserReportsDTO();
-                userReport.setUsername(results.get(i).getString("username"));
-                userReport.setNumberReports(results.get(i).getInteger("numberReports"));
+                userReport.setUsername(result.getString("username"));
+                userReport.setNumberReports(result.getInteger("numberReports"));
                 userReportsDTOs.add(userReport);
             }
         } catch (MongoSocketException ex) {

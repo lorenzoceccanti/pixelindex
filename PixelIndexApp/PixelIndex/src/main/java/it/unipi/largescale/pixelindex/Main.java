@@ -2,21 +2,22 @@
 
 package it.unipi.largescale.pixelindex;
 
-import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
-import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
-import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
-import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
+import it.unipi.largescale.pixelindex.controller.ApplicationController;
+import it.unipi.largescale.pixelindex.dto.*;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
+import it.unipi.largescale.pixelindex.service.GameService;
+
 import jdk.jfr.Registered;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main {
@@ -120,7 +121,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-        RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
+       ApplicationController applicationController = new ApplicationController();
+
+        /*
+        GameService gs = ServiceLocator.getGameService();
+        List<GamePreviewDTO> games = null;
+        try {
+            games = gs.advancedSearch("grand");
+        } catch (ConnectionException e) {
+            throw new RuntimeException(e);
+        }
+        for(GamePreviewDTO g : games)
+            System.out.println(g.getName());
+
+*/
+
+
+        /*
+        // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
         // Registration use case
         // registration(registeredUserService);
         // Login use case
@@ -131,5 +149,8 @@ public class Main {
         // reportUser(registeredUserService);
         StatisticsService statisticsService = ServiceLocator.getStatisticsService();
         getReports(statisticsService); // last 10 reports
+
+         */
+
     }
 }
