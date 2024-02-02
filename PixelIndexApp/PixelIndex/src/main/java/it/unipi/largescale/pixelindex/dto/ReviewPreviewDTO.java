@@ -1,5 +1,7 @@
 package it.unipi.largescale.pixelindex.dto;
 
+import it.unipi.largescale.pixelindex.model.RatingKind;
+
 public class ReviewPreviewDTO {
 
     private String id;
@@ -41,7 +43,7 @@ public class ReviewPreviewDTO {
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.excerpt = text;
     }
 
     public void setTimestamp(String timestamp) {

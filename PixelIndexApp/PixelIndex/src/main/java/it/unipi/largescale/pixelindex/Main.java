@@ -4,12 +4,14 @@ package it.unipi.largescale.pixelindex;
 
 import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
+import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import it.unipi.largescale.pixelindex.service.StatisticsService;
 import jdk.jfr.Registered;
 
 import java.time.LocalDate;
@@ -92,9 +94,9 @@ public class Main {
     public static void reportUser(RegisteredUserService registeredUserService)
     {
         /* Generare 100 segnalazioni a Chang Liu */
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 46; i++) {
             try {
-                registeredUserService.reportUser("lore", "Chang Liu");
+                registeredUserService.reportUser("lore_"+i, "ale1968");
                 // registeredUserService.reportUser("Chang Liu", "Chang Liu"); // should fail
             } catch (ConnectionException ex) {
                 System.out.println(ex.getMessage());
@@ -103,16 +105,31 @@ public class Main {
         // Verifica che Chang Liu abbia 50 segnalazioni da utenti diversi lore_0, lore_1, .., lore_49
     }
 
+    public static void getReports(StatisticsService statisticsService){
+        ArrayList<UserReportsDTO> userReportsDTOs;
+        try{
+            userReportsDTOs = statisticsService.topNReportedUser(10);
+            System.out.println("username | numberReports");
+            for (int i = 0; i < userReportsDTOs.size(); i++)
+                System.out.println(userReportsDTOs.get(i));
+        }catch(ConnectionException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
 
         RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
         // Registration use case
-        registration(registeredUserService);
+        // registration(registeredUserService);
         // Login use case
-        login(registeredUserService);
+        // login(registeredUserService);
         // Show followers
-        showFollowers(registeredUserService);
+        // showFollowers(registeredUserService);
         // Report User
-        reportUser(registeredUserService);
+        // reportUser(registeredUserService);
+        StatisticsService statisticsService = ServiceLocator.getStatisticsService();
+        getReports(statisticsService); // last 10 reports
     }
 }

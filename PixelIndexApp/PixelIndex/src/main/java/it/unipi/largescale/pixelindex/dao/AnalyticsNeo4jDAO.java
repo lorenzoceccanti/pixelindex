@@ -33,7 +33,7 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
                     GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
                     gamePreviewDTO.setId(record.get("id").asString());
                     gamePreviewDTO.setName(record.get("name").asString());
-                    gamePreviewDTO.setReleaseDate(LocalDate.parse(record.get("releaseDate").asString()));
+                    // gamePreviewDTO.setReleaseDate(LocalDate.parse(record.get("releaseDate").asString()));
                     games.add(gamePreviewDTO);
                 }
                 return games;

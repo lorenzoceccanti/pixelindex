@@ -128,6 +128,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
         }
     }
 
+    @Override
     public void reportUser(String usernameReporting, String usernameReported) throws ConnectionException
     {
         try{

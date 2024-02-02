@@ -1,0 +1,10 @@
+package it.unipi.largescale.pixelindex.service;
+
+import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
+import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
+
+import java.util.ArrayList;
+
+public interface StatisticsService {
+    ArrayList<UserReportsDTO> topNReportedUser(int n) throws ConnectionException;
+}
