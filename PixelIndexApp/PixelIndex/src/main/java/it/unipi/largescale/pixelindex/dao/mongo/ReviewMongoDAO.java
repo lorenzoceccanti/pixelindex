@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.dao.mongo;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -13,6 +14,8 @@ import org.bson.types.ObjectId;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ReviewMongoDAO extends BaseMongoDAO {
@@ -74,9 +77,49 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         }
     }
 
+    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, int page) throws DAOException {
+        //DA FARE -> decidere quali campi mostrare nella preview, scorrendo le pagine su mongo con limit e skip
+        try (MongoClient mongoClient = beginConnection()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("reviews");
+            Document query = new Document("gameId", gameId);
+            List<ReviewPreviewDTO> reviews = new ArrayList<>();
+
+
+            AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                            new Document("game_id",
+                                    new ObjectId("65afd5ed7ae28aa3f604e020"))),
+                    new Document("$project",
+                            new Document("excerpt",
+                                    new Document("$concat", Arrays.asList(new Document("$substr", Arrays.asList("$review", 0L, 50L)), "...")))
+                                    .append("author", 1L)
+                                    .append("recommended", 1L)),
+                    new Document("$skip", 10L),
+                    new Document("$limit", 10L)));
+
+
+            for (Document res : result) {
+                ReviewPreviewDTO review = new ReviewPreviewDTO();
+                review.setId(res.getObjectId("_id").toString());
+                review.setAuthor(res.getString("author"));
+                if (res.containsKey("rating")) {
+                    review.setRating(res.getBoolean("recommended") ? RatingKind.RECOMMENDED : RatingKind.NOT_RECOMMENDED);
+                } else {
+                    review.setRating(RatingKind.NOT_AVAILABLE);
+                }
+                review.setExcerpt(res.getString("excerpt"));
+                review.setTimestamp(res.getString("postedDate"));
+                reviews.add(review);
+            }
+            return reviews;
+
+        } catch (Exception e) {
+            throw new DAOException("Error while retrieving reviews by game id" + e);
+        }
+        
+    }
+
     public List<ReviewPreviewDTO> getReviewsByGameId(String gameId) throws DAOException {
-        //DA FARE -> decidere quali campi mostrare nella preview
-        // fare prove query neo4j per scorrere le pagine con limit e skip
-        return null;
+        return getReviewsByGameId(gameId, 0);
     }
 }

@@ -42,7 +42,7 @@ public class ReviewPreviewDTO {
         this.rating = rating;
     }
 
-    public void setText(String text) {
+    public void setExcerpt(String text) {
         this.excerpt = text;
     }
 
