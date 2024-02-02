@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
@@ -7,7 +7,6 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

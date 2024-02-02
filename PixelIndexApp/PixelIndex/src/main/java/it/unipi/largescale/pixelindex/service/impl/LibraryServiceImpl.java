@@ -4,7 +4,7 @@ import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.service.LibraryService;
-import it.unipi.largescale.pixelindex.dao.LibraryNeo4jDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.LibraryNeo4jDAO;
 
 import java.util.List;
 

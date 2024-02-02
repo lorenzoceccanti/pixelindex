@@ -1,6 +1,6 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
-import it.unipi.largescale.pixelindex.dao.AnalyticsNeo4jDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.AnalyticsNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;

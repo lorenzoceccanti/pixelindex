@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClient;
@@ -6,7 +6,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
-import it.unipi.largescale.pixelindex.utils.Utils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

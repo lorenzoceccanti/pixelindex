@@ -1,12 +1,10 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.neo4j;
 
-import it.unipi.largescale.pixelindex.dto.ReviewPreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ReviewNeo4jDAO extends BaseNeo4jDAO {

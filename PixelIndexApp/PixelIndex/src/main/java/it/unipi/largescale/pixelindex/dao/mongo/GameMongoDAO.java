@@ -1,10 +1,11 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.client.FindIterable;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.model.Genre;
+
 import static it.unipi.largescale.pixelindex.utils.Utils.convertDateToLocalDate;
 
 import com.mongodb.client.MongoClient;
@@ -89,6 +90,7 @@ public class GameMongoDAO extends BaseMongoDAO {
         }
         return games;
     }
+
     public Game getGameById(String id) throws DAOException {
         Game gameObject = null;
         try (MongoClient mongoClient = beginConnection()) {

@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.utils.Utils;
 import org.neo4j.driver.*;
@@ -9,13 +9,12 @@ import java.util.StringTokenizer;
 public class BaseNeo4jDAO {
     private static Driver neoDriver;
 
-    public static Driver beginConnection(){
+    public static Driver beginConnection() {
         String[] var = new String[2];
         ArrayList<String> params = new ArrayList<>();
         String envPayload = Utils.retrieveEnv();
         StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
-        while(tokens.hasMoreTokens())
-        {
+        while (tokens.hasMoreTokens()) {
             var = tokens.nextToken().split("=", 2);
             params.add(var.length == 1 ? "" : var[1]);
         }

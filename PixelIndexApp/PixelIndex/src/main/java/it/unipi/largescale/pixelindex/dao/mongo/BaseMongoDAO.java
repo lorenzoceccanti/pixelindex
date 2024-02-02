@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -17,13 +17,12 @@ public abstract class BaseMongoDAO {
     private static final String PEM_FILE = "mongodb.pem";
     private static MongoClient mongoclient;
 
-    public static MongoClient beginConnectionWithoutReplica(){
+    public static MongoClient beginConnectionWithoutReplica() {
         String[] var = new String[2];
         ArrayList<String> params = new ArrayList<>();
         String envPayload = Utils.retrieveEnv();
         StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
-        while(tokens.hasMoreTokens())
-        {
+        while (tokens.hasMoreTokens()) {
             var = tokens.nextToken().split("=", 2);
             params.add(var.length == 1 ? "" : var[1]);
         }
@@ -41,14 +40,14 @@ public abstract class BaseMongoDAO {
                         .build());
         return mongoclient;
     }
-    public static MongoClient beginConnection(){
+
+    public static MongoClient beginConnection() {
 
         String[] var = new String[2];
         ArrayList<String> params = new ArrayList<>();
         String envPayload = Utils.retrieveEnv();
         StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
-        while(tokens.hasMoreTokens())
-        {
+        while (tokens.hasMoreTokens()) {
             var = tokens.nextToken().split("=", 2);
             params.add(var.length == 1 ? "" : var[1]);
         }
@@ -60,7 +59,7 @@ public abstract class BaseMongoDAO {
 
         String connectionString = String.format("mongodb://%s:%s@%s:%d,%s:%d,%s:%d/",
                 MONGO_USER, MONGO_PASS, SERVER_ADDRESS,
-                MONGO_PORT, SERVER_ADDRESS, MONGO_PORT+1, SERVER_ADDRESS, MONGO_PORT+2);
+                MONGO_PORT, SERVER_ADDRESS, MONGO_PORT + 1, SERVER_ADDRESS, MONGO_PORT + 2);
         ConnectionString uri = new ConnectionString(connectionString);
         MongoClientSettings mcs = MongoClientSettings.builder()
                 .applyConnectionString(uri)

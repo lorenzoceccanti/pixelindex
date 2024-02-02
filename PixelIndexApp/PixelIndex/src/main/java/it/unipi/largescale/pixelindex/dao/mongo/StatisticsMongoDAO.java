@@ -1,4 +1,4 @@
-package it.unipi.largescale.pixelindex.dao;
+package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.MongoSocketException;
 import com.mongodb.client.MongoClient;
@@ -11,17 +11,15 @@ import com.mongodb.client.model.Sorts;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static it.unipi.largescale.pixelindex.dao.BaseMongoDAO.beginConnection;
+import static it.unipi.largescale.pixelindex.dao.mongo.BaseMongoDAO.beginConnection;
 
 public class StatisticsMongoDAO {
 
-    public ArrayList<UserReportsDTO> topNReportedUser(int n) throws DAOException
-    {
+    public ArrayList<UserReportsDTO> topNReportedUser(int n) throws DAOException {
         MongoDatabase db;
         ArrayList<Document> results = null;
         ArrayList<UserReportsDTO> userReportsDTOs = new ArrayList<>();
@@ -42,15 +40,13 @@ public class StatisticsMongoDAO {
                             Aggregates.limit(n)
                     )
             ).into(new ArrayList<>());
-            for(int i=0; i< results.size(); i++)
-            {
+            for (int i = 0; i < results.size(); i++) {
                 UserReportsDTO userReport = new UserReportsDTO();
                 userReport.setUsername(results.get(i).getString("username"));
                 userReport.setNumberReports(results.get(i).getInteger("numberReports"));
                 userReportsDTOs.add(userReport);
             }
-        }catch(MongoSocketException ex)
-        {
+        } catch (MongoSocketException ex) {
             throw new DAOException("Error in connecting to MongoDB");
         }
         return userReportsDTOs;
