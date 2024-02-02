@@ -66,9 +66,5 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId) throws DAOException {
-        //DA FARE -> decidere quali campi mostrare nella preview
-        // fare prove query neo4j per scorrere le pagine con limit e skip
-        return null;
-    }
+
 }

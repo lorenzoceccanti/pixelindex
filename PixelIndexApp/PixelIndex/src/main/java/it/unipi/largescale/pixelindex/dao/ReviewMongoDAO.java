@@ -3,6 +3,7 @@ package it.unipi.largescale.pixelindex.dao;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import it.unipi.largescale.pixelindex.dto.ReviewPreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.RatingKind;
 import it.unipi.largescale.pixelindex.model.Review;
@@ -12,6 +13,7 @@ import org.bson.types.ObjectId;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ReviewMongoDAO extends BaseMongoDAO {
     private Review reviewFromQueryResult(Document result) {
@@ -64,9 +66,17 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             document.append("author", review.getAuthor());
             document.append("recommended", review.getRating() == RatingKind.RECOMMENDED);
             document.append("postedDate", review.getTimestamp().toString());
+            document.append("likes", 0);
+            document.append("dislikes", 0);
             collection.insertOne(document);
         } catch (Exception e) {
             throw new DAOException("Error while inserting review" + e);
         }
+    }
+
+    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId) throws DAOException {
+        //DA FARE -> decidere quali campi mostrare nella preview
+        // fare prove query neo4j per scorrere le pagine con limit e skip
+        return null;
     }
 }
