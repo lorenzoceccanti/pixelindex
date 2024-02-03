@@ -154,7 +154,6 @@ public class Main {
             System.out.println(r);
     }
 
-
     public static void testAdvancedSearch() {
         List<Game> games = new ArrayList<>();
         GameMongoDAO gd = new GameMongoDAO();
@@ -185,7 +184,7 @@ public class Main {
     */
         //insertReview();
         testGetReviewsByGameId();
-        testAdvancedSearch();
+        //testAdvancedSearch();
         /*
         // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
         // Registration use case
