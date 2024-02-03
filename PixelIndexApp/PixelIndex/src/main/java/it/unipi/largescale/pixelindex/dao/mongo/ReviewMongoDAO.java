@@ -21,6 +21,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         Review review = new Review();
         ObjectId resultObjectId = result.getObjectId("_id");
         review.setId(resultObjectId.toString());
+        // TODO: togliere tutti gli if tanto la get ritorna null se non c'è la chiave nell'oggetto
         if (result.containsKey("review")) {
             review.setText(result.getString("review"));
         }
@@ -38,6 +39,10 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         if (result.containsKey("postedDate")) {
             review.setTimestamp(Utils.convertDateToLocalDateTime(result.getDate("postedDate")));
         }
+
+        review.setLikes(result.getInteger("likes", 0));
+        review.setDislikes(result.getInteger("dislikes", 0));
+
         return review;
     }
 
@@ -45,6 +50,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         ReviewPreviewDTO review = new ReviewPreviewDTO();
         ObjectId resultObjectId = result.getObjectId("_id");
         review.setId(resultObjectId.toString());
+        // TODO: togliere tutti gli if tanto la get ritorna null se non c'è la chiave nell'oggetto
         if (result.containsKey("review")) {
             review.setExcerpt(result.getString("review"));
         }
@@ -59,6 +65,10 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         if (result.containsKey("postedDate")) {
             review.setTimestamp(Utils.convertDateToLocalDateTime(result.getDate("postedDate")));
         }
+
+        review.setLikes(result.getInteger("likes", 0));
+        review.setDislikes(result.getInteger("dislikes", 0));
+
         return review;
     }
 
@@ -89,8 +99,6 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             document.append("gameId", new ObjectId(review.getGameId()));
             document.append("recommended", review.getRating() == RatingKind.RECOMMENDED);
             document.append("postedDate", review.getTimestamp());
-            document.append("likes", 0);
-            document.append("dislikes", 0);
             collection.insertOne(document);
         } catch (Exception e) {
             throw new DAOException("Error while inserting review" + e);
@@ -108,6 +116,8 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             ArrayList<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
                             new Document("gameId",
                                     new ObjectId("65afd5ed7ae28aa3f604e020"))),
+                    new Document("$sort",
+                            new Document("likes", -1L)),
                     new Document("$project",
                             new Document("review",
                                     new Document("$cond",
@@ -118,10 +128,11 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                                     .append("else", "$review")))
                                     .append("author", 1L)
                                     .append("recommended", 1L)
+                                    .append("likes", 1L)
+                                    .append("dislikes", 1L)
                                     .append("postedDate", 1L)),
                     new Document("$skip", 0L),
                     new Document("$limit", 10L))).into(new ArrayList<>());
-
 
             for (Document res : result) {
                 ReviewPreviewDTO review = reviewPreviewFromQueryResult(res);

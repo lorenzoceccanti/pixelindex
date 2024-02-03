@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 
 public class ReviewPreviewDTO {
 
+    // TODO: togliere timestamp dalla preview
     private String id;
     private String author;
     private RatingKind rating;
     private String excerpt;
     private LocalDateTime timestamp;
+    private Integer likes;
+    private Integer dislikes;
 
     public String getId() {
         return id;
@@ -52,6 +55,23 @@ public class ReviewPreviewDTO {
         this.timestamp = timestamp;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Integer dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    @Override
     public String toString() {
         return "ReviewPreviewDTO{" +
                 "id='" + id + '\'' +
@@ -59,6 +79,8 @@ public class ReviewPreviewDTO {
                 ", rating=" + rating +
                 ", excerpt='" + excerpt + '\'' +
                 ", timestamp='" + timestamp.toString() + '\'' +
+                ", likes=" + likes + '\'' +
+                ", dislikes=" + dislikes + '\'' +
                 '}';
     }
 }

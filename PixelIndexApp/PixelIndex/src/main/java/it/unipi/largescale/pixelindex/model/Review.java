@@ -9,6 +9,8 @@ public class Review {
     private RatingKind rating;
     private String text;
     private LocalDateTime timestamp;
+    private Integer likes;
+    private Integer dislikes;
 
     public String getId() {
         return id;
@@ -58,6 +60,22 @@ public class Review {
         this.timestamp = timestamp;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Integer dislikes) {
+        this.dislikes = dislikes;
+    }
+
     @Override
     public String toString() {
         return "Review{" +
@@ -67,6 +85,8 @@ public class Review {
                 ", rating=" + rating +
                 ", text='" + text + '\'' +
                 ", timestamp=" + timestamp.toString() +
+                ", likes=" + likes + '\'' +
+                ", dislikes=" + dislikes + '\'' +
                 '}';
     }
 }
