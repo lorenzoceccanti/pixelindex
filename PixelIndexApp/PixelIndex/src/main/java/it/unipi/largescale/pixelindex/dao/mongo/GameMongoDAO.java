@@ -100,10 +100,10 @@ public class GameMongoDAO extends BaseMongoDAO {
                         Filters.lt("first_release_date", endDate))));
             }
             if (company != null && !company.isEmpty()) {
-                aggregationPipeline.add(Aggregates.match(Filters.elemMatch("companies", Filters.regex(company, "i"))));
+                aggregationPipeline.add(Aggregates.match(Filters.regex("companies", company, "i")));
             }
             if (platform != null && !platform.isEmpty()) {
-                aggregationPipeline.add(Aggregates.match(Filters.elemMatch("platforms", Filters.regex(platform, "i"))));
+                aggregationPipeline.add(Aggregates.match(Filters.regex("platforms", platform, "i")));
             }
 
             // Prioritizing main_games
