@@ -1,6 +1,6 @@
 package it.unipi.largescale.pixelindex.dao.mongo;
 
-import com.mongodb.client.FindIterable;
+import com.mongodb.client.*;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
@@ -8,14 +8,16 @@ import it.unipi.largescale.pixelindex.model.Genre;
 
 import static it.unipi.largescale.pixelindex.utils.Utils.convertDateToLocalDate;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCollection;
-
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Field;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.GregorianCalendar;
@@ -79,54 +81,50 @@ public class GameMongoDAO extends BaseMongoDAO {
         return game;
     }
 
-    public List<Game> getGamesByName(String name) throws DAOException {
-        List<Game> games = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
-            MongoDatabase database = mongoClient.getDatabase("pixelindex");
-            MongoCollection<Document> collection = database.getCollection("games");
-            // We use a regex to perform a case-insensitive search and find all the games whose name contains the
-            // specified string
-            Document query = new Document("name", new Document("$regex", name).append("$options", "i"));
-            FindIterable<Document> results = collection.find(query);
-            for (Document result : results) {
-                games.add(gameFromQueryResult(result));
-            }
-        } catch (Exception e) {
-            throw new DAOException("Error retrieving game by name " + e);
-        }
-        return games;
-    }
-
-    public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear) throws DAOException {
+    public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
         List<Game> games = new ArrayList<>();
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
 
-            List<Document> searchCriteria = new ArrayList<>();
+            List<Bson> aggregationPipeline = new ArrayList<>();
 
+            // Search criteria
             if (name != null && !name.isEmpty()) {
-                searchCriteria.add(new Document("name", new Document("$regex", name).append("$options", "i")));
-            }
-            if (company != null && !company.isEmpty()) {
-                searchCriteria.add(new Document("companies", new Document("$elemMatch", new Document("$regex", company).append("$options", "i"))));
+                aggregationPipeline.add(Aggregates.match(Filters.regex("name", name, "i")));
             }
             if (releaseYear != null) {
                 Date startDate = new GregorianCalendar(releaseYear, Calendar.JANUARY, 1).getTime();
                 Date endDate = new GregorianCalendar(releaseYear + 1, Calendar.JANUARY, 1).getTime();
-                searchCriteria.add(new Document("first_release_date", new Document("$gte", startDate).append("$lt", endDate)));
+                aggregationPipeline.add(Aggregates.match(Filters.and(Filters.gte("first_release_date", startDate),
+                        Filters.lt("first_release_date", endDate))));
+            }
+            if (company != null && !company.isEmpty()) {
+                aggregationPipeline.add(Aggregates.match(Filters.elemMatch("companies", Filters.regex(company, "i"))));
             }
             if (platform != null && !platform.isEmpty()) {
-                searchCriteria.add(new Document("platforms", new Document("$elemMatch", new Document("$regex", platform).append("$options", "i"))));
+                aggregationPipeline.add(Aggregates.match(Filters.elemMatch("platforms", Filters.regex(platform, "i"))));
             }
 
-            Document query = searchCriteria.isEmpty() ? new Document() : new Document("$and", searchCriteria);
-            FindIterable<Document> results = collection.find(query);
+            // Prioritizing main_games
+            aggregationPipeline.add(
+                    Aggregates.addFields(new Field<>("isMainGame",
+                            new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$category", "main_game")), 1, 0)))));
+
+            // Sorting stage
+            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.descending("isMainGame"), Sorts.ascending("name"))));
+
+            // Pagination
+            aggregationPipeline.add(Aggregates.skip(10 * page));
+            aggregationPipeline.add(Aggregates.limit(10));
+
+            // Aggregation
+            ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
             for (Document result : results) {
                 games.add(gameFromQueryResult(result));
             }
         } catch (Exception e) {
-            throw new DAOException("Error retrieving game by criteria " + e);
+            throw new DAOException("Error retrieving games: " + e.getMessage());
         }
         return games;
     }
@@ -168,4 +166,18 @@ public class GameMongoDAO extends BaseMongoDAO {
             throw new DAOException("Error inserting game " + e);
         }
     }
+
+    public void updateConsistencyFlag(String gameId) throws DAOException {
+        try (MongoClient mongoClient = beginConnection()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("games");
+            Document filter = new Document("_id", new ObjectId(gameId));
+            Document updateOperation = new Document("$set", new Document("consistency", true));
+            collection.updateOne(filter, updateOperation);
+        } catch (Exception e) {
+            throw new DAOException("Error updating consistency flag: " + e);
+        }
+    }
+
+
 }

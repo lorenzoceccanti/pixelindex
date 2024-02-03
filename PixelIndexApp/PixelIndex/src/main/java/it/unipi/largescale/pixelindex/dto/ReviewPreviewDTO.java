@@ -2,13 +2,15 @@ package it.unipi.largescale.pixelindex.dto;
 
 import it.unipi.largescale.pixelindex.model.RatingKind;
 
+import java.time.LocalDateTime;
+
 public class ReviewPreviewDTO {
 
     private String id;
     private String author;
     private RatingKind rating;
     private String excerpt;
-    private String timestamp;
+    private LocalDateTime timestamp;
 
     public String getId() {
         return id;
@@ -26,7 +28,7 @@ public class ReviewPreviewDTO {
         return excerpt;
     }
 
-    public String getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
@@ -46,7 +48,17 @@ public class ReviewPreviewDTO {
         this.excerpt = text;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String toString() {
+        return "ReviewPreviewDTO{" +
+                "id='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", rating=" + rating +
+                ", excerpt='" + excerpt + '\'' +
+                ", timestamp='" + timestamp.toString() + '\'' +
+                '}';
     }
 }

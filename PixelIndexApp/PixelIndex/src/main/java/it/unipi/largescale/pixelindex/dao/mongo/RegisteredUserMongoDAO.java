@@ -125,30 +125,29 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         }
     }
 
+    public void banUser(String username) throws DAOException {
+        // Starting a MongoDAO transaction
+        MongoDatabase db;
+        try (MongoClient mongoClient = BaseMongoDAO.beginConnection()) {
+            try (ClientSession clientSession = mongoClient.startSession()) {
+                clientSession.startTransaction();
+                try {
+                    db = mongoClient.getDatabase("pixelindex");
+                    MongoCollection<Document> usersCollection = db.getCollection("users");
+                    Bson myMatch = eq("username", username);
+                    Document update = new Document("$set", new Document("isBanned", true));
+                    usersCollection.updateOne(clientSession, myMatch, update);
 
-   public void banUser(String username) throws DAOException{
-       // Starting a MongoDAO transaction
-       MongoDatabase db;
-       try (MongoClient mongoClient = BaseMongoDAO.beginConnection()) {
-           try (ClientSession clientSession = mongoClient.startSession()) {
-               clientSession.startTransaction();
-               try {
-                   db = mongoClient.getDatabase("pixelindex");
-                   MongoCollection<Document> usersCollection = db.getCollection("users");
-                   Bson myMatch = eq("username", username);
-                   Document update = new Document("$set", new Document("isBanned", true));
-                   usersCollection.updateOne(clientSession, myMatch, update);
-
-                   MongoCollection<Document> reviewCollection = db.getCollection("reviews");
-                   Bson myMatch2 = eq("author", username);
-                   // Removing all the reviews placed by the user
-                   reviewCollection.deleteMany(clientSession, myMatch2);
-                   clientSession.commitTransaction();
-               } catch (MongoSocketException ex) {
-                   clientSession.abortTransaction();
-                   throw new DAOException(ex);
-               }
-           }
-       }
-   }
+                    MongoCollection<Document> reviewCollection = db.getCollection("reviews");
+                    Bson myMatch2 = eq("author", username);
+                    // Removing all the reviews placed by the user
+                    reviewCollection.deleteMany(clientSession, myMatch2);
+                    clientSession.commitTransaction();
+                } catch (MongoSocketException ex) {
+                    clientSession.abortTransaction();
+                    throw new DAOException(ex);
+                }
+            }
+        }
+    }
 }

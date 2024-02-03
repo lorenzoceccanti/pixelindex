@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class Review {
     private String id;
     private String author;
+    private String gameId;
     private RatingKind rating;
     private String text;
     private LocalDateTime timestamp;
@@ -23,6 +24,14 @@ public class Review {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
     public RatingKind getRating() {
@@ -47,5 +56,17 @@ public class Review {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", gameId='" + gameId + '\'' +
+                ", rating=" + rating +
+                ", text='" + text + '\'' +
+                ", timestamp=" + timestamp.toString() +
+                '}';
     }
 }

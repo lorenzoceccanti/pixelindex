@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
+import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.GameNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 public class GameServiceImpl implements GameService {
     private final GameMongoDAO gameMongoDAO;
@@ -27,31 +29,16 @@ public class GameServiceImpl implements GameService {
         GamePreviewDTO gamePreview = new GamePreviewDTO();
         gamePreview.setId(game.getId());
         gamePreview.setName(game.getName());
-        if(game.getReleaseDate() != null)
+        if (game.getReleaseDate() != null)
             gamePreview.setReleaseYear(game.getReleaseDate().getYear());
         return gamePreview;
     }
 
-    public List<GamePreviewDTO> searchGames(String name) throws ConnectionException {
-        try {
-            List<Game> games = gameMongoDAO.getGamesByName(name);
-            List<GamePreviewDTO> gamePreviews = new ArrayList<>();
-            if(name.isEmpty()) return gamePreviews;
-
-            for(Game g: games) {
-                gamePreviews.add(gamePreviewFromModel(g));
-            }
-            return gamePreviews;
-        } catch (DAOException e) {
-            throw new ConnectionException(e);
-        }
-    }
-
-    public List<GamePreviewDTO> advancedSearch(String searchSting) throws ConnectionException {
+    public List<GamePreviewDTO> search(String searchSting, int page) throws ConnectionException {
         try {
             List<GamePreviewDTO> gamePreviews = new ArrayList<>();
             Map<String, String> params = Utils.parseSearchString(searchSting);
-            if(params.values().stream().noneMatch(value -> value != null && !value.isEmpty())) {
+            if (params.values().stream().noneMatch(value -> value != null && !value.isEmpty())) {
                 return gamePreviews;
             }
 
@@ -60,8 +47,8 @@ public class GameServiceImpl implements GameService {
             String platform = params.getOrDefault("platform", null);
             Integer releaseYear = params.containsKey("year") ? Integer.parseInt(params.get("year")) : null;
 
-            List<Game> games = gameMongoDAO.getGamesAdvancedSearch(name, company, platform, releaseYear);
-            for(Game g: games) {
+            List<Game> games = gameMongoDAO.getGamesAdvancedSearch(name, company, platform, releaseYear, page);
+            for (Game g : games) {
                 gamePreviews.add(gamePreviewFromModel(g));
             }
             return gamePreviews;
@@ -78,20 +65,19 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    public void insertGameOnGraph(Game game) throws ConnectionException {
+    public void insertGame(Game game, ConsistencyThread consistencyThread) throws ConnectionException {
         try {
-            gameNeo4jDAO.insertGame(game);
+            String gameId = gameMongoDAO.insertGame(game);
+            game.setId(gameId);
+            consistencyThread.addTask(() -> {
+                try {
+                    gameNeo4jDAO.insertGame(game);
+                    gameMongoDAO.updateConsistencyFlag(game.getId());
+                } catch (DAOException e) {
+                }
+            });
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
-
-    public String insertGameOnDocument(Game game) throws ConnectionException {
-        try {
-            return gameMongoDAO.insertGame(game);
-        } catch (DAOException e) {
-            throw new ConnectionException(e);
-        }
-    }
-
 }

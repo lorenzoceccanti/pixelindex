@@ -3,8 +3,10 @@ package it.unipi.largescale.pixelindex.utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
@@ -13,18 +15,24 @@ import java.util.HashMap;
 public class Utils {
     private static final String ENV_FILE = ".env";
     private static String envPayload;
+
     public static LocalDate convertDateToLocalDate(Date date) {
         Instant instant = date.toInstant();
         return instant.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    public static String retrieveEnv(){
+    public static LocalDateTime convertDateToLocalDateTime(Date date) {
+        Instant instant = date.toInstant();
+        return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    public static String retrieveEnv() {
         String envPayload = null;
-        try(BufferedReader reader = new BufferedReader(new FileReader(ENV_FILE))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(ENV_FILE))) {
             char[] buf = new char[1024];
             reader.read(buf);
             envPayload = String.valueOf(buf);
-        } catch(IOException ex){
+        } catch (IOException ex) {
             System.out.println("retrieveEnv(): Error in opening the .env file");
             System.exit(1); // The application is un-usable without databases
         }
