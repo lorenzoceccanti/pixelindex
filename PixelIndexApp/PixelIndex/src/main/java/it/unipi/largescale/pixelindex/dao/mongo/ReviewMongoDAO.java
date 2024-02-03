@@ -98,41 +98,34 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, int page) throws DAOException {
-        //DA FARE -> decidere quali campi mostrare nella preview, scorrendo le pagine su mongo con limit e skip
+
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
-            Document query = new Document("gameId", gameId);
+
             List<ReviewPreviewDTO> reviews = new ArrayList<>();
 
-
             ArrayList<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
-                            new Document("game_id",
-                                    new ObjectId(gameId))),
+                            new Document("gameId",
+                                    new ObjectId("65afd5ed7ae28aa3f604e020"))),
                     new Document("$project",
-                            new Document("excerpt",
-                                    new Document("$concat", Arrays.asList(new Document("$substr", Arrays.asList("$review", 0L, 50L)), "...")))
+                            new Document("review",
+                                    new Document("$cond",
+                                            new Document("if",
+                                                    new Document("$gt", Arrays.asList(new Document("$strLenCP", "$review"), 50L)))
+                                                    .append("then",
+                                                            new Document("$concat", Arrays.asList(new Document("$substrCP", Arrays.asList("$review", 0L, 50L)), "...")))
+                                                    .append("else", "$review")))
                                     .append("author", 1L)
-                                    .append("recommended", 1L)),
-                    new Document("$skip", 10L * page),
+                                    .append("recommended", 1L)
+                                    .append("postedDate", 1L)),
+                    new Document("$skip", 0L),
                     new Document("$limit", 10L))).into(new ArrayList<>());
 
 
             for (Document res : result) {
-                ReviewPreviewDTO review = new ReviewPreviewDTO();
-                review.setId(res.getObjectId("_id").toString());
-                review.setAuthor(res.getString("author"));
-                if (res.containsKey("recommended")) {
-                    review.setRating(res.getBoolean("recommended") ? RatingKind.RECOMMENDED : RatingKind.NOT_RECOMMENDED);
-                } else {
-                    review.setRating(RatingKind.NOT_AVAILABLE);
-                }
-                review.setExcerpt(res.getString("excerpt"));
-                review.setTimestamp(Utils.convertDateToLocalDateTime(res.getDate("postedDate")));
+                ReviewPreviewDTO review = reviewPreviewFromQueryResult(res);
                 reviews.add(review);
-
-                System.out.println("Recensione: " + review.toString());
-
             }
             return reviews;
 

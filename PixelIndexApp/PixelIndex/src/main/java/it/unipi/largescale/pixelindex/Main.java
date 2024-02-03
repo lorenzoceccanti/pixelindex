@@ -145,7 +145,7 @@ public class Main {
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
 
         try {
-            reviews = reviewMongoDAO.getReviewsByGameId("65afd5ed7ae28aa3f604e020");
+            reviews = reviewMongoDAO.getReviewsByGameId("65afd5ed7ae28aa3f604e020", 1);
         } catch (DAOException e) {
             e.printStackTrace();
         }
