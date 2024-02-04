@@ -169,7 +169,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //ApplicationController applicationController = new ApplicationController();
+        ApplicationController applicationController = new ApplicationController();
 
         /*
         GameService gs = ServiceLocator.getGameService();
@@ -183,7 +183,7 @@ public class Main {
             System.out.println(g.getName());
     */
         //insertReview();
-        testGetReviewsByGameId();
+        // testGetReviewsByGameId();
         //testAdvancedSearch();
         /*
         // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
