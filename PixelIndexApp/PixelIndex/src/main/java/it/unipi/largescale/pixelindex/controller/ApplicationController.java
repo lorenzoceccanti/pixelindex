@@ -4,62 +4,96 @@ import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
-import it.unipi.largescale.pixelindex.service.GameService;
-import it.unipi.largescale.pixelindex.service.ModeratorService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
-import it.unipi.largescale.pixelindex.view.options.UnregisteredMenu;
+import it.unipi.largescale.pixelindex.view.dropdown.UnregisteredMenu;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ApplicationController {
-    String username;
-    String password;
-    private void showLogin(RegisteredUserService userService) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Username?");
-        username = sc.nextLine();
-        System.out.println("Password?");
-        password = sc.nextLine();
+    private UnregisteredMenu unregisteredMenu;
+    private LoginController loginController;
+    private UserController userController;
+    private RegisteredMenu registeredMenu;
+    private Runnable[] functionsUnregistered;
+    private Runnable[] functionsRegistered;
+    private String sessionUsername;
+    private int loginOutcome = -1;
 
-        try{
-            AuthUserDTO authUserDTO = null;
-            authUserDTO = userService.makeLogin(username, password);
-            System.out.println("Welcome " + authUserDTO.getName());
-            System.out.println("Your personal information:");
-            System.out.println(authUserDTO);
-        }catch(ConnectionException ex)
-        {
-            System.out.println(ex.getMessage());
-        } catch(UserNotFoundException ex)
-        {
-            System.out.println("User name does not exists");
-        }
-        catch(WrongPasswordException ex)
-        {
-            System.out.println("Wrong password!");
-        }
-    }
 
     public ApplicationController() {
 
-        ListSelector notRegisteredSel = new ListSelector("Welcome to PixelIndex!");
-        UnregisteredMenu unregisteredMenu = new UnregisteredMenu();
-
-        notRegisteredSel.addOptions(unregisteredMenu.getOptions(), "unregistered_menu", "Make your choce");
-        int index = notRegisteredSel.askUserInteraction("unregistered_menu");
-        Map<Integer, Runnable> hanlderMap = new HashMap<>();
-        RegisteredUserService userService = ServiceLocator.getRegisteredUserService();
-        Runnable[] functionsArray = new Runnable[]{
-                () -> showLogin(userService)
+        unregisteredMenu = new UnregisteredMenu();
+        loginController = new LoginController();
+        functionsUnregistered = new Runnable[]{
+                () -> {
+                    loginOutcome = loginController.askCredentials(unregisteredMenu.getDisplayed());
+                },
+                () -> {},
+                () -> {},
+                () -> {},
+                () -> {},
+                () -> {System.exit(0);}
         };
-        functionsArray[index].run();
 
+        int ret = showUnregisteredDropdown();
+        registeredMenu = new RegisteredMenu();
+        functionsRegistered = new Runnable[]{
+                () -> {
+                    sessionUsername = loginController.getUsername();
+                    registeredMenu.displayMenu(sessionUsername);
+                },
+                () -> {},
+                () -> {},
+                () -> {},
+                () -> {},
+                () -> {System.exit(0);}
+        };
+        functionsRegistered[ret].run();
+    }
+
+    /**
+     *
+     * @return The index corresponding to the choice made
+     * -1 in case of errors
+     */
+    public int showUnregisteredDropdown()
+    {
+        /* This condtion checks if the login has been successful
+        by passing a reference to a boolean wrapper
+        When displayed = false, it means login successful and stop looping
+         */
+
+        int index = -1;
+        String messageText = "";
+        while(unregisteredMenu.getDisplayed().get())
+        {
+            switch(loginOutcome)
+            {
+                case 0:
+                    break;
+                case 1:
+                    messageText = "Login failed: connection error";
+                    break;
+                case 2:
+                    messageText = "Login failed: wrong username";
+                    break;
+                case 3:
+                    messageText = "Login failed: wrong password";
+                    break;
+                default:
+                    messageText = "Welcome to PixelIndex";
+            }
+            index = unregisteredMenu.displayMenu(messageText);
+            functionsUnregistered[index].run();
+        }
+        return index;
+    }
 
         /*
         BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
@@ -120,5 +154,4 @@ public class ApplicationController {
 
         // parte il servizio confermato
         */
-    }
 }
