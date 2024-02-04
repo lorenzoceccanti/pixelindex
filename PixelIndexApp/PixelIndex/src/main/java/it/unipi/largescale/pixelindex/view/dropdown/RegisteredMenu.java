@@ -19,6 +19,10 @@ public class RegisteredMenu {
         options.add("Advanced search");
         options.add("Exit app");
     }
+
+    /**
+     *  @return The selection that the user made
+     */
     public int displayMenu(String username){
         listSelector = new ListSelector("Welcome " + username);
         listSelector.addOptions(options, "registered_menu", "Make your choice");

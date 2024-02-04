@@ -11,6 +11,7 @@ public class UnregisteredMenu
     ListSelector listSelector;
     int selection = -1;
     AtomicBoolean displayed;
+
     public UnregisteredMenu() {
 
         displayed = new AtomicBoolean(true);

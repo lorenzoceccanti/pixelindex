@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -24,6 +25,11 @@ public class Utils {
     public static LocalDateTime convertDateToLocalDateTime(Date date) {
         Instant instant = date.toInstant();
         return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    public static LocalDate convertStringToLocalDate(String dateExpr){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(dateExpr,formatter);
     }
 
     public static String retrieveEnv() {
