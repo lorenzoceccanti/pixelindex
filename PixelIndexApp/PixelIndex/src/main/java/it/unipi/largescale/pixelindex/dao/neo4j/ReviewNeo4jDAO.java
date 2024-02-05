@@ -3,6 +3,7 @@ package it.unipi.largescale.pixelindex.dao.neo4j;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Reaction;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 
 import java.util.HashMap;
@@ -10,18 +11,14 @@ import java.util.Map;
 
 public class ReviewNeo4jDAO extends BaseNeo4jDAO {
 
-    // TODO: test this method
-    public void insertReview(String reviewId, String gameId, String author, String rating, String text, String timestamp) throws DAOException {
+    public void insertReview(String reviewId, String gameId, String author) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     MATCH (author:User {username: $author})
                     MATCH (game:Game {mongoId: $gameId})
                     CREATE (
                         review:Review {
-                            mongoId: $reviewId,
-                            excerpt: $text,
-                            recommended: $rating,
-                            postedDate: $timestamp
+                            mongoId: $reviewId
                             }
                         )
                     CREATE (author)-[:WRITES]->(review)
@@ -31,9 +28,6 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
             params.put("reviewId", reviewId);
             params.put("gameId", gameId);
             params.put("author", author);
-            params.put("rating", rating);
-            params.put("text", text);
-            params.put("timestamp", timestamp);
 
             try (Session session = neoDriver.session()) {
                 session.executeWrite(tx -> {
@@ -46,7 +40,6 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    // TODO: test this method
     public void removeReview(String reviewId) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
@@ -83,6 +76,33 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
                 session.executeWrite(tx -> {
                     tx.run(query, params);
                     return null;
+                });
+            }
+        } catch (Exception ex) {
+            throw new DAOException(ex);
+        }
+    }
+
+    // TODO: test della funzione
+    public Integer[] getReactionsCount(String reviewId) throws DAOException {
+        try (Driver neoDriver = beginConnection()) {
+            String query = """
+                    MATCH (r:Review {mongoId: $reviewId})<-[l:LIKES]-(:User)
+                    RETURN
+                        SUM(CASE l.value WHEN true THEN 1 ELSE 0 END) AS likes,
+                        SUM(CASE l.value WHEN false THEN 1 ELSE 0 END) AS dislikes
+                    """;
+            Map<String, Object> params = new HashMap<>();
+            params.put("reviewId", reviewId);
+
+            try (Session session = neoDriver.session()) {
+
+                return session.executeWrite(tx -> {
+                    Result result = tx.run(query, params);
+                    int likes = result.single().get("likes").asInt();
+                    int dislikes = result.single().get("dislikes").asInt();
+
+                    return new Integer[]{likes, dislikes};
                 });
             }
         } catch (Exception ex) {

@@ -5,6 +5,7 @@ package it.unipi.largescale.pixelindex;
 import it.unipi.largescale.pixelindex.controller.ApplicationController;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.ReviewNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.*;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
@@ -120,7 +121,7 @@ public class Main {
         }
     }
 
-    public static void insertReview() {
+    public static void insertReviewMongo() {
         Review review = new Review();
         review.setGameId("65afd5ed7ae28aa3f604e020");
         review.setRating(RatingKind.RECOMMENDED);
@@ -138,6 +139,26 @@ public class Main {
         }
 
         System.out.println(review);
+    }
+
+    public static void inserReviewNeo4j() {
+        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        try {
+            reviewNeo4jDAO.insertReview("65be128e0bc3c618299c53a8", "65afd5ed7ae28aa3f604e020", "Nicco");
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Recensione inserita");
+    }
+
+    public static void removeReviewNeo4j() {
+        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        try {
+            reviewNeo4jDAO.removeReview("65be128e0bc3c618299c53a8");
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Recensione rimossa");
     }
 
     public static void testGetReviewsByGameId() {
@@ -169,7 +190,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ApplicationController applicationController = new ApplicationController();
+        //ApplicationController applicationController = new ApplicationController();
 
         /*
         GameService gs = ServiceLocator.getGameService();
@@ -182,8 +203,13 @@ public class Main {
         for(GamePreviewDTO g : games)
             System.out.println(g.getName());
     */
-        //insertReview();
-        // testGetReviewsByGameId();
+        //insertReviewMongo();
+
+        //inserReviewNeo4j();
+        //removeReviewNeo4j();
+
+
+        testGetReviewsByGameId();
         //testAdvancedSearch();
         /*
         // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
@@ -202,3 +228,4 @@ public class Main {
 
     }
 }
+
