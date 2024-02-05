@@ -162,16 +162,22 @@ public class Main {
     }
 
     public static void testGetReviewsByGameId() {
-        List<ReviewPreviewDTO> reviews = new ArrayList<>();
+        ReviewPageDTO reviews = new ReviewPageDTO();
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
 
+        int page = 0;
+
         try {
-            reviews = reviewMongoDAO.getReviewsByGameId("65afd5ed7ae28aa3f604e020", 1);
+            reviews = reviewMongoDAO.getReviewsByGameId("65afd5ed7ae28aa3f604e026", "Chang Liu", page);
         } catch (DAOException e) {
             e.printStackTrace();
         }
-        System.out.println("Recensioni recuperate: " + reviews.size());
-        for (ReviewPreviewDTO r : reviews)
+        System.out.println("Recensioni recuperate: " + reviews.getReviews().size());
+
+        int counter = (page * 10) + reviews.getReviews().size();
+
+        System.out.println("Showing: " + counter + " of " + reviews.getTotalReviewsCount() + " reviews");
+        for (ReviewPreviewDTO r : reviews.getReviews())
             System.out.println(r);
     }
 

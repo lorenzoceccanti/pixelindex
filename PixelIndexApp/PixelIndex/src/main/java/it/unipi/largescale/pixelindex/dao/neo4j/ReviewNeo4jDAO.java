@@ -84,7 +84,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
     }
 
     // TODO: test della funzione
-    public Integer[] getReactionsCount(String reviewId) throws DAOException {
+    public Map<String, Integer> getReactionsCount(String reviewId) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     MATCH (r:Review {mongoId: $reviewId})<-[l:LIKES]-(:User)
@@ -102,7 +102,11 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
                     int likes = result.single().get("likes").asInt();
                     int dislikes = result.single().get("dislikes").asInt();
 
-                    return new Integer[]{likes, dislikes};
+                    Map<String, Integer> reactions = new HashMap<>();
+                    reactions.put("likes", likes);
+                    reactions.put("dislikes", dislikes);
+
+                    return reactions;
                 });
             }
         } catch (Exception ex) {
