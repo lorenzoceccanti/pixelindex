@@ -105,7 +105,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         }
     }
 
-    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, int page) throws DAOException {
+    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, String username, int page) throws DAOException {
 
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
@@ -115,9 +115,17 @@ public class ReviewMongoDAO extends BaseMongoDAO {
 
             ArrayList<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
                             new Document("gameId",
-                                    new ObjectId("65afd5ed7ae28aa3f604e020"))),
+                                    new ObjectId(gameId))),
+                    new Document("$addFields",
+                            new Document("byUser",
+                                    new Document("$cond",
+                                            new Document("if",
+                                                    new Document("$eq", Arrays.asList("$author", username)))
+                                                    .append("then", 1L)
+                                                    .append("else", 0L)))),
                     new Document("$sort",
-                            new Document("likes", -1L)),
+                            new Document("byUser", -1L)
+                                    .append("likes", -1L)),
                     new Document("$project",
                             new Document("review",
                                     new Document("$cond",
@@ -131,7 +139,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                     .append("likes", 1L)
                                     .append("dislikes", 1L)
                                     .append("postedDate", 1L)),
-                    new Document("$skip", 0L),
+                    new Document("$skip", 10L * page),
                     new Document("$limit", 10L))).into(new ArrayList<>());
 
             for (Document res : result) {
@@ -147,6 +155,14 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public List<ReviewPreviewDTO> getReviewsByGameId(String gameId) throws DAOException {
-        return getReviewsByGameId(gameId, 0);
+        return getReviewsByGameId(gameId, "", 0);
+    }
+
+    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, String username) throws DAOException {
+        return getReviewsByGameId(gameId, username, 0);
+    }
+
+    public List<ReviewPreviewDTO> getReviewsByGameId(String gameId, int page) throws DAOException {
+        return getReviewsByGameId(gameId, "", page);
     }
 }
