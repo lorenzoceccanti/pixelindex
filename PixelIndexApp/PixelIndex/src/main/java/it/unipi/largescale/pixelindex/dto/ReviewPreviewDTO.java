@@ -5,8 +5,7 @@ import it.unipi.largescale.pixelindex.model.RatingKind;
 import java.time.LocalDateTime;
 
 public class ReviewPreviewDTO {
-
-    // TODO: togliere timestamp dalla preview
+    
     private String id;
     private String author;
     private RatingKind rating;
