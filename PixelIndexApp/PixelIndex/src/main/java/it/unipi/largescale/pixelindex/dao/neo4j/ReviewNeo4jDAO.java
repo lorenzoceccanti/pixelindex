@@ -60,17 +60,50 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    public void addReaction(String reviewId, String username, Reaction reaction) throws DAOException {
-        // TODO: QUERY DA RIFARE / FINIRE
+    /**
+     * Add a reaction (like or dislike) to a review. If the user has already added a reaction, the previous one is
+     * replaced with the new one. If the user has added a reaction and tries to add the same reaction again, the
+     * reaction is removed.
+     *
+     * @param reviewId the id of the review
+     * @param username the username of the user that adds the reaction
+     * @param reaction the reaction to add
+     * @throws DAOException if an error occurs
+     */
+    public void addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws DAOException {
+        // TODO: test the method
         try (Driver neoDriver = beginConnection()) {
             String query = """
-                    MATCH (review:Review {mongoId: $reviewId}), (user:User {username: $username})
-                    WHERE NOT EXISTS {(user)-[:LIKES {value: $value}]->(review)}
+                    // Passo 1: Assicurarsi che User, Review, e Game esistano, altrimenti crearli
+                    MATCH (a:User {username: $reviewAuthor})
+                    MATCH (g:Game {mongoId: $gameId})
+                    MERGE (r:Review {mongoId: $reviewId})
+                    MERGE (a)-[:WRITES]->(r)
+                    MERGE (r)-[:BELONGS]->(g)
+                                        
+                    // Passo 2: Gestire la relazione LIKES
+                    WITH r
+                    MATCH (u:User {username: $username})
+                    OPTIONAL MATCH (u)-[l:LIKES]->(r)
+                    WITH u, r, l, CASE WHEN l IS NOT NULL AND l.value = $likeValue THEN 'DELETE'
+                                       WHEN l IS NOT NULL AND l.value <> $likeValue THEN 'UPDATE'
+                                       ELSE 'CREATE'
+                                  END AS action
+                    CALL apoc.do.case([
+                      action = 'DELETE', 'MATCH (u)-[l:LIKES]->(r) DELETE l RETURN "deleted"',
+                      action = 'UPDATE', 'MATCH (u)-[l:LIKES]->(r) SET l.value = $likeParam RETURN "updated"'
+                      ],
+                      'MATCH (u), (r) MERGE (u)-[:LIKES {value: $likeValue}]->(r) RETURN "created"',
+                      {u:u, r:r, likeParam:$likeValue})
+                    YIELD value
+                    RETURN value
                     """;
             Map<String, Object> params = new HashMap<>();
             params.put("reviewId", reviewId);
+            params.put("gameId", gameId);
             params.put("username", username);
-            params.put("value", reaction == Reaction.LIKE);
+            params.put("reviewAuthor", reviewAuthor);
+            params.put("likeValue", reaction == Reaction.LIKE);
 
             try (Session session = neoDriver.session()) {
                 session.executeWrite(tx -> {
