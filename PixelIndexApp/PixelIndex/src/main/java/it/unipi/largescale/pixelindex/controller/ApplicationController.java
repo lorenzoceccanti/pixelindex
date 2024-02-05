@@ -20,7 +20,6 @@ public class ApplicationController {
         int fun = unregisteredUserController.showUnregisteredDropdown();
         registeredUserController = new RegisteredUserController(fun, unregisteredUserController.getUsername());
         registeredUserController.execute();
-
     }
 
 

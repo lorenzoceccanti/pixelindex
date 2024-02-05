@@ -12,8 +12,6 @@ public class RegisteredMenu {
 
     public RegisteredMenu() {
         options = new ArrayList<>();
-        options.add("Change info");
-        options.add("Change password");
         options.add("Search by game");
         options.add("Search by company");
         options.add("Advanced search");

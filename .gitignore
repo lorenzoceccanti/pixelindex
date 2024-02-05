@@ -12,4 +12,3 @@ workspace.xml
 .dump/*
 *.xml
 PixelIndexApp/PixelIndex/.idea/workspace.xml
-PixelIndexApp/PixelIndex/src/main/java/it/unipi/largescale/pixelindex/Main.java

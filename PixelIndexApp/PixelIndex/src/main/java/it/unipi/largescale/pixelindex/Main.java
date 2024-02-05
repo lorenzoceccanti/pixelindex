@@ -196,7 +196,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //ApplicationController applicationController = new ApplicationController();
+        ApplicationController applicationController = new ApplicationController();
 
         /*
         GameService gs = ServiceLocator.getGameService();
@@ -215,7 +215,7 @@ public class Main {
         //removeReviewNeo4j();
 
 
-        testGetReviewsByGameId();
+        // testGetReviewsByGameId();
         //testAdvancedSearch();
         /*
         // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();

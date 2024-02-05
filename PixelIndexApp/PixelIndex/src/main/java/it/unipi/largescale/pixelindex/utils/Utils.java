@@ -1,5 +1,9 @@
 package it.unipi.largescale.pixelindex.utils;
 
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyListener;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Utils {
     private static final String ENV_FILE = ".env";
@@ -66,4 +72,26 @@ public class Utils {
         return params;
     }
 
+    public static void startTrackingKeyboard(Object o){
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+        logger.setUseParentHandlers(false);
+        try {
+            /* Register jNativeHook */
+            GlobalScreen.registerNativeHook();
+            GlobalScreen.addNativeKeyListener((NativeKeyListener) o);
+        } catch (NativeHookException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void stopTrackingKeyboard(Object o){
+        try{
+            GlobalScreen.removeNativeKeyListener((NativeKeyListener) o);
+            GlobalScreen.unregisterNativeHook();
+        }catch(NativeHookException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

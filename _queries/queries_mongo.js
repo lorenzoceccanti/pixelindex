@@ -15,5 +15,12 @@ db.users.updateOne(
 
 /* QUERY DI AGGIORNAMENTO PER BANNARE L'UTENTE */
 db.users.updateOne(
-  
+  {
+    username: "ale1968"
+  },
+  {
+    $set: {isBanned: true}
+  }
 )
+
+

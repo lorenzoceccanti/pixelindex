@@ -5,6 +5,7 @@ import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
+import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.Utils;
@@ -19,7 +20,9 @@ public class UnregisteredUserController {
     private UserRegistrationDTO userRegistrationDTO;
     private UnregisteredMenu unregisteredMenu;
     private RegisteredUserService registeredUserService;
+    private GameService gameService;
     private Runnable[] functionsUnregistered;
+    private GameController gameController;
     private String sessionUsername = "";
     int errorCode = -1;
 
@@ -136,6 +139,8 @@ public class UnregisteredUserController {
         userLoginDTO = new UserLoginDTO();
         userRegistrationDTO = new UserRegistrationDTO();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
+        this.gameService = ServiceLocator.getGameService();
+        this.gameController = new GameController();
         functionsUnregistered = new Runnable[]{
                 () -> {
                     errorCode = askCredentials(unregisteredMenu.getDisplayed());
@@ -143,8 +148,12 @@ public class UnregisteredUserController {
                 () -> {
                     errorCode = askRegistrationData(unregisteredMenu.getDisplayed());
                 },
-                () -> {},
-                () -> {},
+                () -> {
+                    unregisteredMenu.getDisplayed().set(false);
+                    errorCode = gameController.askGameQueryByName();
+                },
+                () -> {
+                },
                 () -> {},
                 () -> {System.exit(0);}
         };
@@ -179,7 +188,7 @@ public class UnregisteredUserController {
                 case 0: // No errors
                     break;
                 case 1:
-                    messageText = "Login failed: connection error";
+                    messageText = "Connection error";
                     break;
                 case 2:
                     messageText = "Login failed: wrong username";
