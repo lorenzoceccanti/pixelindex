@@ -11,7 +11,6 @@ public class ReviewPreviewDTO {
     private String author;
     private RatingKind rating;
     private String excerpt;
-    private LocalDateTime timestamp;
     private Integer likes;
     private Integer dislikes;
 
@@ -31,10 +30,6 @@ public class ReviewPreviewDTO {
         return excerpt;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -49,10 +44,6 @@ public class ReviewPreviewDTO {
 
     public void setExcerpt(String text) {
         this.excerpt = text;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 
     public Integer getLikes() {
@@ -78,7 +69,6 @@ public class ReviewPreviewDTO {
                 ", author='" + author + '\'' +
                 ", rating=" + rating +
                 ", excerpt='" + excerpt + '\'' +
-                ", timestamp='" + timestamp.toString() + '\'' +
                 ", likes=" + likes + '\'' +
                 ", dislikes=" + dislikes + '\'' +
                 '}';
