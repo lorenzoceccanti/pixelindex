@@ -13,6 +13,7 @@ import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.model.RatingKind;
+import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -194,9 +195,19 @@ public class Main {
             System.out.println(g.getName());
     }
 
+    public static void testAddReaction() {
+        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        try {
+            String outcome = reviewNeo4jDAO.addReaction("667", "laura82", Reaction.DISLIKE, "65afd62e7ae28aa3f605556c", "laura82");
+            System.out.println("Risultato: " + outcome);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
-        ApplicationController applicationController = new ApplicationController();
+        //ApplicationController applicationController = new ApplicationController();
 
         /*
         GameService gs = ServiceLocator.getGameService();
@@ -209,15 +220,19 @@ public class Main {
         for(GamePreviewDTO g : games)
             System.out.println(g.getName());
     */
-        //insertReviewMongo();
 
+        // ========== CRI ==============
+
+        //insertReviewMongo();
         //inserReviewNeo4j();
         //removeReviewNeo4j();
-
-
         // testGetReviewsByGameId();
+        testAddReaction();
+
         //testAdvancedSearch();
+
         /*
+
         // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
         // Registration use case
         // registration(registeredUserService);

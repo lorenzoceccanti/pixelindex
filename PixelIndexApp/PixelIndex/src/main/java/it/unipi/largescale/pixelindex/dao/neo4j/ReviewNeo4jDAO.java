@@ -5,6 +5,7 @@ import it.unipi.largescale.pixelindex.model.Reaction;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+import org.neo4j.driver.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,8 +71,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * @param reaction the reaction to add
      * @throws DAOException if an error occurs
      */
-    public void addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws DAOException {
-        // TODO: test the method
+    public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     // Passo 1: Assicurarsi che User, Review, e Game esistano, altrimenti crearli
@@ -93,7 +93,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
                       action = 'DELETE', 'MATCH (u)-[l:LIKES]->(r) DELETE l RETURN "deleted"',
                       action = 'UPDATE', 'MATCH (u)-[l:LIKES]->(r) SET l.value = $likeParam RETURN "updated"'
                       ],
-                      'MATCH (u), (r) MERGE (u)-[:LIKES {value: $likeValue}]->(r) RETURN "created"',
+                      'MATCH (u), (r) MERGE (u)-[:LIKES {value: $likeParam}]->(r) RETURN "created"',
                       {u:u, r:r, likeParam:$likeValue})
                     YIELD value
                     RETURN value
@@ -106,9 +106,15 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
             params.put("likeValue", reaction == Reaction.LIKE);
 
             try (Session session = neoDriver.session()) {
-                session.executeWrite(tx -> {
-                    tx.run(query, params);
-                    return null;
+                return session.executeWrite(tx -> {
+                    Result result = tx.run(query, params);
+                    if (result.hasNext()) {
+                        Value value = result.single().get("value");
+                        if (!value.isNull()) {
+                            return value.asMap().toString();
+                        }
+                    }
+                    return "No result";
                 });
             }
         } catch (Exception ex) {
@@ -116,8 +122,15 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    // TODO: test della funzione
+    /**
+     * Get the number of likes and dislikes of a review.
+     *
+     * @param reviewId the id of the review
+     * @return a map containing the number of likes and dislikes
+     * @throws DAOException if an error occurs
+     */
     public Map<String, Integer> getReactionsCount(String reviewId) throws DAOException {
+        // TODO: test della funzione
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     MATCH (r:Review {mongoId: $reviewId})<-[l:LIKES]-(:User)
