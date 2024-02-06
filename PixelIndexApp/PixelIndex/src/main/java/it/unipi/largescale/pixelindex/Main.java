@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 public class Main {
 
@@ -87,11 +87,12 @@ public class Main {
 
             // registeredUserService.unfollowUser("Chang Liu", "ale1968");
             /*
-            registeredUserService.followUser("Chang Liu", "ale1968");
-            searchResult = registeredUserService.searchUser("Chang Liu");
-            System.out.println("username | numberOfFollowers | numberOfFollowed");
-            for(int i=0; i<searchResult.size(); i++)
-                System.out.println(searchResult.get(i));*/
+             * registeredUserService.followUser("Chang Liu", "ale1968");
+             * searchResult = registeredUserService.searchUser("Chang Liu");
+             * System.out.println("username | numberOfFollowers | numberOfFollowed");
+             * for(int i=0; i<searchResult.size(); i++)
+             * System.out.println(searchResult.get(i));
+             */
         } catch (ConnectionException ex) {
             System.out.println(ex.getMessage());
         }
@@ -107,7 +108,8 @@ public class Main {
                 System.out.println(ex.getMessage());
             }
         }
-        // Verifica che Chang Liu abbia 50 segnalazioni da utenti diversi lore_0, lore_1, .., lore_49
+        // Verifica che Chang Liu abbia 50 segnalazioni da utenti diversi lore_0,
+        // lore_1, .., lore_49
     }
 
     public static void getReports(StatisticsService statisticsService) {
@@ -128,12 +130,14 @@ public class Main {
         review.setRating(RatingKind.RECOMMENDED);
         review.setText("Bello");
         review.setAuthor("Nicco");
-        review.setTimestamp(LocalDate.parse("2023-01-04T20:32:00.000+00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).atStartOfDay());
+        review.setTimestamp(LocalDate
+                .parse("2023-01-04T20:32:00.000+00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .atStartOfDay());
 
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
 
         try {
-            //review = reviewMongoDAO.getReviewById("65be128e0bc3c618299c53a8");
+            // review = reviewMongoDAO.getReviewById("65be128e0bc3c618299c53a8");
             reviewMongoDAO.insertReview(review);
         } catch (DAOException e) {
             e.printStackTrace();
@@ -198,8 +202,20 @@ public class Main {
     public static void testAddReaction() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
-            String outcome = reviewNeo4jDAO.addReaction("667", "laura82", Reaction.DISLIKE, "65afd62e7ae28aa3f605556c", "laura82");
+            String outcome = reviewNeo4jDAO.addReaction("667", "laura82", Reaction.DISLIKE, "65afd62e7ae28aa3f605556c",
+                    "laura82");
             System.out.println("Risultato: " + outcome);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void testGetReactionsCount() {
+        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        try {
+            Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount("123");
+
+            System.out.println("Likes: " + reactions.get("likes") + " Dislikes: " + reactions.get("dislikes"));
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -210,43 +226,47 @@ public class Main {
         ApplicationController applicationController = new ApplicationController();
 
         /*
-        GameService gs = ServiceLocator.getGameService();
-        List<GamePreviewDTO> games = null;
-        try {
-            games = gs.advancedSearch("grand");
-        } catch (ConnectionException e) {
-            throw new RuntimeException(e);
-        }
-        for(GamePreviewDTO g : games)
-            System.out.println(g.getName());
-    */
+         * GameService gs = ServiceLocator.getGameService();
+         * List<GamePreviewDTO> games = null;
+         * try {
+         * games = gs.advancedSearch("grand");
+         * } catch (ConnectionException e) {
+         * throw new RuntimeException(e);
+         * }
+         * for(GamePreviewDTO g : games)
+         * System.out.println(g.getName());
+         */
 
         // ========== CRI ==============
 
-        //insertReviewMongo();
-        //inserReviewNeo4j();
-        //removeReviewNeo4j();
+        // insertReviewMongo();
+        // inserReviewNeo4j();
+        // removeReviewNeo4j();
         // testGetReviewsByGameId();
+
+        // testAddReaction();
+        testGetReactionsCount();
+
         // testAddReaction();
 
-        //testAdvancedSearch();
+        // testAdvancedSearch();
 
         /*
-
-        // RegisteredUserService registeredUserService = ServiceLocator.getRegisteredUserService();
-        // Registration use case
-        // registration(registeredUserService);
-        // Login use case
-        // login(registeredUserService);
-        // Show followers
-        // showFollowers(registeredUserService);
-        // Report User
-        // reportUser(registeredUserService);
-        StatisticsService statisticsService = ServiceLocator.getStatisticsService();
-        getReports(statisticsService); // last 10 reports
-
+         * 
+         * // RegisteredUserService registeredUserService =
+         * ServiceLocator.getRegisteredUserService();
+         * // Registration use case
+         * // registration(registeredUserService);
+         * // Login use case
+         * // login(registeredUserService);
+         * // Show followers
+         * // showFollowers(registeredUserService);
+         * // Report User
+         * // reportUser(registeredUserService);
+         * StatisticsService statisticsService = ServiceLocator.getStatisticsService();
+         * getReports(statisticsService); // last 10 reports
+         * 
          */
 
     }
 }
-

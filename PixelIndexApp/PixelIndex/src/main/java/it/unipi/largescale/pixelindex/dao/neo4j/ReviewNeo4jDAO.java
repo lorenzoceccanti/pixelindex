@@ -6,6 +6,7 @@ import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Value;
+import org.neo4j.driver.Record;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -146,7 +147,6 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * @throws DAOException if an error occurs
      */
     public Map<String, Integer> getReactionsCount(String reviewId) throws DAOException {
-        // TODO: test della funzione
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     MATCH (r:Review {mongoId: $reviewId})<-[l:LIKES]-(:User)
@@ -159,22 +159,28 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
 
             try (Session session = neoDriver.session()) {
 
-                return session.executeWrite(tx -> {
+                return session.executeRead(tx -> {
                     Result result = tx.run(query, params);
-                    int likes = result.single().get("likes").asInt();
-                    int dislikes = result.single().get("dislikes").asInt();
 
-                    Map<String, Integer> reactions = new HashMap<>();
-                    reactions.put("likes", likes);
-                    reactions.put("dislikes", dislikes);
+                    // Utilizza hasNext() per verificare se ci sono risultati
+                    if (result.hasNext()) {
+                        Record record = result.single();
+                        int likes = record.get("likes").asInt();
+                        int dislikes = record.get("dislikes").asInt();
 
-                    return reactions;
+                        Map<String, Integer> reactions = new HashMap<>();
+                        reactions.put("likes", likes);
+                        reactions.put("dislikes", dislikes);
+
+                        return reactions;
+                    } else {
+                        // Questo ramo non dovrebbe mai essere raggiunto se la tua logica di aggregazione è corretta
+                        throw new RuntimeException("Unexpected error: no record found.");
+                    }
                 });
             }
         } catch (Exception ex) {
             throw new DAOException(ex);
         }
     }
-
-
 }
