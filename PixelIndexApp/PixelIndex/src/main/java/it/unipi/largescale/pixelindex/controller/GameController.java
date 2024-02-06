@@ -2,6 +2,7 @@ package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
+import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
@@ -21,6 +22,7 @@ public class GameController{
     private int pageSelection;
     private int totalPages;
     private String queryName;
+    private int exitGameList = 0;
 
     /** Returns 1 if there have been connection errors,
      * 0 if not error occoured
@@ -44,12 +46,41 @@ public class GameController{
 
     private void displayGames(){
         rows.clear();
-        rows.add(AnsiColor.ansiYellow()+"Previous page"+AnsiColor.ansiReset());
-        rows.add(AnsiColor.ansiYellow()+"Next page"+AnsiColor.ansiReset());
-        rows.add(AnsiColor.ansiYellow()+"Go back"+AnsiColor.ansiReset());
+        rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
         searchResult.stream().forEach(gamePreviewDTO -> {
             rows.add(gamePreviewDTO.toString());
         });
+    }
+
+
+    private int viewGameDetail(int indexView){
+        /* Sfasamento di 3 posizioni in avanti
+        dovuto ai primi 3 pulsanti
+         */
+        GamePreviewDTO gamePreviewDTO = searchResult.get(indexView + 3);
+        Game g; ListSelector ls = new ListSelector("Game details:");
+        ArrayList<String> opt = new ArrayList<>();
+        opt.add("Show top 10 most relevant reviews");
+        opt.add("Go back");
+        // Making the query for get all the details of that specific game
+        try{
+            g = gameService.getGameById(gamePreviewDTO.getId());
+            System.out.println(g);
+            ls.addOptions(opt, "gameDetailsDropdown", "Please select");
+            int sel = ls.askUserInteraction("gameDetailsDropdown");
+            if(sel == 1){
+                // Go Back
+                exitGameList = 0;
+                queryName = "";
+                askGameQueryByName(new AtomicBoolean(false));
+            }
+            return 0;
+        }catch(ConnectionException ex)
+        {
+            return 1;
+        }
     }
 
     /** Returns 1 if there have been connection errors,
@@ -60,10 +91,13 @@ public class GameController{
     public int askGameQueryByName(AtomicBoolean menuDisplayed){
         ListSelector ls = new ListSelector("Query result");
         int result; int pageSelection = 0;
-        int exit = 0;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Query?");
-        queryName = sc.nextLine();
+
+        if(queryName.isEmpty())
+        {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Query?");
+            queryName = sc.nextLine();
+        }
         do{
             Utils.clearConsole();
             System.out.println("Page displayed: " + (pageSelection + 1));
@@ -81,21 +115,22 @@ public class GameController{
                 case 1: // Next page
                     pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
                     break;
-                case 2:
+                case 2: // Go back
                     menuDisplayed.set(true);
-                    exit = 1;
+                    exitGameList = 1;
                     break;
-                default:
-                    // Avrò scelto un gioco
-                    // chiamo la query per la scelta del gioco
+                default: // Game selection
+                    exitGameList = 1;
+                    viewGameDetail(choice);
                     break;
             }
-        }while(exit != 1);
+        }while(exitGameList != 1);
         return result;
     }
     public GameController()
     {
         this.gameService = ServiceLocator.getGameService();
+        this.queryName = "";
         this.rows = new ArrayList<>();
         this.rowSelection = 0;
         this.pageSelection = 0;

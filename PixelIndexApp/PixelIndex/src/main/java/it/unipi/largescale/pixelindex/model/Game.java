@@ -1,5 +1,8 @@
 package it.unipi.largescale.pixelindex.model;
 
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+import jline.internal.Ansi;
+
 import java.time.LocalDate;
 
 public class Game {
@@ -98,5 +101,20 @@ public class Game {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString(){
+        String result = "";
+        result += (AnsiColor.ANSI_BLUE+ "Name: " + name+ AnsiColor.ANSI_RESET);
+        result += (AnsiColor.ANSI_GREEN+" Category: " + category+AnsiColor.ANSI_RESET);
+        result += (AnsiColor.ANSI_CYAN+" Release Date: " + releaseDate.toString()+AnsiColor.ANSI_RESET);
+       /* result += ("\nGenres: " + genres.toString());
+        result += ("\nGame modes: " + gameModes.toString());
+        result += ("\nCompanies: " + companies.toString());
+        result += ("\nLanguages: " +languages.toString());
+        result += ("\nPlatforms: "+platforms.toString());*/
+        result += ("\nSummary: " +summary.toString());
+        return result;
     }
 }
