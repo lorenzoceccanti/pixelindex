@@ -12,6 +12,14 @@ import java.util.Map;
 
 public class ReviewNeo4jDAO extends BaseNeo4jDAO {
 
+    /**
+     * Insert a review in the neo4j database.
+     *
+     * @param reviewId the mongoId of the review
+     * @param gameId   the mongoId of the game the review belongs to
+     * @param author   the username of the author of the review
+     * @throws DAOException if an error occurs
+     */
     public void insertReview(String reviewId, String gameId, String author) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
@@ -41,6 +49,12 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
+    /**
+     * Remove a review from the neo4j database.
+     *
+     * @param reviewId the id of the review
+     * @throws DAOException if an error occurs
+     */
     public void removeReview(String reviewId) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
@@ -69,7 +83,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * @param reviewId     the id of the review
      * @param username     the username of the user that adds the reaction
      * @param reaction     the reaction to add
-     * @param gameId       the id of the game the review belongs to
+     * @param gameId       the mongoId of the game the review belongs to
      * @param reviewAuthor the username of the author of the review
      * @throws DAOException if an error occurs
      */
