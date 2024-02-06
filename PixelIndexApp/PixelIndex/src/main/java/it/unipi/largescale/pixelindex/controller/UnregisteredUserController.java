@@ -142,19 +142,24 @@ public class UnregisteredUserController {
         this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(unregisteredMenu.getDisplayed());
         functionsUnregistered = new Runnable[]{
-                () -> {
+                () -> {//0
                     errorCode = askCredentials(unregisteredMenu.getDisplayed());
                 },
-                () -> {
+                () -> {//1
                     errorCode = askRegistrationData(unregisteredMenu.getDisplayed());
                 },
-                () -> {
+                () -> {//2
                     errorCode = gameController.askGameQueryByName();
                 },
-                () -> {
+                () -> {//3
+                    System.exit(0);
                 },
-                () -> {},
-                () -> {System.exit(0);}
+                () -> {//4
+
+                },
+                () -> {//5
+                    System.exit(0);
+                }
         };
     }
 

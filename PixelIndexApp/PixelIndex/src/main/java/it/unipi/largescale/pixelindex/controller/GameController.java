@@ -76,6 +76,9 @@ public class GameController{
                 // Go Back
                 exitGameList = 0;
                 askGameQueryByName();
+            } else {
+                // Showing reviews
+
             }
             return 0;
         }catch(ConnectionException ex)

@@ -19,9 +19,7 @@ public class UnregisteredMenu
         options = new ArrayList<>();
         options.add("Login");
         options.add("Register");
-        options.add("Search by game");
-        options.add("Search by company");
-        options.add("Advanced search");
+        options.add("Search games");
         options.add("Exit app");
     }
 
