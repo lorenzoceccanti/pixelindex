@@ -11,6 +11,7 @@ import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameController{
     private List<GamePreviewDTO> searchResult;
@@ -52,10 +53,11 @@ public class GameController{
     }
 
     /** Returns 1 if there have been connection errors,
-     * 0 if not error occoured
+     * 0 if not error occoured,
+     * 6 if there's the need to go back to the menù
      *
      */
-    public int askGameQueryByName(){
+    public int askGameQueryByName(AtomicBoolean menuDisplayed){
         ListSelector ls = new ListSelector("Query result");
         int result; int pageSelection = 0;
         int exit = 0;
@@ -80,7 +82,7 @@ public class GameController{
                     pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2:
-                    // qualcosa per andare al menù precedente
+                    menuDisplayed.set(true);
                     exit = 1;
                     break;
                 default:
