@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class Main {
@@ -205,6 +206,17 @@ public class Main {
         }
     }
 
+    public static void testGetReactionsCount() {
+        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        try {
+            Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount("123");
+
+            System.out.println("Likes: " + reactions.get("likes") + " Dislikes: " + reactions.get("dislikes"));
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
         //ApplicationController applicationController = new ApplicationController();
@@ -227,7 +239,8 @@ public class Main {
         //inserReviewNeo4j();
         //removeReviewNeo4j();
         // testGetReviewsByGameId();
-        testAddReaction();
+        //testAddReaction();
+        testGetReactionsCount();
 
         //testAdvancedSearch();
 
