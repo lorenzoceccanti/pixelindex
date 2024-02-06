@@ -140,7 +140,7 @@ public class UnregisteredUserController {
         userRegistrationDTO = new UserRegistrationDTO();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.gameService = ServiceLocator.getGameService();
-        this.gameController = new GameController();
+        this.gameController = new GameController(unregisteredMenu.getDisplayed());
         functionsUnregistered = new Runnable[]{
                 () -> {
                     errorCode = askCredentials(unregisteredMenu.getDisplayed());
@@ -149,7 +149,7 @@ public class UnregisteredUserController {
                     errorCode = askRegistrationData(unregisteredMenu.getDisplayed());
                 },
                 () -> {
-                    errorCode = gameController.askGameQueryByName(unregisteredMenu.getDisplayed());
+                    errorCode = gameController.askGameQueryByName();
                 },
                 () -> {
                 },

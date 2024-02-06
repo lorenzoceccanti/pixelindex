@@ -18,11 +18,12 @@ public class GameController{
     private List<GamePreviewDTO> searchResult;
     private ArrayList<String> rows;
     private GameService gameService;
+    private AtomicBoolean menuDisplayed;
     private int rowSelection;
     private int pageSelection;
     private int totalPages;
     private String queryName;
-    private int exitGameList = 0;
+    private int exitGameList;
 
     /** Returns 1 if there have been connection errors,
      * 0 if not error occoured
@@ -73,8 +74,7 @@ public class GameController{
             if(sel == 1){
                 // Go Back
                 exitGameList = 0;
-                queryName = "";
-                askGameQueryByName(new AtomicBoolean(false));
+                askGameQueryByName();
             }
             return 0;
         }catch(ConnectionException ex)
@@ -88,7 +88,7 @@ public class GameController{
      * 6 if there's the need to go back to the menù
      *
      */
-    public int askGameQueryByName(AtomicBoolean menuDisplayed){
+    public int askGameQueryByName(){
         ListSelector ls = new ListSelector("Query result");
         int result; int pageSelection = 0;
 
@@ -110,28 +110,36 @@ public class GameController{
             switch(choice)
             {
                 case 0: // Previous page
+                    exitGameList = 0;
+                    menuDisplayed.set(false);
                     pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
                     break;
                 case 1: // Next page
+                    exitGameList = 0;
+                    menuDisplayed.set(false);
                     pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
                     menuDisplayed.set(true);
                     exitGameList = 1;
+                    queryName = "";
                     break;
                 default: // Game selection
+                    menuDisplayed.set(false);
                     exitGameList = 1;
                     viewGameDetail(choice);
                     break;
             }
         }while(exitGameList != 1);
+        System.out.println("Exiting gameList..");
         return result;
     }
-    public GameController()
+    public GameController(AtomicBoolean inMenu)
     {
         this.gameService = ServiceLocator.getGameService();
         this.queryName = "";
         this.rows = new ArrayList<>();
+        this.menuDisplayed = inMenu;
         this.rowSelection = 0;
         this.pageSelection = 0;
         this.totalPages = 3;

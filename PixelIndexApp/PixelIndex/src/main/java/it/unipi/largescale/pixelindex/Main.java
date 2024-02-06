@@ -245,7 +245,7 @@ public class Main {
         // testGetReviewsByGameId();
 
         // testAddReaction();
-        testGetReactionsCount();
+        // testGetReactionsCount();
 
         // testAddReaction();
 
