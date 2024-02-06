@@ -4,102 +4,22 @@ import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
-import java.io.Console;
-import java.lang.annotation.Native;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GameController implements NativeKeyListener {
+public class GameController{
     private List<GamePreviewDTO> searchResult;
+    private ArrayList<String> rows;
     private GameService gameService;
     private int rowSelection;
     private int pageSelection;
     private int totalPages;
     private String queryName;
-    private void clearConsole(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-    @Override
-    public void nativeKeyPressed(NativeKeyEvent e)
-    {
-        if(e.getKeyCode() == NativeKeyEvent.VC_DOWN)
-        {
-            // Moving the cursor down if the arrow down pressed
-            if(rowSelection < (searchResult.size()-1)){
-                rowSelection++;
-            }
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_UP)
-        {
-            // Moving the cursor up it the arrow up pressed
-            if(rowSelection > 0)
-                rowSelection--;
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_LEFT)
-        {
-            // Moving to the previous page if the left key is pressed
-            if(pageSelection > 0)
-            {
-                pageSelection--;
-                rowSelection = 0;
-            }
-
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_RIGHT)
-        {
-            if(pageSelection < totalPages)
-            {
-                pageSelection++;
-                rowSelection = 0;
-            }
-
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_Q)
-        {
-            Utils.stopTrackingKeyboard(this);
-        }
-    }
-    @Override
-    public void nativeKeyReleased(NativeKeyEvent e)
-    {
-        if(e.getKeyCode() == NativeKeyEvent.VC_DOWN)
-        {
-            searchResult.get(rowSelection).setCursorSelection(true);
-            searchResult.get(rowSelection-1).setCursorSelection(false);
-            clearConsole();
-            displayGames();
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_UP)
-        {
-            searchResult.get(rowSelection).setCursorSelection(true);
-            searchResult.get(rowSelection+1).setCursorSelection(false);
-            clearConsole();
-            displayGames();
-        }
-        if(e.getKeyCode() == NativeKeyEvent.VC_LEFT
-        || e.getKeyCode() == NativeKeyEvent.VC_RIGHT)
-        {
-            // Change page: issue again the query
-            if(pageSelection > 0 && pageSelection < totalPages){
-                clearConsole();
-                gameByName(queryName, pageSelection);
-                displayGames();
-            }
-        }
-
-    }
-    @Override
-    public void nativeKeyTyped(NativeKeyEvent arg0)
-    {
-        Console console = System.console();
-        // In order to disable the echo of the key pressed, like we have for passwords
-        char[] buf = console.readPassword();
-    }
 
     /** Returns 1 if there have been connection errors,
      * 0 if not error occoured
@@ -113,7 +33,6 @@ public class GameController implements NativeKeyListener {
     {
         try{
             searchResult = gameService.search(queryName, page);
-            searchResult.get(0).setCursorSelection(true);
             return 0;
         }catch(ConnectionException ex)
         {
@@ -123,12 +42,13 @@ public class GameController implements NativeKeyListener {
     }
 
     private void displayGames(){
+        rows.clear();
+        rows.add(AnsiColor.ansiYellow()+"Previous page"+AnsiColor.ansiReset());
+        rows.add(AnsiColor.ansiYellow()+"Next page"+AnsiColor.ansiReset());
+        rows.add(AnsiColor.ansiYellow()+"Go back"+AnsiColor.ansiReset());
         searchResult.stream().forEach(gamePreviewDTO -> {
-            System.out.println(gamePreviewDTO);
+            rows.add(gamePreviewDTO.toString());
         });
-        System.out.println("Press arrow keys to move");
-        System.out.println("Press enter to expand the game");
-        System.out.println("Press B to go back");
     }
 
     /** Returns 1 if there have been connection errors,
@@ -136,21 +56,45 @@ public class GameController implements NativeKeyListener {
      *
      */
     public int askGameQueryByName(){
-        int result;
+        ListSelector ls = new ListSelector("Query result");
+        int result; int pageSelection = 0;
+        int exit = 0;
         Scanner sc = new Scanner(System.in);
         System.out.println("Query?");
         queryName = sc.nextLine();
-        result = gameByName(queryName, 0);
-        if(result == 0)
-        {
+        do{
+            Utils.clearConsole();
+            System.out.println("Page displayed: " + (pageSelection + 1));
+            result = gameByName(queryName, pageSelection);
+            if(result != 0)
+                break;
             displayGames();
-            Utils.startTrackingKeyboard(this);
-        }
+            ls.addOptions(rows, "searchGameByName", "Press enter to view game details");
+            int choice = ls.askUserInteraction("searchGameByName");
+            switch(choice)
+            {
+                case 0: // Previous page
+                    pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
+                    break;
+                case 1: // Next page
+                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
+                    break;
+                case 2:
+                    // qualcosa per andare al menù precedente
+                    exit = 1;
+                    break;
+                default:
+                    // Avrò scelto un gioco
+                    // chiamo la query per la scelta del gioco
+                    break;
+            }
+        }while(exit != 1);
         return result;
     }
     public GameController()
     {
         this.gameService = ServiceLocator.getGameService();
+        this.rows = new ArrayList<>();
         this.rowSelection = 0;
         this.pageSelection = 0;
         this.totalPages = 3;
