@@ -149,8 +149,7 @@ public class UnregisteredUserController {
                     errorCode = askRegistrationData(unregisteredMenu.getDisplayed());
                 },
                 () -> {
-                    unregisteredMenu.getDisplayed().set(false);
-                    errorCode = gameController.askGameQueryByName();
+                    errorCode = gameController.askGameQueryByName(unregisteredMenu.getDisplayed());
                 },
                 () -> {
                 },
@@ -185,6 +184,7 @@ public class UnregisteredUserController {
         {
             switch(errorCode)
             {
+
                 case 0: // No errors
                     break;
                 case 1:

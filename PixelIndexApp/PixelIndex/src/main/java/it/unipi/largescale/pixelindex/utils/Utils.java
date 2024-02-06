@@ -23,6 +23,10 @@ public class Utils {
     private static final String ENV_FILE = ".env";
     private static String envPayload;
 
+    public static void clearConsole() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
     public static LocalDate convertDateToLocalDate(Date date) {
         Instant instant = date.toInstant();
         return instant.atZone(ZoneId.systemDefault()).toLocalDate();
