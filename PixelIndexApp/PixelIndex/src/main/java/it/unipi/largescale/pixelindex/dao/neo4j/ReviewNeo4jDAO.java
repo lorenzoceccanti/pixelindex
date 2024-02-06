@@ -66,9 +66,11 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * replaced with the new one. If the user has added a reaction and tries to add the same reaction again, the
      * reaction is removed.
      *
-     * @param reviewId the id of the review
-     * @param username the username of the user that adds the reaction
-     * @param reaction the reaction to add
+     * @param reviewId     the id of the review
+     * @param username     the username of the user that adds the reaction
+     * @param reaction     the reaction to add
+     * @param gameId       the id of the game the review belongs to
+     * @param reviewAuthor the username of the author of the review
      * @throws DAOException if an error occurs
      */
     public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws DAOException {
