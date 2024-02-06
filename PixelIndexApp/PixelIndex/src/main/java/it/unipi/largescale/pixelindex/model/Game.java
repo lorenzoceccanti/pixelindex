@@ -4,6 +4,7 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import jline.internal.Ansi;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class Game {
     private String id;
@@ -108,13 +109,15 @@ public class Game {
         String result = "";
         result += (AnsiColor.ANSI_BLUE+ "Name: " + name+ AnsiColor.ANSI_RESET);
         result += (AnsiColor.ANSI_GREEN+" Category: " + category+AnsiColor.ANSI_RESET);
-        result += (AnsiColor.ANSI_CYAN+" Release Date: " + releaseDate.toString()+AnsiColor.ANSI_RESET);
-       /* result += ("\nGenres: " + genres.toString());
-        result += ("\nGame modes: " + gameModes.toString());
-        result += ("\nCompanies: " + companies.toString());
-        result += ("\nLanguages: " +languages.toString());
-        result += ("\nPlatforms: "+platforms.toString());*/
-        result += ("\nSummary: " +summary.toString());
+
+        result += (releaseDate == null ? "" : (AnsiColor.ANSI_CYAN+" Release Date: " + releaseDate.toString()+AnsiColor.ANSI_RESET));
+        result += (genres == null ? "" : "\nGenres: " + Arrays.toString(genres));
+        result += (gameModes == null ? "" : "\nGame modes: " + Arrays.toString(gameModes));
+        result += (companies == null ? "" :"\nCompanies: " + Arrays.toString(companies));
+        result += (languages == null ? "" :"\nLanguages: " + Arrays.toString(languages));
+        result += (platforms == null ? "":"\nPlatforms: " + Arrays.toString(platforms));
+        result += (summary == null ? "" : ("\nSummary: " + summary));
+
         return result;
     }
 }

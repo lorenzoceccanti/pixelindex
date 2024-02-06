@@ -53,14 +53,15 @@ public class GameController{
         searchResult.stream().forEach(gamePreviewDTO -> {
             rows.add(gamePreviewDTO.toString());
         });
+        /* Introdurre qui un eventuale conto del numero totale di giochi*/
     }
 
 
     private int viewGameDetail(int indexView){
-        /* Sfasamento di 3 posizioni in avanti
+        /* Sfasamento di 2 posizioni in avanti
         dovuto ai primi 3 pulsanti
          */
-        GamePreviewDTO gamePreviewDTO = searchResult.get(indexView + 3);
+        GamePreviewDTO gamePreviewDTO = searchResult.get(indexView-3);
         Game g; ListSelector ls = new ListSelector("Game details:");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Show top 10 most relevant reviews");
