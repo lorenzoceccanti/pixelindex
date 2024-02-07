@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.view.dropdown;
 
+import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class UnregisteredMenu
         listSelector = new ListSelector(text);
         listSelector.addOptions(options, "unregistered_menu", "Make your choice");
         selection = listSelector.askUserInteraction("unregistered_menu");
+        Utils.clearConsole();
         return selection;
     }
 
