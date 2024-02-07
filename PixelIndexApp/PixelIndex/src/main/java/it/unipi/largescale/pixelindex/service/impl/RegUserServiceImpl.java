@@ -61,7 +61,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
         registeringUser.setEmail(userRegistrationDTO.getEmail());
 
 
-        RegisteredUser registeredUser = null;
+        RegisteredUser registeredUser;
 
         // Starting a MongoDAO transaction
         MongoDatabase db;
@@ -102,18 +102,9 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void followUser(String usernameSrc, String usernameDst) throws ConnectionException {
+    public String followUser(String usernameSrc, String usernameDst) throws ConnectionException {
         try {
-            registeredUserNeo.followUser(usernameSrc, usernameDst);
-        } catch (DAOException ex) {
-            throw new ConnectionException(ex);
-        }
-    }
-
-    @Override
-    public void unfollowUser(String usernameSrc, String usernameDst) throws ConnectionException {
-        try {
-            registeredUserNeo.unfollowUser(usernameSrc, usernameDst);
+            return registeredUserNeo.followUser(usernameSrc, usernameDst);
         } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }

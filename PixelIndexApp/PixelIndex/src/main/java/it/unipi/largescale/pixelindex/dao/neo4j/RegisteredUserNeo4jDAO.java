@@ -2,10 +2,8 @@ package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
-import org.neo4j.driver.Driver;
+import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
 
 import java.util.ArrayList;
@@ -34,35 +32,33 @@ public class RegisteredUserNeo4jDAO {
      * @param usernameDst The username followed
      * @throws DAOException
      */
-    public void followUser(String usernameSrc, String usernameDst) throws DAOException {
-        /* It does not matter to worry about the user existence,
-        since this method is called after the search*/
+    public String followUser(String usernameSrc, String usernameDst) throws DAOException {
+        // Simplified and cleaner approach using try-with-resources for automatic resource management
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
-            session.executeWrite(tx -> {
-                tx.run("MATCH (src: User) WHERE src.username = $usernameSrc " +
-                                "MATCH (dst: User) WHERE dst.username = $usernameDst " +
-                                "MERGE (src)-[:FOLLOWS]->(dst);",
+            return session.executeWrite(tx -> {
+                Result result = tx.run("MATCH (user1:User {username: $usernameSrc}), " +
+                                "(user2:User {username: $usernameDst}) " +
+                                "OPTIONAL MATCH (user1)-[f:FOLLOWS]->(user2) " +
+                                "CALL apoc.do.when(f IS NOT NULL, " +
+                                "    'DELETE f RETURN \"deleted\"', " +
+                                "    'CREATE (user1)-[:FOLLOWS]->(user2) RETURN \"created\"', " +
+                                "    {user1: user1, user2: user2, f: f}) " +
+                                "YIELD value " +
+                                "RETURN value.value as action",
                         parameters("usernameSrc", usernameSrc, "usernameDst", usernameDst));
-                return null;
-            });
+                if (result.hasNext()) {
+                    return result.single().get("action").asString();
+                }
+                return "No result"; // Returning a default message when no action is taken
+            }); // Returning the result of the transaction
         } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
+        } catch (Exception ex) {
+            throw new DAOException("Error processing followUser operation");
         }
     }
 
-    public void unfollowUser(String usernameSrc, String usernameDst) throws DAOException {
-        try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
-             Session session = neoDriver.session()) {
-            session.executeWrite(tx -> {
-                tx.run("MATCH (src:User {username:$usernameSrc})-[r:FOLLOWS]->(dst:User{username:$usernameDst}) " +
-                        "DELETE r;", parameters("usernameSrc", usernameSrc, "usernameDst", usernameDst));
-                return null;
-            });
-        } catch (ServiceUnavailableException ex) {
-            throw new DAOException("Cannot reach Neo4j Server");
-        }
-    }
 
     /** Drops an user with all the involved relationships from the graph
      *
