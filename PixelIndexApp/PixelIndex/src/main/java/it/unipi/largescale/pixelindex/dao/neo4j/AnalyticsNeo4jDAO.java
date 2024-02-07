@@ -8,6 +8,7 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
@@ -25,7 +26,7 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
                                 "RETURN g1, COUNT(r) AS NumberAdded " +
                                 "ORDER BY NumberAdded DESC " +
                                 "LIMIT 10",
-                        parameters("$username", username));
+                        parameters("username", username));
                 ArrayList<GamePreviewDTO> games = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
@@ -43,7 +44,7 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
         return suggestedGames;
     }
 
-    public List<String> getSuggestedUsers(String username) throws DAOException {
+    public ArrayList<String> getSuggestedUsers(String username) throws DAOException {
         ArrayList<String> suggestedUsers;
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
@@ -51,10 +52,10 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
                 Result result = tx.run("MATCH (u1:User {username:$username})-[:ADDS_TO_LIBRARY]->(g: Game)" +
                                 "<-[r:ADDS_TO_LIBRARY]-(u2: User) " +
                                 "WHERE u1 <> u2 AND NOT ((u1)-[:FOLLOWS]->(u2)) " +
-                                "RETURN u2.username, COUNT(g) AS NumberOfMutualGames " +
+                                "RETURN u2.username AS username, COUNT(g) AS NumberOfMutualGames " +
                                 "ORDER BY NumberOfMutualGames DESC " +
                                 "LIMIT 10",
-                        parameters("$username", username));
+                        parameters("username", username));
                 ArrayList<String> users = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
