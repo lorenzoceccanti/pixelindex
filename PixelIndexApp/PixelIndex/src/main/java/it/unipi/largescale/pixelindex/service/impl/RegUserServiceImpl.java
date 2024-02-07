@@ -91,10 +91,10 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public ArrayList<UserSearchDTO> searchUser(String param, String sessionUsername) throws ConnectionException {
-        ArrayList<UserSearchDTO> authUserDTOs = new ArrayList<>();
+    public ArrayList<UserSearchDTO> searchUser(String username, int page) throws ConnectionException {
+        ArrayList<UserSearchDTO> authUserDTOs;
         try {
-            authUserDTOs = registeredUserNeo.searchUser(param, sessionUsername);
+             authUserDTOs = registeredUserMongo.searchUser(username, page);
         } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }
