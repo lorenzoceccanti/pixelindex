@@ -70,23 +70,24 @@ public class RegisteredUserController {
     }
 
     private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
-        int result; int choice = -1;
+        int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
-        ListSelector ls = new ListSelector("Query result");
+
         if(queryName.isEmpty())
         {
             System.out.println("Query?");
             Scanner sc = new Scanner(System.in);
             queryName = sc.nextLine();
         }
-        do{
+        do
+        {
             Utils.clearConsole();
+            ListSelector ls = new ListSelector("Query result");
             result = usersByName(queryName);
             if(result != 0)
                 return result;
             displayUsers();
             ls.addOptions(rows, "searchUserByUsername", "Press enter to edit your follow");
-
             // Checking choice: the index is to decrease by 1
             choice = ls.askUserInteraction("searchUserByUsername");
             if(choice != 0) // otherwise go back
@@ -102,8 +103,10 @@ public class RegisteredUserController {
                     // Remove follow
                     int sts = pressUnfollow(userSearchDTO.getUsername());
                 }
+            } else {
+                exit = 1;
             }
-        }while(choice != 0);
+        }while(exit != 1);
         // Going back
         regMenuDisplayed.set(true);
         queryName = "";
