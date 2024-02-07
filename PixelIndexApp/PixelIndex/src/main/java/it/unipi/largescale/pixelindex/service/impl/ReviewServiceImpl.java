@@ -25,22 +25,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     public void insertReview(Review review, ConsistencyThread consistencyThread) throws ConnectionException {
         try {
-            String reviewId = reviewMongoDAO.insertReview(review);
-            review.setId(reviewId);
-
-            consistencyThread.addTask(() -> {
-                try {
-                    reviewNeo4jDAO.insertReview(reviewId, review.getGameId(), review.getAuthor());
-
-                    // gameMongoDAO.updateConsistencyFlag(game.getId());
-                } catch (DAOException e) {
-
-                }
-            });
+            reviewMongoDAO.insertReview(review);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
-
     }
 
     public void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException {
@@ -60,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    public ReviewPageDTO getReviews(String gameId) throws ConnectionException {
+    public ReviewPageDTO getReviews(String gameId, String username, int page) throws ConnectionException {
         // TODO: da testare
         try {
             return reviewMongoDAO.getReviewsByGameId(gameId);
@@ -70,7 +58,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException {
-        // TODO: da testare
         try {
             String outcome = reviewNeo4jDAO.addReaction(reviewId, username, reaction, gameId, reviewAuthor);
             consistencyThread.addTask(() -> {

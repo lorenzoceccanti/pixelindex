@@ -3,7 +3,6 @@ package it.unipi.largescale.pixelindex.service;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dto.ReviewPageDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
-import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 
@@ -15,7 +14,7 @@ public interface ReviewService {
 
     void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException;
 
-    ReviewPageDTO getReviews(String gameId) throws ConnectionException;
+    ReviewPageDTO getReviews(String gameId, String username, int page) throws ConnectionException;
 
     String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException;
 
