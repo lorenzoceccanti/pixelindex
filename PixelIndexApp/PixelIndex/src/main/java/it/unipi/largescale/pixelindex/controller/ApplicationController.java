@@ -22,7 +22,6 @@ public class ApplicationController {
         registeredUserController.execute();
     }
 
-
         /*
         BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
         ConsistencyThread consistencyThread = new ConsistencyThread(taskQueue);

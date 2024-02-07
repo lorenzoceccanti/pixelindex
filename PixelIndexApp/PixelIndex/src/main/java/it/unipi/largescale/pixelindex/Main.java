@@ -18,6 +18,7 @@ import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
+import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -230,7 +231,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
 
         /*
          * GameService gs = ServiceLocator.getGameService();

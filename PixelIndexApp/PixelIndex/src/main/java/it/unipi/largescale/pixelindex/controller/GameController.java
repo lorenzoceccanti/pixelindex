@@ -68,7 +68,8 @@ public class GameController{
         opt.add("Go back");
         // Making the query for get all the details of that specific game
         try{
-            g = gameService.getGameById(gamePreviewDTO.getId());
+            String gameId = gamePreviewDTO.getId();
+            g = gameService.getGameById(gameId);
             System.out.println(g);
             ls.addOptions(opt, "gameDetailsDropdown", "Please select");
             int sel = ls.askUserInteraction("gameDetailsDropdown");
