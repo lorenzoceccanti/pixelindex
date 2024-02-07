@@ -19,13 +19,17 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 public class Utils {
     private static final String ENV_FILE = ".env";
     private static String envPayload;
 
     public static void clearConsole() {
+        System.out.println(ansi().eraseScreen());
+        /*
         System.out.print("\033[H\033[2J");
-        System.out.flush();
+        System.out.flush();*/
     }
     public static LocalDate convertDateToLocalDate(Date date) {
         Instant instant = date.toInstant();
