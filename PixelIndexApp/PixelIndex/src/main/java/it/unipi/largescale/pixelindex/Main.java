@@ -3,6 +3,7 @@
 package it.unipi.largescale.pixelindex;
 
 import it.unipi.largescale.pixelindex.controller.ApplicationController;
+import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.ReviewNeo4jDAO;
@@ -25,6 +26,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
 
@@ -173,7 +176,7 @@ public class Main {
         int page = 0;
 
         try {
-            reviews = reviewMongoDAO.getReviewsByGameId("65afd5ed7ae28aa3f604e026", "Chang Liu", page);
+            reviews = reviewMongoDAO.getReviewsByGameId("65afd86a7ae28aa3f608bd15", "", page);
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -188,11 +191,18 @@ public class Main {
 
     public static void testAddReaction() {
         ReviewServiceImpl reviewService = new ReviewServiceImpl();
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
+        ConsistencyThread consistencyThread = new ConsistencyThread(queue);
+        consistencyThread.start();
+
         try {
-            reviewService.addReaction("65b19626c6c1f28b326efb06", "Nicco", Reaction.LIKE, "65afd5ed7ae28aa3f604e020", "Chang Liu", null);
+            reviewService.addReaction("65aeb1c6d5bacae64d61ef5f", "Nicco", Reaction.LIKE,
+                    "65afd5f57ae28aa3f604f9b2", "Mr.Weebster", consistencyThread);
         } catch (ConnectionException e) {
             e.printStackTrace();
         }
+
+        consistencyThread.stopThread();
     }
 
     public static void testGetReactionsCount() {
@@ -215,6 +225,10 @@ public class Main {
         }
     }
 
+    public static void deleteReviewMongo() {
+
+    }
+
     // ========== NICCO ==============
     public static void testAdvancedSearch() {
         List<Game> games = new ArrayList<>();
@@ -231,8 +245,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        // Utils.clearConsole();
+        // ApplicationController applicationController = new ApplicationController();
 
         /*
          * GameService gs = ServiceLocator.getGameService();
@@ -257,6 +271,7 @@ public class Main {
         // testAddReaction();
         // testAdvancedSearch();
         // testSetReactionsCountMongo();
+        // testAddReaction();
 
 
         /*
