@@ -6,13 +6,15 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.*;
+import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Moderator;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
+import it.unipi.largescale.pixelindex.model.User;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
 import org.bson.Document;
@@ -150,4 +152,46 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             }
         }
     }
+
+    public ArrayList<UserSearchDTO> searchUser(String username, int page) throws DAOException {
+        ArrayList<UserSearchDTO> users = new ArrayList<>();
+        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("users");
+
+            List<Bson> aggregationPipeline = new ArrayList<>();
+
+            // Add field for similarity score based on string lengths
+            aggregationPipeline.add(Aggregates.addFields(new Field<>("similarityScore",
+                    new Document("$divide", Arrays.asList(
+                            new Document("$strLenCP", "$username"),
+                            username.length())))));
+
+            // Ensure the document matches the regex
+            aggregationPipeline.add(Aggregates.match(Filters.regex("username", username, "i")));
+
+            // Sort by similarityScore in descending order, then by followers count
+            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.ascending("similarityScore"),
+                    Sorts.descending("followers"))));
+
+            // Implement pagination
+            int pageSize = 10;
+            aggregationPipeline.add(Aggregates.skip(pageSize * page));
+            aggregationPipeline.add(Aggregates.limit(pageSize));
+
+            ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
+            for (Document result : results) {
+                UserSearchDTO userSearchDTO = new UserSearchDTO();
+                userSearchDTO.setUsername(result.getString("username"));
+                userSearchDTO.setFollowingsCount(result.get("following") != null ? result.getInteger("following") : 0);
+                userSearchDTO.setFollowersCount(result.getInteger("followers", 0));
+                users.add(userSearchDTO);
+            }
+        } catch (Exception e) {
+            throw new DAOException("Error retrieving users: " + e.getMessage());
+        }
+        return users;
+    }
+
+
 }

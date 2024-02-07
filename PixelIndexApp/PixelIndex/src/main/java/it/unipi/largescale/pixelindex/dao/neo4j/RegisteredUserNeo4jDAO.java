@@ -26,48 +26,6 @@ public class RegisteredUserNeo4jDAO {
         }
     }
 
-    /**
-     * This method returns the list of the users matching the username
-     * passed as parameter along with the numberOfFollowers and the
-     * numberOfFollowing
-     *
-     * @param param The query putted by the user
-     */
-    public ArrayList<UserSearchDTO> searchUser(String param, String sessionUser) throws DAOException {
-        ArrayList<UserSearchDTO> returnObject;
-        // I need first of all to put all in lower case the query parameter
-        String lowerCasePar = param.toLowerCase();
-        try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
-             Session session = neoDriver.session()) {
-            returnObject = session.executeRead(tx -> {
-                Result result = tx.run("MATCH (matchingUser:User) WHERE toLower(matchingUser.username) CONTAINS $lowerCasePar " +
-                                "OPTIONAL MATCH (myUser:User{username:$sessionUser})-[r:FOLLOWS]->(matchingUser) "+
-                                "WITH matchingUser AS listedUser, r, " +
-                                "CASE WHEN r IS NULL THEN \"\" ELSE \"*\" END AS followsIndicator "+
-                                "ORDER BY listedUser.username ASC " +
-                                "LIMIT 10 " +
-                                "OPTIONAL MATCH (follower:User)-[:FOLLOWS]->(listedUser) " +
-                                "WITH listedUser, COUNT(follower) AS numberOfFollowers, followsIndicator " +
-                                "OPTIONAL MATCH (listedUser)-[:FOLLOWS]->(followed:User) " +
-                                "RETURN listedUser.username AS user, followsIndicator, numberOfFollowers, COUNT(followed) AS numberOfFollowed",
-                        parameters("lowerCasePar", lowerCasePar, "sessionUser", sessionUser));
-                ArrayList<UserSearchDTO> userSearchDTOArrayList = new ArrayList<>();
-                while (result.hasNext()) {
-                    Record r = result.next();
-                    UserSearchDTO userSearchDTO = new UserSearchDTO();
-                    userSearchDTO.setIsFollowed(r.get("followsIndicator").asString());
-                    userSearchDTO.setUsername(r.get("user").asString());
-                    userSearchDTO.setCountFollower(r.get("numberOfFollowers").asInt());
-                    userSearchDTO.setCountFollowed(r.get("numberOfFollowed").asInt());
-                    userSearchDTOArrayList.add(userSearchDTO);
-                }
-                return userSearchDTOArrayList;
-            });
-        } catch (ServiceUnavailableException ex) {
-            throw new DAOException("Cannot reach Neo4j Server");
-        }
-        return returnObject;
-    }
 
     /**
      * This method will trigger a FOLLOWS relationship
