@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import it.unipi.largescale.pixelindex.utils.Utils;
 import org.fusesource.jansi.AnsiConsole;
 
 import de.codeshelf.consoleui.prompt.ConsolePrompt;
@@ -26,7 +27,8 @@ public class ListSelector {
      */
     public ListSelector(String text) {
         AnsiConsole.systemInstall();
-        System.out.println(ansi().eraseScreen().render(text));
+        System.out.println(ansi().render(text));
+        // System.out.println(ansi().eraseScreen().render(text));
         prompt = new ConsolePrompt();
     }
 

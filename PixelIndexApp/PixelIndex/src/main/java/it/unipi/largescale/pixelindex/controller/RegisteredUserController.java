@@ -3,6 +3,7 @@ package it.unipi.largescale.pixelindex.controller;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.User;
+import it.unipi.largescale.pixelindex.service.AnalyticsService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
@@ -12,6 +13,7 @@ import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
 import java.security.Provider;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,8 +24,10 @@ public class RegisteredUserController {
     private String sessionUsername;
     private GameController gameController;
     private RegisteredUserService registeredUserService;
+    private AnalyticsService analyticsService;
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
+    List<String> potentialFriends;
     ArrayList<String> rows = new ArrayList<>();
 
     private void displayUsers(){
@@ -70,23 +74,24 @@ public class RegisteredUserController {
     }
 
     private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
-        int result; int choice = -1;
+        int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
-        ListSelector ls = new ListSelector("Query result");
+
         if(queryName.isEmpty())
         {
             System.out.println("Query?");
             Scanner sc = new Scanner(System.in);
             queryName = sc.nextLine();
         }
-        do{
+        do
+        {
             Utils.clearConsole();
+            ListSelector ls = new ListSelector("Query result");
             result = usersByName(queryName);
             if(result != 0)
                 return result;
             displayUsers();
             ls.addOptions(rows, "searchUserByUsername", "Press enter to edit your follow");
-
             // Checking choice: the index is to decrease by 1
             choice = ls.askUserInteraction("searchUserByUsername");
             if(choice != 0) // otherwise go back
@@ -102,25 +107,44 @@ public class RegisteredUserController {
                     // Remove follow
                     int sts = pressUnfollow(userSearchDTO.getUsername());
                 }
+            } else {
+                exit = 1;
             }
-        }while(choice != 0);
+        }while(exit != 1);
         // Going back
         regMenuDisplayed.set(true);
         queryName = "";
         return result;
     }
+    private int friendsYouMightKnow(){
+        try{
+            potentialFriends = analyticsService.suggestUsers("ilDuca");
+            //Utils.clearConsole();
+            System.out.println("Friends you might know:");
+            for(int i=0; i<potentialFriends.size(); i++)
+                System.out.println((i+1)+") "+potentialFriends.get(i));
+            showRegisteredDropdown();
+            return 0;
+        }catch(ConnectionException ex)
+        {
+            return 1;
+        }
+    }
     private int showRegisteredDropdown()
     {
-        while(registeredMenu.getDisplayed().get())
-        {
-            int opt = registeredMenu.displayMenu(sessionUsername);
+        int opt = -1;
+        do{
+            registeredMenu.getDisplayed().set(true);
+            opt = registeredMenu.displayMenu(sessionUsername);
             functionsRegistered[opt].run();
-        }
-        return registeredMenu.displayMenu(sessionUsername);
+        }while(registeredMenu.getDisplayed().get());
+        return opt;
     }
     public RegisteredUserController(String username)
     {
         this.queryName = "";
+        this.potentialFriends = new ArrayList<>();
+        this.analyticsService = ServiceLocator.getAnalyticsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
@@ -132,13 +156,17 @@ public class RegisteredUserController {
                 () -> {
                     askSearchByUsernameQuery(registeredMenu.getDisplayed());
                 },
+                () -> {
+                    registeredMenu.getDisplayed().set(false);
+                    friendsYouMightKnow();
+                },
                 () ->{
                     System.exit(0);
                 }
         };
     }
-
     public void execute(){
+        Utils.clearConsole();
         int index = showRegisteredDropdown();
     }
 

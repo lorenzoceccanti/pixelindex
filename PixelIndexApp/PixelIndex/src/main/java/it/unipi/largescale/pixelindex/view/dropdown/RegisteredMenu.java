@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.view.dropdown;
 
+import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class RegisteredMenu {
         options = new ArrayList<>();
         options.add("Search games");
         options.add("Search users");
+        options.add("Friends you might know");
         options.add("Exit app");
     }
 
@@ -26,6 +28,7 @@ public class RegisteredMenu {
         listSelector = new ListSelector("Welcome " + username);
         listSelector.addOptions(options, "registered_menu", "Make your choice");
         selection = listSelector.askUserInteraction("registered_menu");
+        Utils.clearConsole();
         return selection;
     }
     public AtomicBoolean getDisplayed() {

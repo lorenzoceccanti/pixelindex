@@ -11,14 +11,14 @@ import java.util.Map;
 
 public interface ReviewService {
 
-    void insertReview(Review review, ConsistencyThread consistencyThread) throws ConnectionException, DAOException;
+    void insertReview(Review review, ConsistencyThread consistencyThread) throws ConnectionException;
 
     void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException;
 
     ReviewPageDTO getReviews(String gameId) throws ConnectionException;
 
-    String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws ConnectionException;
+    String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException;
 
-    public Map<String, Integer> getReactionsCount(String reviewId) throws DAOException;
+    public Map<String, Integer> getReactionsCount(String reviewId) throws ConnectionException;
 
 }
