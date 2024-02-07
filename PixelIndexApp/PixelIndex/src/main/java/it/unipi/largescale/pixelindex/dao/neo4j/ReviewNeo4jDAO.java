@@ -56,7 +56,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * @param reviewId the id of the review
      * @throws DAOException if an error occurs
      */
-    public void removeReview(String reviewId) throws DAOException {
+    public void deleteReview(String reviewId) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """
                     MATCH (review:Review {mongoId: $reviewId})
