@@ -58,7 +58,7 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
                         parameters("username", username));
                 ArrayList<String> users = new ArrayList<>();
                 while (result.hasNext()) {
-                    Record record = result.single();
+                    Record record = result.next();
                     users.add(record.get("username").asString());
                 }
                 return users;
