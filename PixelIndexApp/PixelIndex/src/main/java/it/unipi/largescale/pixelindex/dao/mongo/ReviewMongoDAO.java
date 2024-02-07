@@ -159,16 +159,24 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                             .append("totalCount", 1L)))).into(new ArrayList<>());
 
             ReviewPageDTO reviewPage = new ReviewPageDTO();
-            reviewPage.setTotalReviewsCount(result.get(0).getInteger("totalCount"));
+            // controllo se ci sono recensioni
+            if (result.isEmpty()) {
+                reviewPage.setTotalReviewsCount(0);
+                reviewPage.setReviews(new ArrayList<>());
+                return reviewPage;
+            } else {
+                reviewPage.setTotalReviewsCount(result.get(0).getInteger("totalCount"));
+                reviewPage.setTotalReviewsCount(result.get(0).getInteger("totalCount"));
 
-            List<ReviewPreviewDTO> reviews = new ArrayList<>();
-            for (Document res : result.get(0).getList("data", Document.class)) {
-                ReviewPreviewDTO review = reviewPreviewFromQueryResult(res);
-                reviews.add(review);
+                List<ReviewPreviewDTO> reviews = new ArrayList<>();
+                for (Document res : result.get(0).getList("data", Document.class)) {
+                    ReviewPreviewDTO review = reviewPreviewFromQueryResult(res);
+                    reviews.add(review);
+                }
+                reviewPage.setReviews(reviews);
+
+                return reviewPage;
             }
-            reviewPage.setReviews(reviews);
-
-            return reviewPage;
 
         } catch (Exception e) {
             throw new DAOException("Error while retrieving reviews by game id" + e);
