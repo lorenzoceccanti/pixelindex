@@ -19,6 +19,7 @@ public class GameController{
     private ArrayList<String> rows;
     private GameService gameService;
     private AtomicBoolean menuDisplayed;
+    private ReviewController reviewController;
     private int rowSelection;
     private int totalPages;
     private String queryName;
@@ -78,7 +79,7 @@ public class GameController{
                 askGameQueryByName();
             } else {
                 // Showing reviews
-
+                reviewController.displayExcerpt(gameId);
             }
             return 0;
         }catch(ConnectionException ex)
@@ -140,6 +141,17 @@ public class GameController{
     public GameController(AtomicBoolean inMenu)
     {
         this.gameService = ServiceLocator.getGameService();
+        this.reviewController = new ReviewController();
+        this.queryName = "";
+        this.rows = new ArrayList<>();
+        this.menuDisplayed = inMenu;
+        this.rowSelection = 0;
+        this.totalPages = 3;
+    }
+    public GameController(AtomicBoolean inMenu, String sessionUsername)
+    {
+        this.gameService = ServiceLocator.getGameService();
+        this.reviewController = new ReviewController(sessionUsername);
         this.queryName = "";
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;

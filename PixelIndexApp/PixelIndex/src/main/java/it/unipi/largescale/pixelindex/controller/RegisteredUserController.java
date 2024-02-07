@@ -66,15 +66,6 @@ public class RegisteredUserController {
         }
     }
 
-    private int pressUnfollow(String username)
-    {
-        try{
-            registeredUserService.unfollowUser(sessionUsername, username);
-            return 0;
-        }catch(ConnectionException ex){
-            return 1;
-        }
-    }
 
     private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
         int pageSelection = 0;
@@ -115,6 +106,7 @@ public class RegisteredUserController {
                     break;
                 default:
                     // Follow or unfollow
+                    // pressFollow()
                     // To access the userSearchDTOs access with an index decreased by 3
                     break;
 
@@ -157,7 +149,7 @@ public class RegisteredUserController {
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
-        this.gameController = new GameController(registeredMenu.getDisplayed());
+        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername);
         functionsRegistered = new Runnable[]{
                 () -> {
                     gameController.askGameQueryByName();
