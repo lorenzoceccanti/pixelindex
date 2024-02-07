@@ -21,6 +21,7 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
      * @param author   the username of the author of the review
      * @throws DAOException if an error occurs
      */
+    @Deprecated
     public void insertReview(String reviewId, String gameId, String author) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = """

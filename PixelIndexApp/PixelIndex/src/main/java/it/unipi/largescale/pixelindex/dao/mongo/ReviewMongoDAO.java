@@ -99,6 +99,18 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         }
     }
 
+    public void setReactionsCount(String reviewId, int likes, int dislikes) throws DAOException {
+        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("reviews");
+            Document query = new Document("_id", new ObjectId(reviewId));
+            Document update = new Document("$set", new Document("likes", likes).append("dislikes", dislikes));
+            collection.updateOne(query, update);
+        } catch (Exception e) {
+            throw new DAOException("Error while setting reactions count" + e);
+        }
+    }
+
     public ReviewPageDTO getReviewsByGameId(String gameId, String username, int page) throws DAOException {
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
@@ -176,16 +188,4 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         return getReviewsByGameId(gameId, "", page);
     }
 
-    public void setReactionsCount(String reviewId, int likes, int dislikes) throws DAOException {
-        // TODO: test the method
-        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
-            MongoDatabase database = mongoClient.getDatabase("pixelindex");
-            MongoCollection<Document> collection = database.getCollection("reviews");
-            Document query = new Document("_id", new ObjectId(reviewId));
-            Document update = new Document("$set", new Document("likes", likes).append("dislikes", dislikes));
-            collection.updateOne(query, update);
-        } catch (Exception e) {
-            throw new DAOException("Error while setting reactions count" + e);
-        }
-    }
 }
