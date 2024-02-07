@@ -18,7 +18,7 @@ public class ApplicationController {
 
         unregisteredUserController = new UnregisteredUserController();
         int fun = unregisteredUserController.showUnregisteredDropdown();
-        registeredUserController = new RegisteredUserController(fun, unregisteredUserController.getUsername());
+        registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername());
         registeredUserController.execute();
     }
 

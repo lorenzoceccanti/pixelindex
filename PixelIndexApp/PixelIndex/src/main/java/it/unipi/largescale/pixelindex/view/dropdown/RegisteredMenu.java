@@ -8,13 +8,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RegisteredMenu {
     ArrayList<String> options;
     ListSelector listSelector;
+    AtomicBoolean displayed;
     int selection = -1;
 
     public RegisteredMenu() {
+        displayed = new AtomicBoolean(true);
         options = new ArrayList<>();
         options.add("Search by game");
         options.add("Search by company");
-        options.add("Advanced search");
         options.add("Exit app");
     }
 
@@ -27,4 +28,12 @@ public class RegisteredMenu {
         selection = listSelector.askUserInteraction("registered_menu");
         return selection;
     }
+    public AtomicBoolean getDisplayed() {
+        return displayed;
+    }
+
+    public void setDisplayed(AtomicBoolean displayed) {
+        this.displayed = displayed;
+    }
+
 }
