@@ -20,7 +20,6 @@ public class GameController{
     private GameService gameService;
     private AtomicBoolean menuDisplayed;
     private int rowSelection;
-    private int pageSelection;
     private int totalPages;
     private String queryName;
     private int exitGameList;
@@ -58,7 +57,7 @@ public class GameController{
 
 
     private int viewGameDetail(int indexView){
-        /* Sfasamento di 2 posizioni in avanti
+        /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti
          */
         GamePreviewDTO gamePreviewDTO = searchResult.get(indexView-3);
@@ -145,7 +144,6 @@ public class GameController{
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;
-        this.pageSelection = 0;
         this.totalPages = 3;
     }
 }

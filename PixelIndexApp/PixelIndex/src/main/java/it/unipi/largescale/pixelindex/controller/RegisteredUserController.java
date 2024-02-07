@@ -29,9 +29,12 @@ public class RegisteredUserController {
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialFriends;
     ArrayList<String> rows = new ArrayList<>();
+    private int totalPages;
 
     private void displayUsers(){
         rows.clear();
+        rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
         userSearchDTOs.stream().forEach(userSearchDTO -> {
             rows.add(userSearchDTO.toString());
@@ -42,9 +45,9 @@ public class RegisteredUserController {
      *
      * @param username The string inserted
      */
-    private int usersByName(String username){
+    private int usersByName(String username, int page){
         try{
-            userSearchDTOs = registeredUserService.searchUser(username, 0);
+            userSearchDTOs = registeredUserService.searchUser(username, page);
             return 0;
         }catch(ConnectionException ex)
         {
@@ -74,6 +77,7 @@ public class RegisteredUserController {
     }
 
     private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
+        int pageSelection = 0;
         int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
 
@@ -87,41 +91,43 @@ public class RegisteredUserController {
         {
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
-            result = usersByName(queryName);
+            System.out.println("Page displayed: " + (pageSelection + 1));
+            result = usersByName(queryName, pageSelection);
             if(result != 0)
                 return result;
             displayUsers();
             ls.addOptions(rows, "searchUserByUsername", "Press enter to edit your follow");
-            // Checking choice: the index is to decrease by 1
             choice = ls.askUserInteraction("searchUserByUsername");
-            if(choice != 0) // otherwise go back
+            switch(choice)
             {
-                /*
-                UserSearchDTO userSearchDTO = userSearchDTOs.get(choice-1);
-                if(userSearchDTO.getIsFollowed().isEmpty())
-                {
-                    // Add follow
-                    int sts = pressFollow(userSearchDTO.getUsername());
-                    if(sts != 0)
-                        return sts;
-                } else if(userSearchDTO.getIsFollowed().equals("*")){
-                    // Remove follow
-                    int sts = pressUnfollow(userSearchDTO.getUsername());
-                }*/
-            } else {
-                exit = 1;
+                case 0: // Previous page
+                    exit = 0;
+                    pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
+                    break;
+                case 1: // Next page
+                    exit = 0;
+                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
+                    break;
+                case 2: // Go back
+                    regMenuDisplayed.set(true);
+                    exit = 1;
+                    queryName = "";
+                    break;
+                default:
+                    // Follow or unfollow
+                    // To access the userSearchDTOs access with an index decreased by 3
+                    break;
+
             }
         }while(exit != 1);
-        // Going back
-        regMenuDisplayed.set(true);
-        queryName = "";
         return result;
     }
     private int friendsYouMightKnow(){
         try{
-            potentialFriends = analyticsService.suggestUsers("ilDuca");
-            //Utils.clearConsole();
+            potentialFriends = analyticsService.suggestUsers(sessionUsername);
             System.out.println("Friends you might know:");
+            if(potentialFriends.isEmpty())
+                System.out.println("*** List empty ***");
             for(int i=0; i<potentialFriends.size(); i++)
                 System.out.println((i+1)+") "+potentialFriends.get(i));
             showRegisteredDropdown();
@@ -143,6 +149,8 @@ public class RegisteredUserController {
     }
     public RegisteredUserController(String username)
     {
+        this.totalPages = 3;
+
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
         this.analyticsService = ServiceLocator.getAnalyticsService();
