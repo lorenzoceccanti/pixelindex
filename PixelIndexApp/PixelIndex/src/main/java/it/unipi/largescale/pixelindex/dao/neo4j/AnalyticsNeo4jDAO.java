@@ -51,14 +51,14 @@ public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
             suggestedUsers = session.executeRead(tx -> {
                 Result result = tx.run("MATCH (u1:User {username:$username})-[:ADDS_TO_LIBRARY]->(g: Game)" +
                                 "<-[r:ADDS_TO_LIBRARY]-(u2: User) " +
-                                "WHERE u1 <> u2 AND NOT ((u1)-[:FOLLOWS]->(u2)) " +
+                                "WHERE u1.username <> u2.username AND NOT ((u1)-[:FOLLOWS]->(u2)) " +
                                 "RETURN u2.username AS username, COUNT(g) AS NumberOfMutualGames " +
                                 "ORDER BY NumberOfMutualGames DESC " +
                                 "LIMIT 10",
                         parameters("username", username));
                 ArrayList<String> users = new ArrayList<>();
                 while (result.hasNext()) {
-                    Record record = result.next();
+                    Record record = result.single();
                     users.add(record.get("username").asString());
                 }
                 return users;
