@@ -16,11 +16,7 @@ import it.unipi.largescale.pixelindex.model.RatingKind;
 import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
-import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
-import it.unipi.largescale.pixelindex.service.GameService;
-
-import jdk.jfr.Registered;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -124,6 +120,8 @@ public class Main {
         }
     }
 
+
+    // ========== CRI ==============
     public static void insertReviewMongo() {
         Review review = new Review();
         review.setGameId("65afd5ed7ae28aa3f604e020");
@@ -146,7 +144,7 @@ public class Main {
         System.out.println(review);
     }
 
-    public static void inserReviewNeo4j() {
+    public static void insertReviewNeo4j() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
             reviewNeo4jDAO.insertReview("65be128e0bc3c618299c53a8", "65afd5ed7ae28aa3f604e020", "Nicco");
@@ -159,7 +157,7 @@ public class Main {
     public static void removeReviewNeo4j() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
-            reviewNeo4jDAO.removeReview("65be128e0bc3c618299c53a8");
+            reviewNeo4jDAO.deleteReview("65be128e0bc3c618299c53a8");
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -186,19 +184,6 @@ public class Main {
             System.out.println(r);
     }
 
-    public static void testAdvancedSearch() {
-        List<Game> games = new ArrayList<>();
-        GameMongoDAO gd = new GameMongoDAO();
-
-        try {
-            games = gd.getGamesAdvancedSearch("grand", null, null, null, 0);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-        for (Game g : games)
-            System.out.println(g.getName());
-    }
-
     public static void testAddReaction() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
@@ -221,6 +206,20 @@ public class Main {
         }
     }
 
+    // ========== NICCO ==============
+    public static void testAdvancedSearch() {
+        List<Game> games = new ArrayList<>();
+        GameMongoDAO gd = new GameMongoDAO();
+
+        try {
+            games = gd.getGamesAdvancedSearch("grand", null, null, null, 0);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        for (Game g : games)
+            System.out.println(g.getName());
+    }
+
     public static void main(String[] args) {
 
         ApplicationController applicationController = new ApplicationController();
@@ -240,7 +239,7 @@ public class Main {
         // ========== CRI ==============
 
         // insertReviewMongo();
-        // inserReviewNeo4j();
+        // insertReviewNeo4j();
         // removeReviewNeo4j();
         // testGetReviewsByGameId();
 
@@ -252,7 +251,7 @@ public class Main {
         // testAdvancedSearch();
 
         /*
-         * 
+         *
          * // RegisteredUserService registeredUserService =
          * ServiceLocator.getRegisteredUserService();
          * // Registration use case
@@ -265,7 +264,7 @@ public class Main {
          * // reportUser(registeredUserService);
          * StatisticsService statisticsService = ServiceLocator.getStatisticsService();
          * getReports(statisticsService); // last 10 reports
-         * 
+         *
          */
 
     }
