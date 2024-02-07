@@ -31,7 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
             consistencyThread.addTask(() -> {
                 try {
                     reviewNeo4jDAO.insertReview(reviewId, review.getGameId(), review.getAuthor());
-                    // TODO: inserire concistency flag in mongo?
+
                     // gameMongoDAO.updateConsistencyFlag(game.getId());
                 } catch (DAOException e) {
 
@@ -69,17 +69,32 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor) throws ConnectionException {
+    public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException {
         // TODO: da testare
         try {
-            return reviewNeo4jDAO.addReaction(reviewId, username, reaction, gameId, reviewAuthor);
+            String outcome = reviewNeo4jDAO.addReaction(reviewId, username, reaction, gameId, reviewAuthor);
+            consistencyThread.addTask(() -> {
+                try {
+                    Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount(reviewId);
+                    reviewMongoDAO.setReactionsCount(reviewId, reactions.get("likes"), reactions.get("dislikes"));
+                } catch (DAOException e) {
+                }
+            });
+
+            return outcome;
+
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public Map<String, Integer> getReactionsCount(String reviewId) throws DAOException {
-        // TODO: domanda - è necessario il blocco try-catch in quelli sopra?
-        return reviewNeo4jDAO.getReactionsCount(reviewId);
+    public Map<String, Integer> getReactionsCount(String reviewId) throws ConnectionException {
+        try {
+            return reviewNeo4jDAO.getReactionsCount(reviewId);
+        } catch (DAOException e) {
+            throw new ConnectionException(e);
+        }
     }
+
+
 }
