@@ -73,12 +73,12 @@ public class Main {
         ArrayList<UserSearchDTO> searchResult = new ArrayList<>();
         try {
 
-            searchResult = registeredUserService.searchUser("ale1968", "Chang Liu");
+            searchResult = registeredUserService.searchUser("ale1968", 0);
             System.out.println("username | numberOfFollowers | numberOfFollowed");
             for (int i = 0; i < searchResult.size(); i++)
                 System.out.println(searchResult.get(i));
 
-            searchResult = registeredUserService.searchUser("chang liu", "Chang Liu");
+            searchResult = registeredUserService.searchUser("chang liu", 0);
             System.out.println("username | numberOfFollowers | numberOfFollowed");
             for (int i = 0; i < searchResult.size(); i++)
                 System.out.println(searchResult.get(i));

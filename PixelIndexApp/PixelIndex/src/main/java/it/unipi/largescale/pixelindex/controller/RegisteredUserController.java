@@ -44,7 +44,7 @@ public class RegisteredUserController {
      */
     private int usersByName(String username){
         try{
-            userSearchDTOs = registeredUserService.searchUser(username, sessionUsername);
+            userSearchDTOs = registeredUserService.searchUser(username, 0);
             return 0;
         }catch(ConnectionException ex)
         {
@@ -96,6 +96,7 @@ public class RegisteredUserController {
             choice = ls.askUserInteraction("searchUserByUsername");
             if(choice != 0) // otherwise go back
             {
+                /*
                 UserSearchDTO userSearchDTO = userSearchDTOs.get(choice-1);
                 if(userSearchDTO.getIsFollowed().isEmpty())
                 {
@@ -106,7 +107,7 @@ public class RegisteredUserController {
                 } else if(userSearchDTO.getIsFollowed().equals("*")){
                     // Remove follow
                     int sts = pressUnfollow(userSearchDTO.getUsername());
-                }
+                }*/
             } else {
                 exit = 1;
             }

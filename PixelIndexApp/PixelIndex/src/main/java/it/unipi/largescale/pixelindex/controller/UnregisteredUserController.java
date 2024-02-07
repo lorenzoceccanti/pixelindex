@@ -182,7 +182,15 @@ public class UnregisteredUserController {
         by passing a reference to a boolean wrapper
         When displayed = false, it means login successful and stop looping
          */
-
+        String welcomeMessage =
+        """
+                ██████╗ ██╗██╗  ██╗███████╗██╗     ██╗███╗   ██╗██████╗ ███████╗██╗  ██╗
+                ██╔══██╗██║╚██╗██╔╝██╔════╝██║     ██║████╗  ██║██╔══██╗██╔════╝╚██╗██╔╝
+                ██████╔╝██║ ╚███╔╝ █████╗  ██║     ██║██╔██╗ ██║██║  ██║█████╗   ╚███╔╝\s
+                ██╔═══╝ ██║ ██╔██╗ ██╔══╝  ██║     ██║██║╚██╗██║██║  ██║██╔══╝   ██╔██╗\s
+                ██║     ██║██╔╝ ██╗███████╗███████╗██║██║ ╚████║██████╔╝███████╗██╔╝ ██╗
+                ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+        """;
         int index = -1;
         String messageText = "";
         while(unregisteredMenu.getDisplayed().get())
@@ -208,7 +216,7 @@ public class UnregisteredUserController {
                     messageText = "Registration process: success";
                     break;
                 default:
-                    messageText = "Welcome to PixelIndex";
+                    messageText = welcomeMessage;
             }
             index = unregisteredMenu.displayMenu(messageText);
             functionsUnregistered[index].run();
