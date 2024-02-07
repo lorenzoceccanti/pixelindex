@@ -9,7 +9,6 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,9 +19,8 @@ public class ReviewController {
     private ArrayList<String> rows;
     private List<ReviewPreviewDTO> reviewPreviewDTOs;
     private ReviewService reviewService;
-    private int totalPages;
     private int exitReviewList;
-    private int countAllReviews;
+    private Integer countAllReviews;
     private AtomicBoolean menuDisplayed;
     private String sessionUsername;
     public int displayExcerpt(String gameId){
@@ -45,7 +43,7 @@ public class ReviewController {
                     break;
                 case 1: // Next page
                     exitReviewList = 0;
-                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
+                    pageSelection = pageSelection < countAllReviews-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
                     menuDisplayed.set(true);
@@ -64,12 +62,13 @@ public class ReviewController {
         rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
-        rows.stream().forEach(reviewPreviewDTO -> {
+        reviewPreviewDTOs.stream().forEach(reviewPreviewDTO -> {
             rows.add(reviewPreviewDTO.toString());
         });
     }
-    private int constructExcerpt(String gameId, int page){
+    private int constructExcerpt(String gameId, Integer page){
         try{
+            /* QUA E' IL PROBLEMA*/
             reviewPageDTO = reviewService.getReviews(gameId, sessionUsername, page);
             countAllReviews = reviewPageDTO.getTotalReviewsCount();
             reviewPreviewDTOs = reviewPageDTO.getReviews();
@@ -87,7 +86,6 @@ public class ReviewController {
         this.reviewPreviewDTOs = new ArrayList<>();
         this.reviewService = ServiceLocator.getReviewService();
         this.menuDisplayed = new AtomicBoolean(false);
-        this.countAllReviews = 0;
     }
     public ReviewController(){
         this.rows = new ArrayList<>();
@@ -95,6 +93,5 @@ public class ReviewController {
         this.reviewPreviewDTOs = new ArrayList<>();
         this.reviewService = ServiceLocator.getReviewService();
         this.menuDisplayed = new AtomicBoolean(false);
-        this.countAllReviews = 0;
     }
 }
