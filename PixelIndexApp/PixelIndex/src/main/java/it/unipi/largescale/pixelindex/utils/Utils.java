@@ -26,10 +26,10 @@ public class Utils {
     private static String envPayload;
 
     public static void clearConsole() {
-        System.out.println(ansi().eraseScreen());
-        /*
+        // System.out.println(ansi().eraseScreen());
+
         System.out.print("\033[H\033[2J");
-        System.out.flush();*/
+        System.out.flush();
     }
     public static LocalDate convertDateToLocalDate(Date date) {
         Instant instant = date.toInstant();
