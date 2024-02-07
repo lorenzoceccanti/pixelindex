@@ -1,6 +1,7 @@
 package it.unipi.largescale.pixelindex.dto;
 
 public class UserSearchDTO {
+    private String isFollowed;
     private String username;
     private int countFollowed;
     private int countFollower;
@@ -29,8 +30,16 @@ public class UserSearchDTO {
         this.countFollower = countFollower;
     }
 
+    public String getIsFollowed() {
+        return isFollowed;
+    }
+
+    public void setIsFollowed(String isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
     @Override
     public String toString(){
-        return username + " " + countFollower + " " + countFollowed;
+        return "[" + isFollowed + "] username: " + username + " followers: " + countFollower + " followed: " + countFollowed;
     }
 }

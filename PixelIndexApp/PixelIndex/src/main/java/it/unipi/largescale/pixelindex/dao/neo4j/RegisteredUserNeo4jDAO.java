@@ -33,7 +33,7 @@ public class RegisteredUserNeo4jDAO {
      *
      * @param param The query putted by the user
      */
-    public ArrayList<UserSearchDTO> searchUser(String param) throws DAOException {
+    public ArrayList<UserSearchDTO> searchUser(String param, String sessionUser) throws DAOException {
         ArrayList<UserSearchDTO> returnObject;
         // I need first of all to put all in lower case the query parameter
         String lowerCasePar = param.toLowerCase();
@@ -41,18 +41,21 @@ public class RegisteredUserNeo4jDAO {
              Session session = neoDriver.session()) {
             returnObject = session.executeRead(tx -> {
                 Result result = tx.run("MATCH (matchingUser:User) WHERE toLower(matchingUser.username) CONTAINS $lowerCasePar " +
-                                "WITH matchingUser AS listedUser " +
+                                "OPTIONAL MATCH (myUser:User{username:$sessionUser})-[r:FOLLOWS]->(matchingUser) "+
+                                "WITH matchingUser AS listedUser, r, " +
+                                "CASE WHEN r IS NULL THEN \"\" ELSE \"*\" END AS followsIndicator "+
                                 "ORDER BY listedUser.username ASC " +
                                 "LIMIT 10 " +
                                 "OPTIONAL MATCH (follower:User)-[:FOLLOWS]->(listedUser) " +
-                                "WITH listedUser, COUNT(follower) AS numberOfFollowers " +
+                                "WITH listedUser, COUNT(follower) AS numberOfFollowers, followsIndicator " +
                                 "OPTIONAL MATCH (listedUser)-[:FOLLOWS]->(followed:User) " +
-                                "RETURN listedUser.username AS user, numberOfFollowers, COUNT(followed) AS numberOfFollowed",
-                        parameters("lowerCasePar", lowerCasePar));
+                                "RETURN listedUser.username AS user, followsIndicator, numberOfFollowers, COUNT(followed) AS numberOfFollowed",
+                        parameters("lowerCasePar", lowerCasePar, "sessionUser", sessionUser));
                 ArrayList<UserSearchDTO> userSearchDTOArrayList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
                     UserSearchDTO userSearchDTO = new UserSearchDTO();
+                    userSearchDTO.setIsFollowed(r.get("followsIndicator").asString());
                     userSearchDTO.setUsername(r.get("user").asString());
                     userSearchDTO.setCountFollower(r.get("numberOfFollowers").asInt());
                     userSearchDTO.setCountFollowed(r.get("numberOfFollowed").asInt());

@@ -14,8 +14,8 @@ public class RegisteredMenu {
     public RegisteredMenu() {
         displayed = new AtomicBoolean(true);
         options = new ArrayList<>();
-        options.add("Search by game");
-        options.add("Search by company");
+        options.add("Search games");
+        options.add("Search users");
         options.add("Exit app");
     }
 

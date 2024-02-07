@@ -93,7 +93,6 @@ public class GameController{
      *
      */
     public int askGameQueryByName(){
-        ListSelector ls = new ListSelector("Query result");
         int result; int pageSelection = 0;
 
         if(queryName.isEmpty())
@@ -104,6 +103,7 @@ public class GameController{
         }
         do{
             Utils.clearConsole();
+            ListSelector ls = new ListSelector("Query result");
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = gameByName(queryName, pageSelection);
             if(result != 0)
@@ -135,7 +135,6 @@ public class GameController{
                     break;
             }
         }while(exitGameList != 1);
-        System.out.println("Exiting gameList..");
         return result;
     }
     public GameController(AtomicBoolean inMenu)

@@ -14,6 +14,7 @@ import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisteredUserController {
     private RegisteredMenu registeredMenu;
@@ -39,7 +40,7 @@ public class RegisteredUserController {
      */
     private int usersByName(String username){
         try{
-            userSearchDTOs = registeredUserService.searchUser(username);
+            userSearchDTOs = registeredUserService.searchUser(username, sessionUsername);
             return 0;
         }catch(ConnectionException ex)
         {
@@ -47,8 +48,30 @@ public class RegisteredUserController {
         }
     }
 
-    private int askSearchByUsernameQuery(){
-        int result;
+    private int pressFollow(String username)
+    {
+        try{
+            registeredUserService.followUser(sessionUsername, username);
+            return 0;
+        }catch (ConnectionException ex)
+        {
+            return 1;
+        }
+    }
+
+    private int pressUnfollow(String username)
+    {
+        try{
+            registeredUserService.unfollowUser(sessionUsername, username);
+            return 0;
+        }catch(ConnectionException ex){
+            return 1;
+        }
+    }
+
+    private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
+        int result; int choice = -1;
+        regMenuDisplayed.set(false);
         ListSelector ls = new ListSelector("Query result");
         if(queryName.isEmpty())
         {
@@ -56,12 +79,34 @@ public class RegisteredUserController {
             Scanner sc = new Scanner(System.in);
             queryName = sc.nextLine();
         }
-        Utils.clearConsole();
-        result = usersByName(queryName);
-        if(result != 0)
-            return result;
-        displayUsers();
-        ls.addOptions(rows, "searchUserByUsername", "Press en");
+        do{
+            Utils.clearConsole();
+            result = usersByName(queryName);
+            if(result != 0)
+                return result;
+            displayUsers();
+            ls.addOptions(rows, "searchUserByUsername", "Press enter to edit your follow");
+
+            // Checking choice: the index is to decrease by 1
+            choice = ls.askUserInteraction("searchUserByUsername");
+            if(choice != 0) // otherwise go back
+            {
+                UserSearchDTO userSearchDTO = userSearchDTOs.get(choice-1);
+                if(userSearchDTO.getIsFollowed().isEmpty())
+                {
+                    // Add follow
+                    int sts = pressFollow(userSearchDTO.getUsername());
+                    if(sts != 0)
+                        return sts;
+                } else if(userSearchDTO.getIsFollowed().equals("*")){
+                    // Remove follow
+                    int sts = pressUnfollow(userSearchDTO.getUsername());
+                }
+            }
+        }while(choice != 0);
+        // Going back
+        regMenuDisplayed.set(true);
+        queryName = "";
         return result;
     }
     private int showRegisteredDropdown()
@@ -75,6 +120,7 @@ public class RegisteredUserController {
     }
     public RegisteredUserController(String username)
     {
+        this.queryName = "";
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
@@ -84,7 +130,7 @@ public class RegisteredUserController {
                     gameController.askGameQueryByName();
                 },
                 () -> {
-                    askSearchByUsernameQuery();
+                    askSearchByUsernameQuery(registeredMenu.getDisplayed());
                 },
                 () ->{
                     System.exit(0);
