@@ -17,6 +17,7 @@ import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
+import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -185,12 +186,10 @@ public class Main {
     }
 
     public static void testAddReaction() {
-        ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
+        ReviewServiceImpl reviewService = new ReviewServiceImpl();
         try {
-            String outcome = reviewNeo4jDAO.addReaction("667", "laura82", Reaction.DISLIKE, "65afd62e7ae28aa3f605556c",
-                    "laura82");
-            System.out.println("Risultato: " + outcome);
-        } catch (DAOException e) {
+            reviewService.addReaction("65b19626c6c1f28b326efb06", "Nicco", Reaction.LIKE, "65afd5ed7ae28aa3f604e020", "Chang Liu", null);
+        } catch (ConnectionException e) {
             e.printStackTrace();
         }
     }
@@ -198,9 +197,18 @@ public class Main {
     public static void testGetReactionsCount() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
-            Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount("123");
+            Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount("65b19626c6c1f28b326efb06");
 
             System.out.println("Likes: " + reactions.get("likes") + " Dislikes: " + reactions.get("dislikes"));
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void testSetReactionsCountMongo() {
+        ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
+        try {
+            reviewMongoDAO.setReactionsCount("65b19626c6c1f28b326efb06", 32, 23);
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -222,7 +230,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ApplicationController applicationController = new ApplicationController();
+        //ApplicationController applicationController = new ApplicationController();
 
         /*
          * GameService gs = ServiceLocator.getGameService();
@@ -242,13 +250,12 @@ public class Main {
         // insertReviewNeo4j();
         // removeReviewNeo4j();
         // testGetReviewsByGameId();
-
         // testAddReaction();
         // testGetReactionsCount();
-
         // testAddReaction();
-
         // testAdvancedSearch();
+        // testSetReactionsCountMongo();
+
 
         /*
          *
