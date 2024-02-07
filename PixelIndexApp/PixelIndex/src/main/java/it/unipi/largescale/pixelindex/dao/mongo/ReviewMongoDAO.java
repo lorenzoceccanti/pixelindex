@@ -70,7 +70,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         return review;
     }
 
-    public void insertReview(Review review) throws DAOException {
+    public String insertReview(Review review) throws DAOException {
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
@@ -81,8 +81,21 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             document.append("recommended", review.getRating() == RatingKind.RECOMMENDED);
             document.append("postedDate", review.getTimestamp());
             collection.insertOne(document);
+            return document.get("_id").toString();
+
         } catch (Exception e) {
             throw new DAOException("Error while inserting review" + e);
+        }
+    }
+
+    public void deleteReview(String reviewId) throws DAOException {
+        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("reviews");
+            Document query = new Document("_id", new ObjectId(reviewId));
+            collection.deleteOne(query);
+        } catch (Exception e) {
+            throw new DAOException("Error while deleting review" + e);
         }
     }
 
