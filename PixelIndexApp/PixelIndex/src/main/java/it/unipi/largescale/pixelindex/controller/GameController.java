@@ -79,7 +79,11 @@ public class GameController{
                 askGameQueryByName();
             } else {
                 // Showing reviews
-                reviewController.displayExcerpt(gameId);
+                int ret = reviewController.displayExcerpt(gameId);
+                if(ret == -1){
+                    exitGameList = 0;
+                    askGameQueryByName();
+                }
             }
             return 0;
         }catch(ConnectionException ex)

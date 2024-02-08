@@ -32,7 +32,10 @@ public class ReviewController {
             ListSelector ls = new ListSelector("Query result");
             result = constructExcerpt(gameId,pageSelection);
             totalPages = (int)Math.ceil((double)(countAllReviews/REVIEWS_PER_PAGE));
-            System.out.println("Page displayed: " + (pageSelection+1) + "of "+ totalPages);
+            if(totalPages == 0)
+                System.out.println("***List empty ***");
+            else
+                System.out.println("Page displayed: " + (pageSelection+1) + "of "+ totalPages);
             if(result != 0)
                 break;
             constructView();
@@ -50,7 +53,7 @@ public class ReviewController {
                     break;
                 case 2: // Go back
                     exitReviewList = 1;
-                    break;
+                    return -1;
                 default:
                     exitReviewList = 1;
                     // Details review
