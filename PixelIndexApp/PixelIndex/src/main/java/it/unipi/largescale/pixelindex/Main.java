@@ -235,8 +235,14 @@ public class Main {
         }
     }
 
-    public static void deleteReviewMongo() {
-
+    public static void testGetReviewById() {
+        ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
+        try {
+            Review r = reviewMongoDAO.getReviewById("65aeb1c3d5bacae64d61d013");
+            System.out.println(r);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
     // ========== NICCO ==============
@@ -257,8 +263,8 @@ public class Main {
 
         // =================== LORE =====================
 
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        //Utils.clearConsole();
+        //ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*
@@ -285,6 +291,7 @@ public class Main {
         // testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
+        testGetReviewById();
 
 
         /*
