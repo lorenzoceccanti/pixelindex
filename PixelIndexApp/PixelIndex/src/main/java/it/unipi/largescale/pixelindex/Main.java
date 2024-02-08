@@ -169,11 +169,11 @@ public class Main {
         System.out.println("Recensione rimossa");
     }
 
-    public static void testGetReviewsByGameId() {
+    public static void testGetReviewsByGameId(int page) {
         ReviewPageDTO reviews = new ReviewPageDTO();
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
 
-        int page = 0;
+        // int page = 0;
 
         try {
             reviews = reviewMongoDAO.getReviewsByGameId("65afd86a7ae28aa3f608bd15", "", page);
@@ -245,8 +245,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Utils.clearConsole();
-        // ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
 
         /*
          * GameService gs = ServiceLocator.getGameService();
@@ -265,7 +265,7 @@ public class Main {
         // insertReviewMongo();
         // insertReviewNeo4j();
         // removeReviewNeo4j();
-        // testGetReviewsByGameId();
+        // testGetReviewsByGameId(0);
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();

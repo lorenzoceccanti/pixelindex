@@ -15,21 +15,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReviewController {
 
+    private final int REVIEWS_PER_PAGE = 10;
     private ReviewPageDTO reviewPageDTO;
     private ArrayList<String> rows;
     private List<ReviewPreviewDTO> reviewPreviewDTOs;
     private ReviewService reviewService;
     private int exitReviewList;
-    private Integer countAllReviews;
+    private int countAllReviews;
     private AtomicBoolean menuDisplayed;
     private String sessionUsername;
     public int displayExcerpt(String gameId){
         int result; int pageSelection = 0;
+        int totalPages = 0;
         do{
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
-            System.out.println("Page displayed: " + (pageSelection+1) + "of "+countAllReviews);
             result = constructExcerpt(gameId,pageSelection);
+            totalPages = (int)Math.ceil((double)(countAllReviews/REVIEWS_PER_PAGE));
+            if(totalPages == 0)
+                System.out.println("***List empty ***");
+            else
+                System.out.println("Page displayed: " + (pageSelection+1) + "of "+ totalPages);
             if(result != 0)
                 break;
             constructView();
@@ -43,12 +49,11 @@ public class ReviewController {
                     break;
                 case 1: // Next page
                     exitReviewList = 0;
-                    pageSelection = pageSelection < countAllReviews-1 ? ++pageSelection : pageSelection;
+                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
-                    menuDisplayed.set(true);
                     exitReviewList = 1;
-                    break;
+                    return -1;
                 default:
                     exitReviewList = 1;
                     // Details review
@@ -66,9 +71,8 @@ public class ReviewController {
             rows.add(reviewPreviewDTO.toString());
         });
     }
-    private int constructExcerpt(String gameId, Integer page){
+    private int constructExcerpt(String gameId, int page){
         try{
-            /* QUA E' IL PROBLEMA*/
             reviewPageDTO = reviewService.getReviews(gameId, sessionUsername, page);
             countAllReviews = reviewPageDTO.getTotalReviewsCount();
             reviewPreviewDTOs = reviewPageDTO.getReviews();

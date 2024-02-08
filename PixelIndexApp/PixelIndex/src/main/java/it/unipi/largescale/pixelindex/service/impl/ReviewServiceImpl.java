@@ -51,7 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewPageDTO getReviews(String gameId, String username, int page) throws ConnectionException {
         // TODO: da testare
         try {
-            return reviewMongoDAO.getReviewsByGameId(gameId);
+            return reviewMongoDAO.getReviewsByGameId(gameId, username, page);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

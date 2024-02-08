@@ -1,6 +1,8 @@
 package it.unipi.largescale.pixelindex.dto;
 
 import it.unipi.largescale.pixelindex.model.RatingKind;
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+import jline.internal.Ansi;
 
 import java.time.LocalDateTime;
 
@@ -63,13 +65,10 @@ public class ReviewPreviewDTO {
 
     @Override
     public String toString() {
-        return "ReviewPreviewDTO{" +
-                "id='" + id + '\'' +
-                ", author='" + author + '\'' +
-                ", rating=" + rating +
-                ", excerpt='" + excerpt + '\'' +
-                ", likes=" + likes + '\'' +
-                ", dislikes=" + dislikes + '\'' +
-                '}';
+        return AnsiColor.ANSI_RED+"Author: "+author+AnsiColor.ANSI_RESET
+                +AnsiColor.ANSI_YELLOW+" Rating: "+rating+AnsiColor.ANSI_RESET
+                +" Excerpt: " + excerpt
+                +AnsiColor.ANSI_BLUE+" Likes: "+likes+AnsiColor.ANSI_RESET
+                +AnsiColor.ANSI_PURPLE+" Dislikes: "+dislikes+AnsiColor.ANSI_RESET;
     }
 }
