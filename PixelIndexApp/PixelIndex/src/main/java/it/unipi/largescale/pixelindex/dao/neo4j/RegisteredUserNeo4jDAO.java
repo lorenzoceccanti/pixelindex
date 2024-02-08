@@ -45,10 +45,15 @@ public class RegisteredUserNeo4jDAO {
                                 "    'CREATE (user1)-[:FOLLOWS]->(user2) RETURN \"created\"', " +
                                 "    {user1: user1, user2: user2, f: f}) " +
                                 "YIELD value " +
-                                "RETURN value.value as action",
+                                "RETURN value as action",
                         parameters("usernameSrc", usernameSrc, "usernameDst", usernameDst));
                 if (result.hasNext()) {
-                    return result.single().get("action").asString();
+                    Value value = result.single().get("action");
+                    if (!value.isNull()) {
+                        String str = value.asMap().toString();
+                        String[] parts = str.split("=");
+                        return parts[1].substring(0,parts[1].length()-1);
+                    }
                 }
                 return "No result"; // Returning a default message when no action is taken
             }); // Returning the result of the transaction
