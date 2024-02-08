@@ -62,8 +62,6 @@ public class RegisteredUserController {
     private int pressFollow(String username)
     {
         try{
-            System.out.println("sessionUsername: " + sessionUsername);
-            System.out.println("username: " + username);
             String operation = registeredUserService.followUser(sessionUsername, username, consistencyThread);
             System.out.println("[Operation]: " + operation);
             return 0;
