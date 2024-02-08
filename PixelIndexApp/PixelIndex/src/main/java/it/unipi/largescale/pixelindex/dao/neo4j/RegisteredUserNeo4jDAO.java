@@ -55,6 +55,7 @@ public class RegisteredUserNeo4jDAO {
         } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new DAOException("Error processing followUser operation");
         }
     }

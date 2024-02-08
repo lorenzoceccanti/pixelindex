@@ -6,6 +6,7 @@ import it.unipi.largescale.pixelindex.controller.ApplicationController;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.RegisteredUserNeo4jDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.ReviewNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.*;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -125,6 +126,17 @@ public class Main {
         }
     }
 
+    public static void startFollow()
+    {
+        RegisteredUserNeo4jDAO registeredUserNeo4jDAO = new RegisteredUserNeo4jDAO();
+        try{
+            String result = registeredUserNeo4jDAO.followUser("ale1968", "ilDuca");
+            System.out.println(result);
+        }catch (DAOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
     // ========== CRI ==============
     public static void insertReviewMongo() {
@@ -245,9 +257,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        // =================== LORE =====================
 
+        startFollow();
+        //Utils.clearConsole();
+        // ApplicationController applicationController = new ApplicationController();
+
+        // ===============================================
         /*
          * GameService gs = ServiceLocator.getGameService();
          * List<GamePreviewDTO> games = null;
