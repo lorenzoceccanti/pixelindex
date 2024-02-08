@@ -202,30 +202,14 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         {
             MongoDatabase database = mc.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = database.getCollection("users");
-            Bson myMatch = or(eq("username",src),eq("username",dst));
-
-            Document mySet = new Document("$set",
-                    new Document("followers",
-                            new Document("$cond",
-                                    new Document("if",
-                                            new Document("$eq", Arrays.asList("$username", dst))
-                                    )
-                                            .append("then", followerDst)
-                                            .append("else", "$followers")
-                            )
-                    )
-                            .append("following",
-                                    new Document("$cond",
-                                            new Document("if",
-                                                    new Document("$eq", Arrays.asList("$username", followingSrc))
-                                            )
-                                                    .append("then", followingSrc)
-                                                    .append("else", "$following")
-                                    )
-                            )
+            List<Bson> updatePipeline = Arrays.asList(
+                    Updates.set("following",
+                            new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$username", src)), followingSrc, "$following"))),
+                    Updates.set("followers",
+                            new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$username", dst)), followerDst, "$followers")))
             );
 
-            usersCollection.updateMany(myMatch, mySet);
+            usersCollection.updateMany(Filters.or(Filters.eq("username", src), Filters.eq("username", dst)), updatePipeline);
         }catch(MongoSocketException ex){
             throw new DAOException("Error in connecting to MongoDB");
         }
