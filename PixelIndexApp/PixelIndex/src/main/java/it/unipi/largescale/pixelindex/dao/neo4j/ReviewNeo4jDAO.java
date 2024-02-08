@@ -129,7 +129,9 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
                     if (result.hasNext()) {
                         Value value = result.single().get("value");
                         if (!value.isNull()) {
-                            return value.asMap().toString();
+                            String str = value.asMap().toString();
+                            String[] parts = str.split("=");
+                            return parts[1].substring(0,parts[1].length()-1);
                         }
                     }
                     return "No result";

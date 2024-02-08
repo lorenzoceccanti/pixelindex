@@ -39,7 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
                 try {
                     reviewNeo4jDAO.deleteReview(reviewId);
                 } catch (DAOException e) {
-
+                    e.printStackTrace();
                 }
             });
 
@@ -64,6 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
                     Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount(reviewId);
                     reviewMongoDAO.setReactionsCount(reviewId, reactions.get("likes"), reactions.get("dislikes"));
                 } catch (DAOException e) {
+                    e.printStackTrace();
                 }
             });
 

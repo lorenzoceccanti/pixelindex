@@ -3,6 +3,7 @@ package it.unipi.largescale.pixelindex.service.impl;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.BaseMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.RegisteredUserMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.RegisteredUserNeo4jDAO;
@@ -18,6 +19,7 @@ import it.unipi.largescale.pixelindex.security.Crypto;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class RegUserServiceImpl implements RegisteredUserService {
     private RegisteredUserMongoDAO registeredUserMongo;
@@ -102,9 +104,18 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public String followUser(String usernameSrc, String usernameDst) throws ConnectionException {
+    public String followUser(String usernameSrc, String usernameDst, ConsistencyThread consistencyThread) throws ConnectionException {
         try {
-            return registeredUserNeo.followUser(usernameSrc, usernameDst);
+            String outcome = registeredUserNeo.followUser(usernameSrc, usernameDst);
+            consistencyThread.addTask(() -> {
+                try{
+                    Map<String, Integer> folCount = registeredUserNeo.getFollowsCount(usernameSrc, usernameDst);
+                    registeredUserMongo.updateFollowers(usernameSrc, usernameDst, folCount.get("followingSrc"), folCount.get("followerDst"));
+                }catch(DAOException e){
+                    e.printStackTrace();
+                }
+            });
+            return outcome;
         } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }

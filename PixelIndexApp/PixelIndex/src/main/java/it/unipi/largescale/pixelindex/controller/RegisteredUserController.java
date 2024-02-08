@@ -16,9 +16,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisteredUserController {
+    BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
+    ConsistencyThread consistencyThread = new ConsistencyThread(queue);
     private RegisteredMenu registeredMenu;
     private Runnable[] functionsRegistered;
     private String sessionUsername;
@@ -60,7 +64,7 @@ public class RegisteredUserController {
         try{
             System.out.println("sessionUsername: " + sessionUsername);
             System.out.println("username: " + username);
-            String operation = registeredUserService.followUser(sessionUsername, username);
+            String operation = registeredUserService.followUser(sessionUsername, username, consistencyThread);
             System.out.println("[Operation]: " + operation);
             return 0;
         }catch (ConnectionException ex)
@@ -170,6 +174,8 @@ public class RegisteredUserController {
         };
     }
     public void execute(){
+        // After the login the thread starts
+        consistencyThread.start();
         Utils.clearConsole();
         int index = showRegisteredDropdown();
     }

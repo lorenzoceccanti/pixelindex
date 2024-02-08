@@ -2,6 +2,7 @@
 
 package it.unipi.largescale.pixelindex;
 
+import it.unipi.largescale.pixelindex.controller.ApplicationController;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
@@ -19,6 +20,7 @@ import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
+import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -206,7 +208,6 @@ public class Main {
         try {
             String str = reviewService.addReaction("65aeb1c6d5bacae64d61ef5f", "Nicco", Reaction.LIKE,
                     "65afd5f57ae28aa3f604f9b2", "Mr.Weebster", consistencyThread);
-            System.out.println("result follow: " + str);
         } catch (ConnectionException e) {
             e.printStackTrace();
         }
@@ -256,10 +257,8 @@ public class Main {
 
         // =================== LORE =====================
 
-        startFollow();
-        // testAddReaction();
-        // Utils.clearConsole();
-        // ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*
@@ -279,7 +278,7 @@ public class Main {
         // insertReviewMongo();
         // insertReviewNeo4j();
         // removeReviewNeo4j();
-        testGetReviewsByGameId();
+        // testGetReviewsByGameId();
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();

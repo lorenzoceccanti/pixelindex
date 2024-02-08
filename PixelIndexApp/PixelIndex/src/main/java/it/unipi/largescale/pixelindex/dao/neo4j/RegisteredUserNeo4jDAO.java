@@ -5,8 +5,11 @@ import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
+import org.w3c.dom.DOMException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -62,6 +65,40 @@ public class RegisteredUserNeo4jDAO {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new DAOException("Error processing followUser operation");
+        }
+    }
+
+    /** This method is called by the Consistency Thread eventually
+     *  to align the consistency between Neo4j and MongoDb
+     */
+    public Map<String,Integer> getFollowsCount(String src, String dst) throws DAOException{
+        try(Driver neoDriver = BaseNeo4jDAO.beginConnection();
+            Session session = neoDriver.session()){
+            return session.executeRead(tx->{
+                Result result = tx.run("OPTIONAL MATCH (u:User{username:$src})-[f1:FOLLOWS]->(m:User) "
+                + "WITH COUNT(f1) AS followingSrc "
+                + "OPTIONAL MATCH (u1:User{username:$dst})<-[f2:FOLLOWS]-(n:User) "
+                + "RETURN followingSrc, COUNT(f2) AS followerDst;",
+                        parameters("src",src,"dst",dst));
+
+                if(result.hasNext())
+                {
+                    Record record = result.single();
+                    int followingSrc = record.get("followingSrc").asInt();
+                    int followerDst = record.get("followerDst").asInt();
+
+                    Map<String, Integer> counts = new HashMap<>();
+                    counts.put("followingSrc",followingSrc);
+                    counts.put("followerDst",followerDst);
+
+                    return counts;
+                } else {
+                    throw new RuntimeException("No record founds");
+                }
+            });
+        }catch(ServiceUnavailableException ex)
+        {
+            throw new DAOException("Cannot reach Neo4j Server");
         }
     }
 

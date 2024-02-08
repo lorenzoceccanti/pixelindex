@@ -2,10 +2,7 @@ package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.MongoSocketException;
 import com.mongodb.MongoWriteException;
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -20,12 +17,16 @@ import it.unipi.largescale.pixelindex.utils.Utils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+
 import it.unipi.largescale.pixelindex.security.Crypto;
 
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+import static com.mongodb.client.model.Aggregates.set;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+
 
 public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
@@ -155,7 +156,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
     public ArrayList<UserSearchDTO> searchUser(String username, int page) throws DAOException {
         ArrayList<UserSearchDTO> users = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+        try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("users");
 
@@ -194,5 +195,40 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         return users;
     }
 
+    public void updateFollowers(String src, String dst, int followingSrc, int followerDst) throws DAOException
+    {
+        MongoDatabase db;
+        try(MongoClient mc = beginConnection())
+        {
+            MongoDatabase database = mc.getDatabase("pixelindex");
+            MongoCollection<Document> usersCollection = database.getCollection("users");
+            Bson myMatch = or(eq("username",src),eq("username",dst));
+
+            Document mySet = new Document("$set",
+                    new Document("followers",
+                            new Document("$cond",
+                                    new Document("if",
+                                            new Document("$eq", Arrays.asList("$username", dst))
+                                    )
+                                            .append("then", followerDst)
+                                            .append("else", "$followers")
+                            )
+                    )
+                            .append("following",
+                                    new Document("$cond",
+                                            new Document("if",
+                                                    new Document("$eq", Arrays.asList("$username", followingSrc))
+                                            )
+                                                    .append("then", followingSrc)
+                                                    .append("else", "$following")
+                                    )
+                            )
+            );
+
+            usersCollection.updateMany(myMatch, mySet);
+        }catch(MongoSocketException ex){
+            throw new DAOException("Error in connecting to MongoDB");
+        }
+    }
 
 }
