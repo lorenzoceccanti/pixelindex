@@ -58,7 +58,10 @@ public class RegisteredUserController {
     private int pressFollow(String username)
     {
         try{
-            registeredUserService.followUser(sessionUsername, username);
+            System.out.println("sessionUsername: " + sessionUsername);
+            System.out.println("username: " + username);
+            String operation = registeredUserService.followUser(sessionUsername, username);
+            System.out.println("[Operation]: " + operation);
             return 0;
         }catch (ConnectionException ex)
         {
@@ -80,7 +83,7 @@ public class RegisteredUserController {
         }
         do
         {
-            Utils.clearConsole();
+            // Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = usersByName(queryName, pageSelection);
@@ -105,11 +108,11 @@ public class RegisteredUserController {
                     queryName = "";
                     break;
                 default:
+                    UserSearchDTO u = userSearchDTOs.get(choice-3);
                     // Follow or unfollow
-                    // pressFollow()
                     // To access the userSearchDTOs access with an index decreased by 3
-                    break;
-
+                    pressFollow(u.getUsername());
+                    exit = 0;
             }
         }while(exit != 1);
         return result;
