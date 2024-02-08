@@ -136,6 +136,17 @@ public class Main {
         }
     }
 
+    public static void testReviewDetails(){
+        ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
+        try{
+            Review r = reviewMongoDAO.getReviewById("65b19626c6c1f28b326ea4e2");
+            System.out.println(r);
+        }catch(DAOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
     // ========== CRI ==============
     public static void insertReviewMongo() {
         Review review = new Review();
@@ -263,8 +274,8 @@ public class Main {
 
         // =================== LORE =====================
 
-        //Utils.clearConsole();
-        //ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*

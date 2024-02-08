@@ -55,6 +55,13 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ConnectionException(e);
         }
     }
+    public Review getReviewDetails(String id) throws ConnectionException{
+        try{
+            return reviewMongoDAO.getReviewById(id);
+        }catch(DAOException e){
+            throw new ConnectionException(e);
+        }
+    }
 
     public String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException {
         try {

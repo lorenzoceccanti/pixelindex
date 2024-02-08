@@ -15,7 +15,7 @@ public interface ReviewService {
     void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException;
 
     ReviewPageDTO getReviews(String gameId, String username, Integer page) throws ConnectionException;
-
+    Review getReviewDetails(String id) throws ConnectionException;
     String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException;
 
     public Map<String, Integer> getReactionsCount(String reviewId) throws ConnectionException;

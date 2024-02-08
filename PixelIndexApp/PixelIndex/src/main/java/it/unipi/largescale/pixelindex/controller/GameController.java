@@ -24,6 +24,7 @@ public class GameController{
     private int totalPages;
     private String queryName;
     private int exitGameList;
+    private int exitGameDetails;
 
     /** Returns 1 if there have been connection errors,
      * 0 if not error occoured
@@ -57,7 +58,8 @@ public class GameController{
     }
 
 
-    private int viewGameDetail(int indexView){
+    private int viewGameDetail(int indexView, Integer exitGameDetails){
+
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti
          */
@@ -67,29 +69,27 @@ public class GameController{
         opt.add("Show top 10 most relevant reviews");
         opt.add("Go back");
         // Making the query for get all the details of that specific game
-        try{
+
+        do{
             String gameId = gamePreviewDTO.getId();
-            g = gameService.getGameById(gameId);
-            System.out.println(g);
-            ls.addOptions(opt, "gameDetailsDropdown", "Please select");
-            int sel = ls.askUserInteraction("gameDetailsDropdown");
-            if(sel == 1){
-                // Go Back
-                exitGameList = 0;
-                askGameQueryByName();
-            } else {
-                // Showing reviews
-                int ret = reviewController.displayExcerpt(gameId);
-                if(ret == -1){
+            try{
+                g = gameService.getGameById(gameId);
+                System.out.println(g);
+                ls.addOptions(opt, "gameDetailsDropdown", "Please select");
+                int sel = ls.askUserInteraction("gameDetailsDropdown");
+                if(sel == 1){
+                    // Go back pressed
+                    exitGameDetails = 1;
                     exitGameList = 0;
                     askGameQueryByName();
+                } else {
+                    reviewController.displayExcerpt(gameId,exitGameDetails);
                 }
+            }catch(ConnectionException ex){
+                return 1;
             }
-            return 0;
-        }catch(ConnectionException ex)
-        {
-            return 1;
-        }
+        }while(exitGameDetails != 1);
+        return 0;
     }
 
     /** Returns 1 if there have been connection errors,
@@ -103,7 +103,9 @@ public class GameController{
         if(queryName.isEmpty())
         {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Query?");
+            System.out.println("Query? Possibile syntax:");
+            System.out.println(AnsiColor.ANSI_CYAN+"<name>"+AnsiColor.ANSI_RESET);
+            System.out.println(AnsiColor.ANSI_CYAN+"<name> [-c <company> | -p <platform> | -y <releaseYear>]"+AnsiColor.ANSI_RESET);
             queryName = sc.nextLine();
         }
         do{
@@ -136,7 +138,7 @@ public class GameController{
                 default: // Game selection
                     menuDisplayed.set(false);
                     exitGameList = 1;
-                    viewGameDetail(choice);
+                    viewGameDetail(choice, 0);
                     break;
             }
         }while(exitGameList != 1);
