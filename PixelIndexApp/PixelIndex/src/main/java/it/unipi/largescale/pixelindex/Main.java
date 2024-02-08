@@ -2,7 +2,6 @@
 
 package it.unipi.largescale.pixelindex;
 
-import it.unipi.largescale.pixelindex.controller.ApplicationController;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
@@ -20,7 +19,6 @@ import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
-import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -126,14 +124,12 @@ public class Main {
         }
     }
 
-    public static void startFollow()
-    {
+    public static void startFollow() {
         RegisteredUserNeo4jDAO registeredUserNeo4jDAO = new RegisteredUserNeo4jDAO();
-        try{
+        try {
             String result = registeredUserNeo4jDAO.followUser("ale1968", "ilDuca");
             System.out.println(result);
-        }catch (DAOException ex)
-        {
+        } catch (DAOException ex) {
             ex.printStackTrace();
         }
     }
@@ -153,7 +149,7 @@ public class Main {
 
         try {
             // review = reviewMongoDAO.getReviewById("65be128e0bc3c618299c53a8");
-            reviewMongoDAO.insertReview(review);
+            reviewMongoDAO.insertReview(review, "<gameName>", 2020);
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -181,11 +177,11 @@ public class Main {
         System.out.println("Recensione rimossa");
     }
 
-    public static void testGetReviewsByGameId(int page) {
+    public static void testGetReviewsByGameId(Integer page) {
         ReviewPageDTO reviews = new ReviewPageDTO();
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
 
-        // int page = 0;
+        // Integer page = 0;
 
         try {
             reviews = reviewMongoDAO.getReviewsByGameId("65afd86a7ae28aa3f608bd15", "", page);
@@ -283,7 +279,7 @@ public class Main {
         // insertReviewMongo();
         // insertReviewNeo4j();
         // removeReviewNeo4j();
-        // testGetReviewsByGameId(0);
+        testGetReviewsByGameId();
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();
