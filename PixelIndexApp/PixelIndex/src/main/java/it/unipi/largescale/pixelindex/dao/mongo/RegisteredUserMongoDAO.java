@@ -171,6 +171,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             aggregationPipeline.add(Aggregates.match(Filters.regex("username", username, "i")));
 
             // Sort by similarityScore in descending order, then by followers count
+            // If two or more users have the same similarity score
             aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.ascending("similarityScore"),
                     Sorts.descending("followers"))));
 
