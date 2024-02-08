@@ -61,8 +61,15 @@ public class RegisteredUserController {
 
     private int pressFollow(String username)
     {
+        // Checking if the user is following by itself
+        if(sessionUsername.equals(username)){
+            Utils.clearConsole();
+            System.out.println("[Message]: Cannot follow by yourself!");
+            return 1;
+        }
         try{
             String operation = registeredUserService.followUser(sessionUsername, username, consistencyThread);
+            Utils.clearConsole();
             System.out.println("[Operation]: " + operation);
             return 0;
         }catch (ConnectionException ex)
@@ -85,7 +92,6 @@ public class RegisteredUserController {
         }
         do
         {
-            // Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = usersByName(queryName, pageSelection);
