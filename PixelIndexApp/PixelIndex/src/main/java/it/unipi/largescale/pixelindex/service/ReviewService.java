@@ -10,11 +10,11 @@ import java.util.Map;
 
 public interface ReviewService {
 
-    void insertReview(Review review, ConsistencyThread consistencyThread) throws ConnectionException;
+    void insertReview(Review review, String gameName, Integer gameReleaseYear, ConsistencyThread consistencyThread) throws ConnectionException;
 
     void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException;
 
-    ReviewPageDTO getReviews(String gameId, String username, int page) throws ConnectionException;
+    ReviewPageDTO getReviews(String gameId, String username, Integer page) throws ConnectionException;
 
     String addReaction(String reviewId, String username, Reaction reaction, String gameId, String reviewAuthor, ConsistencyThread consistencyThread) throws ConnectionException;
 

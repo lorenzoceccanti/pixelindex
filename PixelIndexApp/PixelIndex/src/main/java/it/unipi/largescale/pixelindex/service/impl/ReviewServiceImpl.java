@@ -23,9 +23,9 @@ public class ReviewServiceImpl implements ReviewService {
         this.reviewNeo4jDAO = new ReviewNeo4jDAO();
     }
 
-    public void insertReview(Review review, ConsistencyThread consistencyThread) throws ConnectionException {
+    public void insertReview(Review review, String gameName, Integer gameReleaseYear, ConsistencyThread consistencyThread) throws ConnectionException {
         try {
-            reviewMongoDAO.insertReview(review);
+            reviewMongoDAO.insertReview(review, gameName, gameReleaseYear);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
@@ -48,8 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    public ReviewPageDTO getReviews(String gameId, String username, int page) throws ConnectionException {
-        // TODO: da testare
+    public ReviewPageDTO getReviews(String gameId, String username, Integer page) throws ConnectionException {
         try {
             return reviewMongoDAO.getReviewsByGameId(gameId, username, page);
         } catch (DAOException e) {
