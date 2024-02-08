@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReviewController {
 
+    private final int REVIEWS_PER_PAGE = 10;
     private ReviewPageDTO reviewPageDTO;
     private ArrayList<String> rows;
     private List<ReviewPreviewDTO> reviewPreviewDTOs;
@@ -25,11 +26,13 @@ public class ReviewController {
     private String sessionUsername;
     public int displayExcerpt(String gameId){
         int result; int pageSelection = 0;
+        int totalPages = 0;
         do{
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
             result = constructExcerpt(gameId,pageSelection);
-            System.out.println("Page displayed: " + (pageSelection+1) + "of "+countAllReviews);
+            totalPages = (int)Math.ceil((double)(countAllReviews/REVIEWS_PER_PAGE));
+            System.out.println("Page displayed: " + (pageSelection+1) + "of "+ totalPages);
             if(result != 0)
                 break;
             constructView();
@@ -43,7 +46,7 @@ public class ReviewController {
                     break;
                 case 1: // Next page
                     exitReviewList = 0;
-                    pageSelection = pageSelection < countAllReviews-1 ? ++pageSelection : pageSelection;
+                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
                     exitReviewList = 1;
@@ -67,8 +70,6 @@ public class ReviewController {
     }
     private int constructExcerpt(String gameId, int page){
         try{
-            /* QUA E' IL PROBLEMA*/
-            System.out.println("Constructing exceprt for page: "+page+" gameId: "+gameId);
             reviewPageDTO = reviewService.getReviews(gameId, sessionUsername, page);
             countAllReviews = reviewPageDTO.getTotalReviewsCount();
             reviewPreviewDTOs = reviewPageDTO.getReviews();
