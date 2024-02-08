@@ -208,8 +208,9 @@ public class Main {
         consistencyThread.start();
 
         try {
-            reviewService.addReaction("65aeb1c6d5bacae64d61ef5f", "Nicco", Reaction.LIKE,
+            String str = reviewService.addReaction("65aeb1c6d5bacae64d61ef5f", "Nicco", Reaction.LIKE,
                     "65afd5f57ae28aa3f604f9b2", "Mr.Weebster", consistencyThread);
+            System.out.println("result follow: " + str);
         } catch (ConnectionException e) {
             e.printStackTrace();
         }
@@ -260,7 +261,8 @@ public class Main {
         // =================== LORE =====================
 
         startFollow();
-        //Utils.clearConsole();
+        // testAddReaction();
+        // Utils.clearConsole();
         // ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
