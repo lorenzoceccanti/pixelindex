@@ -20,9 +20,11 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         ObjectId resultObjectId = result.getObjectId("_id");
         review.setId(resultObjectId.toString());
 
+        ObjectId resultGameObjectId = result.getObjectId("gameId");
+        review.setGameId(resultGameObjectId.toString());
+
         review.setText(result.getString("review"));
         review.setAuthor(result.getString("author"));
-        review.setGameId(result.getString("gameId"));
         review.setTimestamp(Utils.convertDateToLocalDateTime(result.getDate("postedDate")));
         review.setLikes(result.getInteger("likes", 0));
         review.setDislikes(result.getInteger("dislikes", 0));
