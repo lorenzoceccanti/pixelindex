@@ -12,6 +12,7 @@ import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.UnregisteredMenu;
 
 import java.io.Console;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -114,7 +115,12 @@ public class UnregisteredUserController {
         System.out.println("Email address?");
         userRegistrationDTO.setEmail(sc.nextLine());
         System.out.println("Date of birth? YYYY-MM-DD");
-        userRegistrationDTO.setDateOfBirth(Utils.convertStringToLocalDate(sc.nextLine()));
+        try{
+            userRegistrationDTO.setDateOfBirth(Utils.convertStringToLocalDate(sc.nextLine()));
+        }catch(DateTimeParseException e){
+            displayed.set(true);
+            return 4; // Going back to menù
+        }
         System.out.println("Preferred language?");
         String preferredLanguage = sc.nextLine();
         System.out.println("Choose your password:");
