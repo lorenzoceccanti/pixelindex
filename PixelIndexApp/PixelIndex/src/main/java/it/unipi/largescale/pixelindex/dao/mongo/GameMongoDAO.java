@@ -179,5 +179,19 @@ public class GameMongoDAO extends BaseMongoDAO {
         }
     }
 
-
+    public ArrayList<Game> getInconsistentGames() throws DAOException {
+        try (MongoClient mongoClient = beginConnection()) {
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("games");
+            Document filter = new Document("consistent", true);
+            ArrayList<Document> results = collection.find(filter).into(new ArrayList<>());
+            ArrayList<Game> games = new ArrayList<>();
+            for (Document result : results) {
+                games.add(gameFromQueryResult(result));
+            }
+            return games;
+        } catch (Exception e) {
+            throw new DAOException("Error updating consistency flag: " + e);
+        }
+    }
 }
