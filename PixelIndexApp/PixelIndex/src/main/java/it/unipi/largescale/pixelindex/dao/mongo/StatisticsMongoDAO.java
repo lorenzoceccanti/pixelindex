@@ -65,55 +65,42 @@ public class StatisticsMongoDAO {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
 
-            List<Bson> aggregationPipeline = Arrays.asList(
-                    new Document("$group",
+            List<Bson> aggregationPipeline = Arrays.asList(new Document("$group",
                             new Document("_id", "$gameId")
+                                    .append("gameName",
+                                            new Document("$first", "$gameName"))
+                                    .append("gameReleaseYear",
+                                            new Document("$first", "$gameReleaseYear"))
                                     .append("positiveReviews",
                                             new Document("$sum",
-                                                    new Document("$cond", Arrays.asList("$recommended", 1L, 0L))))
+                                                    new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$recommended", true)), 1L, 0L))))
                                     .append("negativeReviews",
                                             new Document("$sum",
-                                                    new Document("$cond", Arrays.asList("$recommended", 0L, 1L))))
+                                                    new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$recommended", false)), 1L, 0L))))
                                     .append("totalReviews",
                                             new Document("$sum", 1L))),
+                    new Document("$match",
+                            new Document("totalReviews",
+                                    new Document("$gte", 15L))),
                     new Document("$project",
-                            new Document("positiveReviews", 1L)
-                                    .append("negativeReviews", 1L)
-                                    .append("totalReviews", 1L)
-                                    .append("ratio",
-                                            new Document("$divide", Arrays.asList("$positiveReviews",
-                                                    new Document("$cond", Arrays.asList(new Document("$eq",
-                                                            Arrays.asList("$negativeReviews", 0L)), 1L, "$negativeReviews")))))),
-                    new Document("$addFields",
-                            new Document("weightedRatio",
-                                    new Document("$divide", Arrays.asList("$ratio",
-                                            new Document("$add", Arrays.asList(1L,
-                                                    new Document("$divide", Arrays.asList("$totalReviews", 10L)))))))),
+                            new Document("gameName", 1L)
+                                    .append("gameReleaseYear", 1L)
+                                    .append("positiveRatingRatio",
+                                            new Document("$multiply", Arrays.asList(new Document("$divide", Arrays.asList("$positiveReviews",
+                                                    new Document("$add", Arrays.asList("$positiveReviews", "$negativeReviews")))), 100L)))),
                     new Document("$sort",
-                            new Document("weightedRatio", -1L)),
-                    new Document("$limit", 10),
-                    new Document("$lookup",
-                            new Document("from", "games")
-                                    .append("localField", "_id")
-                                    .append("foreignField", "_id")
-                                    .append("as", "gameDetails")),
-                    new Document("$unwind", "$gameDetails"),
-                    new Document("$project",
-                            new Document("_id", 1L)
-                                    .append("positiveReviews", 1L)
-                                    .append("negativeReviews", 1L)
-                                    .append("gameName", "$gameDetails.name")
-                                    .append("firstReleaseDate", "$gameDetails.first_release_date")));
+                            new Document("positiveRatingRatio", -1L)),
+                    new Document("$limit", 10L));
 
             AggregateIterable<Document> results = collection.aggregate(aggregationPipeline);
             for (Document doc : results) {
                 GameRatingDTO dto = new GameRatingDTO();
-                Document gameDetails = (Document) doc.get("gameDetails");
 
-                dto.setName(gameDetails.getString("name"));
-                dto.setReleaseYear(Utils.convertDateToLocalDate(gameDetails.getDate("first_release_date")).getYear());
-                double positiveRatio = doc.getDouble("positiveReviews") / (doc.getDouble("positiveReviews") +
-                        doc.getDouble("negativeReviews")) * 100;
+                dto.setName(doc.getString("gameName"));
+                if (doc.getInteger("gameReleaseYear") != null) {
+                    dto.setReleaseYear(doc.getInteger("gameReleaseYear"));
+                }
+                double positiveRatio = doc.getDouble("positiveRatingRatio");
                 dto.setPositiveRatingRatio(positiveRatio);
 
                 gameByRatingDTOS.add(dto);
