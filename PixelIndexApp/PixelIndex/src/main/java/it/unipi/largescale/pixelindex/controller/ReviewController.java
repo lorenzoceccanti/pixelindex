@@ -20,7 +20,7 @@ public class ReviewController {
     private List<ReviewPreviewDTO> reviewPreviewDTOs;
     private ReviewService reviewService;
     private int exitReviewList;
-    private Integer countAllReviews;
+    private int countAllReviews;
     private AtomicBoolean menuDisplayed;
     private String sessionUsername;
     public int displayExcerpt(String gameId){
@@ -28,8 +28,8 @@ public class ReviewController {
         do{
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
-            System.out.println("Page displayed: " + (pageSelection+1) + "of "+countAllReviews);
             result = constructExcerpt(gameId,pageSelection);
+            System.out.println("Page displayed: " + (pageSelection+1) + "of "+countAllReviews);
             if(result != 0)
                 break;
             constructView();
@@ -46,7 +46,6 @@ public class ReviewController {
                     pageSelection = pageSelection < countAllReviews-1 ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
-                    menuDisplayed.set(true);
                     exitReviewList = 1;
                     break;
                 default:
@@ -66,9 +65,10 @@ public class ReviewController {
             rows.add(reviewPreviewDTO.toString());
         });
     }
-    private int constructExcerpt(String gameId, Integer page){
+    private int constructExcerpt(String gameId, int page){
         try{
             /* QUA E' IL PROBLEMA*/
+            System.out.println("Constructing exceprt for page: "+page+" gameId: "+gameId);
             reviewPageDTO = reviewService.getReviews(gameId, sessionUsername, page);
             countAllReviews = reviewPageDTO.getTotalReviewsCount();
             reviewPreviewDTOs = reviewPageDTO.getReviews();
