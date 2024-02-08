@@ -1,5 +1,7 @@
 package it.unipi.largescale.pixelindex.model;
 
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+
 import java.time.LocalDateTime;
 
 public class Review {
@@ -77,16 +79,10 @@ public class Review {
     }
 
     @Override
-    public String toString() {
-        return "Review{" +
-                "id='" + id + '\'' +
-                ", author='" + author + '\'' +
-                ", gameId='" + gameId + '\'' +
-                ", rating=" + rating +
-                ", text='" + text + '\'' +
-                ", timestamp=" + timestamp.toString() +
-                ", likes=" + likes + '\'' +
-                ", dislikes=" + dislikes + '\'' +
-                '}';
+    public String toString(){
+        return AnsiColor.ANSI_RED+"By: "+author+AnsiColor.ANSI_RESET+AnsiColor.ANSI_BLUE+" Rating: "+rating+AnsiColor.ANSI_RESET+"\n"+
+                AnsiColor.ANSI_CYAN+"Posted date: "+timestamp.toString()+AnsiColor.ANSI_RESET+"\n"+
+                AnsiColor.ANSI_GREEN+"Likes: " + likes+AnsiColor.ANSI_RESET+AnsiColor.ANSI_PURPLE+" Dislikes: "+dislikes+AnsiColor.ANSI_RESET+"\n"+
+                "«"+text+"»";
     }
 }

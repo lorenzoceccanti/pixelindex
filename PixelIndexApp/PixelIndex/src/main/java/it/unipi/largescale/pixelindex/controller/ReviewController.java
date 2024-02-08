@@ -42,7 +42,7 @@ public class ReviewController {
             detailedReview = reviewService.getReviewDetails(reviewId);
             int sel = -1;
             do{
-                System.out.println("printing r..");
+                Utils.clearConsole();
                 System.out.println(detailedReview);
                 ls.addOptions(opt,"reviewDetailsDropdown", "Add a reaction if you want");
                 sel = ls.askUserInteraction("reviewDetailsDropdown");
