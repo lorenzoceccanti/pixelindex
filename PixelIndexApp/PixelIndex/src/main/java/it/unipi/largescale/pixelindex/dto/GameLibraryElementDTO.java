@@ -1,5 +1,7 @@
 package it.unipi.largescale.pixelindex.dto;
 
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+
 import java.time.LocalDate;
 
 public class GameLibraryElementDTO extends GamePreviewDTO {
@@ -16,7 +18,7 @@ public class GameLibraryElementDTO extends GamePreviewDTO {
     @Override
     public String toString() {
         String result = super.toString();
-        result += (" Added Date: " + addedDate);
+        result += (" "+ AnsiColor.ANSI_CYAN+"Added Date: " + addedDate+AnsiColor.ANSI_RESET);
         return result;
     }
 }

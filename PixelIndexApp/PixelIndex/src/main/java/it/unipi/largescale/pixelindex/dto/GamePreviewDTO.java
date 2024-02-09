@@ -1,5 +1,7 @@
 package it.unipi.largescale.pixelindex.dto;
 
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+
 public class GamePreviewDTO {
 
     private String id;
@@ -32,9 +34,9 @@ public class GamePreviewDTO {
 
     public String toString() {
         String result = "";
-        result += ("Name: " + name);
+        result += (AnsiColor.ANSI_BLUE+"Name: " + name+AnsiColor.ANSI_RESET);
         if (releaseYear != null)
-            result += (" Release Year: " + releaseYear);
+            result += (" "+AnsiColor.ANSI_RED+"Release Year: " + releaseYear+AnsiColor.ANSI_RESET);
         return result;
     }
 }
