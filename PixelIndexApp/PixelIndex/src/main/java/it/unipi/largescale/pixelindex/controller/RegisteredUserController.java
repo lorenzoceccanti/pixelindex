@@ -4,10 +4,8 @@ import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
-import it.unipi.largescale.pixelindex.service.SuggestionsService;
-import it.unipi.largescale.pixelindex.service.LibraryService;
-import it.unipi.largescale.pixelindex.service.RegisteredUserService;
-import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import it.unipi.largescale.pixelindex.model.Whishlist;
+import it.unipi.largescale.pixelindex.service.*;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
@@ -28,12 +26,14 @@ public class RegisteredUserController {
     private String sessionUsername;
     private GameController gameController;
     private LibraryService libraryService;
+    private WishlistService wishlistService;
     private RegisteredUserService registeredUserService;
     private SuggestionsService suggestionsService;
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialFriends;
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
+    List<GamePreviewDTO> gameWishlistDTOs;
     ArrayList<String> rows = new ArrayList<>();
 
     private void displayUsers(){
@@ -205,6 +205,65 @@ public class RegisteredUserController {
         }while(exit != 1);
         return result;
     }
+    // == LOOK FROM HERE ==
+    private int queryUserWishlist(String username, int page){
+        try{
+             gameWishlistDTOs = wishlistService.getGames(username, page);
+            return 0;
+        }catch(ConnectionException ex){
+            return 1;
+        }
+    }
+
+    private void buildUserWishlist(){
+        rows.clear();
+        rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
+        gameWishlistDTOs.stream().forEach(gameWishlist -> {
+            rows.add(gameWishlist.toString());
+        });
+        if(rows.size() <= 3){
+            System.out.println("*** Empty ***");
+        }
+    }
+    private int displayWishlist(AtomicBoolean regMenuDisplayed){
+        int pageSelection = 0;
+        int result = 1; int choice = -1; int exit = 0;
+        regMenuDisplayed.set(false);
+        do{
+            Utils.clearConsole();
+            ListSelector ls = new ListSelector("Your wishlist:");
+            System.out.println("Page displayed: " + (pageSelection+1));
+            result = queryUserWishlist(sessionUsername, pageSelection);
+            if(result != 0)
+                return result;
+            buildUserWishlist();
+            ls.addOptions(rows, "wishlistDropdown", "Press enter to view game details");
+            choice = ls.askUserInteraction("wishlistDropdown");
+            switch(choice){
+                case 0: // Previous page
+                    exit = 0;
+                    pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
+                    break;
+                case 1: // Next page
+                    exit = 0;
+                    pageSelection = (rows.size() > 3) ? ++pageSelection : pageSelection;
+                    break;
+                case 2: // Go back
+                    regMenuDisplayed.set(true);
+                    exit = 1;
+                    break;
+                default:
+                    // Viewing game details
+                    GamePreviewDTO gamePreviewDTO = gameWishlistDTOs.get(choice-3);
+                    gameController.viewGameDetail(0, gamePreviewDTO, true);
+                    break;
+            }
+        }while(exit != 1);
+        return result;
+    }
+    // == TO HERE ==
     private int showRegisteredDropdown(List<String> view)
     {
         int opt = -1;
@@ -227,6 +286,7 @@ public class RegisteredUserController {
         this.suggestionsService = ServiceLocator.getSuggestionsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.libraryService = ServiceLocator.getLibraryService();
+        this.wishlistService = ServiceLocator.getWishlistService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
         this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, consistencyThread);
@@ -240,6 +300,10 @@ public class RegisteredUserController {
                 () -> {
                     // View your library
                     displayLibrary(registeredMenu.getDisplayed());
+                },
+                () -> {
+                    // View your wishlist
+                    displayWishlist(registeredMenu.getDisplayed());
                 },
                 () -> {
                     registeredMenu.getDisplayed().set(false);

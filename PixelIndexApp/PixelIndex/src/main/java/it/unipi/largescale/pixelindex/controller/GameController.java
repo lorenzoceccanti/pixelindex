@@ -6,6 +6,7 @@ import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
+import it.unipi.largescale.pixelindex.service.WishlistService;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
@@ -20,6 +21,7 @@ public class GameController{
     private ArrayList<String> rows;
     private GameService gameService;
     private LibraryService libraryService;
+    private WishlistService wishlistService;
     private AtomicBoolean menuDisplayed;
     private ReviewController reviewController;
     private ConsistencyThread consistencyThread;
@@ -75,8 +77,8 @@ public class GameController{
         opt.add("Show top 10 most relevant reviews");
         opt.add("Add this game to library");
         opt.add("Remove this game from library");
-        opt.add("Add this game to whishlist");
-        opt.add("Remove this game from whishlist");
+        opt.add("Add this game to wishlist");
+        opt.add("Remove this game from wishlist");
         opt.add("Add review");
         opt.add("Go back");
         // Making the query for get all the details of that specific game
@@ -109,7 +111,7 @@ public class GameController{
                     case 2:
                         if(sessionUsername.isEmpty()){
                             addToLibrarySts = 1;
-                            message = "Unathorized";
+                            message = "Unauthorized";
                         } else {
                             // Remove from library
                             addToLibrarySts = libraryService.removeGame(sessionUsername, gamePreviewDTO);
@@ -117,10 +119,24 @@ public class GameController{
                         }
                         break;
                     case 3:
-                        // Add to whishlist
+                        if(sessionUsername.isEmpty()){
+                            addToLibrarySts = 1;
+                            message = "Unauthorized";
+                        } else {
+                            // Add to wishlist
+                            wishlistService.addGame(sessionUsername, gamePreviewDTO.getId());
+                            message = "Game successfully added to wishlist";
+                        }
                         break;
                     case 4:
-                        // Remove from whishlist
+                        if(sessionUsername.isEmpty()){
+                            addToLibrarySts = 1;
+                            message = "Unauthorized";
+                        } else {
+                            // Remove from whishlist
+                            wishlistService.removeGame(sessionUsername, gamePreviewDTO.getId());
+                            message = "Game successfully removed from wishlist";
+                        }
                         break;
                     case 5:
                         // Add new review
@@ -208,6 +224,7 @@ public class GameController{
     {
         this.gameService = ServiceLocator.getGameService();
         this.libraryService = ServiceLocator.getLibraryService();
+        this.wishlistService = ServiceLocator.getWishlistService();
         this.sessionUsername = sessionUsername;
         this.reviewController = new ReviewController(sessionUsername, consistencyThread);
         this.queryName = "";

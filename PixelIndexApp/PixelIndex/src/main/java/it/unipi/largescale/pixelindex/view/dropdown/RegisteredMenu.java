@@ -18,6 +18,7 @@ public class RegisteredMenu {
         options.add("Search games");
         options.add("Search users");
         options.add("View your library");
+        options.add("View your wishlist");
         options.add("Friends you might know");
         options.add("Exit app");
     }
