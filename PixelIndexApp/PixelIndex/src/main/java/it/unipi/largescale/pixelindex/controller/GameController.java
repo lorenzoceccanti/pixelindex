@@ -69,7 +69,7 @@ public class GameController{
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti dell'anteprima dei giochi
          */
-        int addToLibrarySts = -1;
+        int addToLibrarySts = -1; String message = "";
         GamePreviewDTO gamePreviewDTO = searchResult.get(indexView-3);
         Game g; ListSelector ls = new ListSelector("Game details:");
         ArrayList<String> opt = new ArrayList<>();
@@ -82,7 +82,7 @@ public class GameController{
             String gameId = gamePreviewDTO.getId();
             try{
                 Utils.clearConsole();
-                System.out.println((addToLibrarySts == -1)?"":"Game successfully added to library");
+                System.out.println((addToLibrarySts == -1)?"":message);
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
                 ls.addOptions(opt, "gameDetailsDropdown", "Please select");
@@ -94,8 +94,14 @@ public class GameController{
                         reviewController.displayExcerpt(gameId, exitGameDetails);
                         break;
                     case 1:
-                        // Add to library
-                        addToLibrarySts = libraryService.addGame(sessionUsername, gamePreviewDTO);
+                        if(sessionUsername.isEmpty()){
+                            addToLibrarySts = 1;
+                            message = "Unauthorized";
+                        } else {
+                            // Add to library
+                            addToLibrarySts = libraryService.addGame(sessionUsername, gamePreviewDTO);
+                            message = "Game successfully added to library";
+                        }
                         break;
                     case 2:
                         // Go back
@@ -169,6 +175,7 @@ public class GameController{
         this.gameService = ServiceLocator.getGameService();
         this.reviewController = new ReviewController();
         this.queryName = "";
+        this.sessionUsername = "";
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;

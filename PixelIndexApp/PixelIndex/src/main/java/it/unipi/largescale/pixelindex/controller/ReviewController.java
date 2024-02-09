@@ -60,13 +60,21 @@ public class ReviewController {
                         break;
                     case 1:
                         // Inverti like
-                        reactionResult = "[Operation] " + reviewService.addReaction(reviewId, sessionUsername, Reaction.LIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
-                        exitReviewDetails = 0;
+                        if(sessionUsername.isEmpty())
+                            reactionResult = "Unauthorized";
+                        else{
+                            reactionResult = "[Operation] " + reviewService.addReaction(reviewId, sessionUsername, Reaction.LIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
+                            exitReviewDetails = 0;
+                        }
                         break;
                     case 2:
-                        // Inverti dislike
-                        reactionResult = "[Operation] " +reviewService.addReaction(reviewId, sessionUsername, Reaction.DISLIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
-                        exitReviewDetails = 0;
+                        if(sessionUsername.isEmpty())
+                            reactionResult = "Unauthorized";
+                        else{
+                            // Inverti dislike
+                            reactionResult = "[Operation] " +reviewService.addReaction(reviewId, sessionUsername, Reaction.DISLIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
+                            exitReviewDetails = 0;
+                        }
                         break;
                     default:
                         exitReviewDetails = 0;

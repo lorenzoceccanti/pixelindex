@@ -30,6 +30,7 @@ public class UnregisteredMenu
      * @return The index corresponding to the selected option
      */
     public int displayMenu(String text){
+        Utils.clearConsole();
         listSelector = new ListSelector(text);
         listSelector.addOptions(options, "unregistered_menu", "Make your choice");
         selection = listSelector.askUserInteraction("unregistered_menu");
