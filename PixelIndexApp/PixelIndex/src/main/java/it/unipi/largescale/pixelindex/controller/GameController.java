@@ -24,7 +24,6 @@ public class GameController{
     private ReviewController reviewController;
     private ConsistencyThread consistencyThread;
     private int rowSelection;
-    private int totalPages;
     private String queryName;
     private String sessionUsername;
     private int exitGameList;
@@ -58,6 +57,9 @@ public class GameController{
         searchResult.stream().forEach(gamePreviewDTO -> {
             rows.add(gamePreviewDTO.toString());
         });
+        if(rows.size() <= 3){
+            System.out.println("*** Empty ***");
+        }
         /* Introdurre qui un eventuale conto del numero totale di giochi*/
     }
 
@@ -79,7 +81,8 @@ public class GameController{
         do{
             String gameId = gamePreviewDTO.getId();
             try{
-                System.out.println((addToLibrarySts != -1)?"":"Game successfully added to library");
+                Utils.clearConsole();
+                System.out.println((addToLibrarySts == -1)?"":"Game successfully added to library");
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
                 ls.addOptions(opt, "gameDetailsDropdown", "Please select");
@@ -145,7 +148,7 @@ public class GameController{
                 case 1: // Next page
                     exitGameList = 0;
                     menuDisplayed.set(false);
-                    pageSelection = pageSelection < totalPages-1 ? ++pageSelection : pageSelection;
+                    pageSelection = (rows.size() > 3) ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
                     menuDisplayed.set(true);
@@ -169,7 +172,6 @@ public class GameController{
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;
-        this.totalPages = 3;
     }
     public GameController(AtomicBoolean inMenu, String sessionUsername, ConsistencyThread consistencyThread)
     {
@@ -181,6 +183,5 @@ public class GameController{
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;
-        this.totalPages = 3;
     }
 }
