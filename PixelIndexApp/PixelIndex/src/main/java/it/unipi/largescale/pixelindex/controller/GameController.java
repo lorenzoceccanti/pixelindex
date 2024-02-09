@@ -67,7 +67,6 @@ public class GameController{
 
 
     public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
-
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti dell'anteprima dei giochi
          */
@@ -86,7 +85,7 @@ public class GameController{
         do{
             String gameId = gamePreviewDTO.getId();
             try{
-                Utils.clearConsole();
+                // Utils.clearConsole();
                 System.out.println((addToLibrarySts == -1)?"":message);
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
@@ -124,7 +123,7 @@ public class GameController{
                             message = "Unauthorized";
                         } else {
                             // Add to wishlist
-                            wishlistService.addGame(sessionUsername, gamePreviewDTO.getId());
+                            addToLibrarySts = wishlistService.addGame(sessionUsername, gamePreviewDTO.getId());
                             message = "Game successfully added to wishlist";
                         }
                         break;
@@ -134,12 +133,13 @@ public class GameController{
                             message = "Unauthorized";
                         } else {
                             // Remove from whishlist
-                            wishlistService.removeGame(sessionUsername, gamePreviewDTO.getId());
+                            addToLibrarySts = wishlistService.removeGame(sessionUsername, gamePreviewDTO.getId());
                             message = "Game successfully removed from wishlist";
                         }
                         break;
                     case 5:
                         // Add new review
+                        System.out.println("Not implemented");
                         break;
                     case 6:
                         // Go back
@@ -148,6 +148,8 @@ public class GameController{
                         exitGameList = 0;
                         if(!fromLibrary)
                             askGameQueryByName();
+                        break;
+                    default:
                         break;
                 }
             }catch(ConnectionException ex){

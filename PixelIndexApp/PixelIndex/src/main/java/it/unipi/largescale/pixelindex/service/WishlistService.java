@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface WishlistService {
-    void addGame(String userId, String gameId) throws ConnectionException;
+    int addGame(String userId, String gameId) throws ConnectionException;
 
-    void removeGame(String userId, String gameId) throws ConnectionException;
+    int removeGame(String userId, String gameId) throws ConnectionException;
 
     ArrayList<GamePreviewDTO> getGames(String username, int page) throws ConnectionException;
 }

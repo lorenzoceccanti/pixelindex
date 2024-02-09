@@ -61,6 +61,7 @@ public class GameServiceImpl implements GameService {
         try {
             return gameMongoDAO.getGameById(id);
         } catch (DAOException e) {
+            e.printStackTrace();
             throw new ConnectionException(e);
         }
     }

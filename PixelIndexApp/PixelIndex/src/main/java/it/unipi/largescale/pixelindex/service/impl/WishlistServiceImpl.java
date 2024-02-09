@@ -15,17 +15,19 @@ public class WishlistServiceImpl implements WishlistService {
         wishlistNeo4jDAO = new WishlistNeo4jDAO();
     }
 
-    public void addGame(String userId, String gameId) throws ConnectionException {
+    public int addGame(String userId, String gameId) throws ConnectionException {
         try {
             wishlistNeo4jDAO.insertGame(userId, gameId);
+            return 0;
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public void removeGame(String userId, String gameId) throws ConnectionException {
+    public int removeGame(String userId, String gameId) throws ConnectionException {
         try {
             wishlistNeo4jDAO.removeGame(userId, gameId);
+            return 0;
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

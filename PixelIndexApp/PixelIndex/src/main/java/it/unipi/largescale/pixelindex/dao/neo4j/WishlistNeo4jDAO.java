@@ -51,7 +51,7 @@ public class WishlistNeo4jDAO {
                 Result result = tx.run(
                         """
                                 MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game)
-                                RETURN g.mongoId, g.name AS name, g.releaseYear as releaseYear
+                                RETURN g.mongoId AS mongoId, g.name AS name, g.releaseYear as releaseYear
                                 ORDER BY g.name DESC
                                 SKIP $page * 10
                                 LIMIT 10;

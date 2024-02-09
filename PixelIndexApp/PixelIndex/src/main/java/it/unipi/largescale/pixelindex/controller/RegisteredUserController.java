@@ -208,7 +208,7 @@ public class RegisteredUserController {
     // == LOOK FROM HERE ==
     private int queryUserWishlist(String username, int page){
         try{
-             gameWishlistDTOs = wishlistService.getGames(username, page);
+            gameWishlistDTOs = wishlistService.getGames(username, page);
             return 0;
         }catch(ConnectionException ex){
             return 1;
@@ -257,6 +257,7 @@ public class RegisteredUserController {
                 default:
                     // Viewing game details
                     GamePreviewDTO gamePreviewDTO = gameWishlistDTOs.get(choice-3);
+                    System.out.println(gamePreviewDTO.getId());
                     gameController.viewGameDetail(0, gamePreviewDTO, true);
                     break;
             }
