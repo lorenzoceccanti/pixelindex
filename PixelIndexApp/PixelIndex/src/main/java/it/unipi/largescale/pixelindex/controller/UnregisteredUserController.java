@@ -188,15 +188,7 @@ public class UnregisteredUserController {
         by passing a reference to a boolean wrapper
         When displayed = false, it means login successful and stop looping
          */
-        String welcomeMessage =
-        """
-                ██████╗ ██╗██╗  ██╗███████╗██╗     ██╗███╗   ██╗██████╗ ███████╗██╗  ██╗
-                ██╔══██╗██║╚██╗██╔╝██╔════╝██║     ██║████╗  ██║██╔══██╗██╔════╝╚██╗██╔╝
-                ██████╔╝██║ ╚███╔╝ █████╗  ██║     ██║██╔██╗ ██║██║  ██║█████╗   ╚███╔╝\s
-                ██╔═══╝ ██║ ██╔██╗ ██╔══╝  ██║     ██║██║╚██╗██║██║  ██║██╔══╝   ██╔██╗\s
-                ██║     ██║██╔╝ ██╗███████╗███████╗██║██║ ╚████║██████╔╝███████╗██╔╝ ██╗
-                ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-        """;
+        String welcomeMessage = "";
         int index = -1;
         String messageText = "";
         while(unregisteredMenu.getDisplayed().get())

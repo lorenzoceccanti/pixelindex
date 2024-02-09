@@ -4,6 +4,7 @@ import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.User;
 import it.unipi.largescale.pixelindex.service.AnalyticsService;
+import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
@@ -27,6 +28,7 @@ public class RegisteredUserController {
     private Runnable[] functionsRegistered;
     private String sessionUsername;
     private GameController gameController;
+    private LibraryService libraryService;
     private RegisteredUserService registeredUserService;
     private AnalyticsService analyticsService;
     private String queryName;
@@ -140,6 +142,9 @@ public class RegisteredUserController {
             return 1;
         }
     }
+    /*private int displayLibrary(){
+
+    }*/
     private int showRegisteredDropdown()
     {
         int opt = -1;
@@ -153,11 +158,11 @@ public class RegisteredUserController {
     public RegisteredUserController(String username)
     {
         this.totalPages = 3;
-
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
         this.analyticsService = ServiceLocator.getAnalyticsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
+        this.libraryService = ServiceLocator.getLibraryService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
         this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, consistencyThread);
@@ -167,7 +172,11 @@ public class RegisteredUserController {
                 },
                 () -> {
                     askSearchByUsernameQuery(registeredMenu.getDisplayed());
-                },
+                },/*,
+                () -> {
+                    // View your library
+                    // libraryService.getGames(sessionUsername);
+                }*/
                 () -> {
                     registeredMenu.getDisplayed().set(false);
                     friendsYouMightKnow();
