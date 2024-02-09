@@ -160,7 +160,7 @@ public class RegisteredUserController {
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
-        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername);
+        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, consistencyThread);
         functionsRegistered = new Runnable[]{
                 () -> {
                     gameController.askGameQueryByName();

@@ -3,6 +3,7 @@ package it.unipi.largescale.pixelindex.controller;
 import it.unipi.largescale.pixelindex.dto.ReviewPageDTO;
 import it.unipi.largescale.pixelindex.dto.ReviewPreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
+import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.ReviewService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ReviewController {
 
     private final int REVIEWS_PER_PAGE = 10;
+    private ConsistencyThread consistencyThread;
     private ReviewPageDTO reviewPageDTO;
     private Review detailedReview;
     private ArrayList<String> rows;
@@ -30,6 +32,7 @@ public class ReviewController {
     private String sessionUsername;
     public int viewReviewDetails(int indexView){
         AtomicBoolean inGameDetails = new AtomicBoolean(false);
+        String reactionResult = "";
         ReviewPreviewDTO revPrev = reviewPreviewDTOs.get(indexView-3);
         ListSelector ls = new ListSelector("Review details");
         ArrayList<String> opt = new ArrayList<>();
@@ -43,6 +46,7 @@ public class ReviewController {
             int sel = -1;
             do{
                 Utils.clearConsole();
+                System.out.println(reactionResult);
                 System.out.println(detailedReview);
                 ls.addOptions(opt,"reviewDetailsDropdown", "Add a reaction if you want");
                 sel = ls.askUserInteraction("reviewDetailsDropdown");
@@ -56,10 +60,12 @@ public class ReviewController {
                         break;
                     case 1:
                         // Inverti like
+                        reactionResult = "[Operation] " + reviewService.addReaction(reviewId, sessionUsername, Reaction.LIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
                         exitReviewDetails = 0;
                         break;
                     case 2:
                         // Inverti dislike
+                        reactionResult = "[Operation] " +reviewService.addReaction(reviewId, sessionUsername, Reaction.DISLIKE, detailedReview.getGameId(), detailedReview.getAuthor(), consistencyThread);
                         exitReviewDetails = 0;
                         break;
                     default:
@@ -136,8 +142,9 @@ public class ReviewController {
         }
     }
 
-    public ReviewController(String sessionUsername){
+    public ReviewController(String sessionUsername, ConsistencyThread consistencyThread){
         this.rows = new ArrayList<>();
+        this.consistencyThread = consistencyThread;
         this.sessionUsername = sessionUsername;
         this.reviewPreviewDTOs = new ArrayList<>();
         this.reviewService = ServiceLocator.getReviewService();
