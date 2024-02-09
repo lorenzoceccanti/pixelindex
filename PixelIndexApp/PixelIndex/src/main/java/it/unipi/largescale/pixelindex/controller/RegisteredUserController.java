@@ -1,9 +1,9 @@
 package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
-import it.unipi.largescale.pixelindex.model.User;
 import it.unipi.largescale.pixelindex.service.SuggestionsService;
 import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
@@ -13,9 +13,7 @@ import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
-import java.security.Provider;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
@@ -35,7 +33,7 @@ public class RegisteredUserController {
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialFriends;
-    List<GameLibraryElementDTO> GameLibraryElementDTOs;
+    List<GameLibraryElementDTO> gameLibraryElementDTOS;
     ArrayList<String> rows = new ArrayList<>();
 
     private void displayUsers(){
@@ -152,7 +150,7 @@ public class RegisteredUserController {
     }
     private int queryUserLibrary(String username, int page){
         try{
-            GameLibraryElementDTOs = libraryService.getGames(username, page);
+            gameLibraryElementDTOS = libraryService.getGames(username, page);
             return 0;
         }catch(ConnectionException ex){
             return 1;
@@ -164,7 +162,7 @@ public class RegisteredUserController {
         rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
-        GameLibraryElementDTOs.stream().forEach(GameLibraryElementDTO -> {
+        gameLibraryElementDTOS.stream().forEach(GameLibraryElementDTO -> {
             rows.add(GameLibraryElementDTO.toString());
         });
         if(rows.size() <= 3){
@@ -183,7 +181,7 @@ public class RegisteredUserController {
             if(result != 0)
                 return result;
             buildUserLibrary();
-            ls.addOptions(rows, "libraryDropdown", "Press enter to remove a game from your library");
+            ls.addOptions(rows, "libraryDropdown", "Press enter to view game details");
             choice = ls.askUserInteraction("libraryDropdown");
             switch(choice){
                 case 0: // Previous page
@@ -199,8 +197,10 @@ public class RegisteredUserController {
                     exit = 1;
                     break;
                 default:
+                    // Viewing game details
+                    GamePreviewDTO gamePreviewDTO = gameLibraryElementDTOS.get(choice-3);
+                    gameController.viewGameDetail(0, gamePreviewDTO);
                     break;
-                    // Removing game from library
             }
         }while(exit != 1);
         return result;

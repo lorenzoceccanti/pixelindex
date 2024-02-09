@@ -64,13 +64,12 @@ public class GameController{
     }
 
 
-    private int viewGameDetail(int indexView, Integer exitGameDetails){
+    public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO){
 
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti dell'anteprima dei giochi
          */
         int addToLibrarySts = -1; String message = "";
-        GamePreviewDTO gamePreviewDTO = searchResult.get(indexView-3);
         Game g; ListSelector ls = new ListSelector("Game details:");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Show top 10 most relevant reviews");
@@ -164,7 +163,8 @@ public class GameController{
                 default: // Game selection
                     menuDisplayed.set(false);
                     exitGameList = 1;
-                    viewGameDetail(choice, 0);
+                    GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
+                    viewGameDetail(0, gamePreviewDTO);
                     break;
             }
         }while(exitGameList != 1);
