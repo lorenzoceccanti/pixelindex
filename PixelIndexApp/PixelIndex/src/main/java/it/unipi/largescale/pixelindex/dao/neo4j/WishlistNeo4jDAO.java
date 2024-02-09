@@ -49,11 +49,11 @@ public class WishlistNeo4jDAO {
              Session session = neoDriver.session()) {
             returnObject = session.executeRead(tx -> {
                 Result result = tx.run(
-                                """
+                        """
                                 MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game)
-                                RETURN g.mongoId, g.name, g.releaseYear
-                                SKIP $page * 10
+                                RETURN g.mongoId, g.name AS name, g.releaseYear as releaseYear
                                 ORDER BY g.name DESC
+                                SKIP $page * 10
                                 LIMIT 10;
                                 """,
                         parameters("username", username, "page", page));
@@ -63,7 +63,11 @@ public class WishlistNeo4jDAO {
                     GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
                     gamePreviewDTO.setId(r.get("mongoId").asString());
                     gamePreviewDTO.setName(r.get("name").asString());
-                    gamePreviewDTO.setReleaseYear(r.get("releaseYear").asInt());
+                    if (r.get("releaseYear").isNull()) {
+                        gamePreviewDTO.setReleaseYear(null);
+                    } else {
+                        gamePreviewDTO.setReleaseYear(r.get("releaseYear").asInt());
+                    }
                     gamePreviewDTOs.add(gamePreviewDTO);
                 }
                 return gamePreviewDTOs;

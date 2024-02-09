@@ -138,13 +138,12 @@ public class Main {
         }
     }
 
-    public static void testReviewDetails(){
+    public static void testReviewDetails() {
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
-        try{
+        try {
             Review r = reviewMongoDAO.getReviewById("65b19626c6c1f28b326ea4e2");
             System.out.println(r);
-        }catch(DAOException ex)
-        {
+        } catch (DAOException ex) {
             ex.printStackTrace();
         }
     }
@@ -274,9 +273,11 @@ public class Main {
 
     public static void testWishList() throws ConnectionException {
         WishlistService wishlistService = ServiceLocator.getWishlistService();
-        wishlistService.addGame("ale1968", "65afd5ed7ae28aa3f604e020");
-        wishlistService.removeGame("ale1968", "65afd5ed7ae28aa3f604e020");
-        wishlistService.getGames("ale1968", 0);
+        //wishlistService.addGame("Chang Liu", "65afd62e7ae28aa3f6055554");
+        wishlistService.removeGame("Chang Liu", "65afd5ed7ae28aa3f604e020");
+        ArrayList<GamePreviewDTO> games = wishlistService.getGames("Chang Liu", 0);
+        for (GamePreviewDTO g : games)
+            System.out.println(g);
     }
 
     public static void main(String[] args) {
