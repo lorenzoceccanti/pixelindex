@@ -58,7 +58,7 @@ public class StatisticsMongoDAO {
         return userReportsDTOs;
     }
 
-    public ArrayList<GameRatingDTO> topGamesByPositiveRatingRatio() throws DAOException {
+    public ArrayList<GameRatingDTO> topGamesByPositiveRatingRatio(int n) throws DAOException {
         ArrayList<GameRatingDTO> gameByRatingDTOS = new ArrayList<>();
 
         try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
@@ -90,7 +90,7 @@ public class StatisticsMongoDAO {
                                                     new Document("$add", Arrays.asList("$positiveReviews", "$negativeReviews")))), 100L)))),
                     new Document("$sort",
                             new Document("positiveRatingRatio", -1L)),
-                    new Document("$limit", 10L));
+                    new Document("$limit", n));
 
             AggregateIterable<Document> results = collection.aggregate(aggregationPipeline);
             for (Document doc : results) {

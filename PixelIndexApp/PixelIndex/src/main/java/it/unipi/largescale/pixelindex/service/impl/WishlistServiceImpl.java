@@ -31,9 +31,9 @@ public class WishlistServiceImpl implements WishlistService {
         }
     }
 
-    public ArrayList<GamePreviewDTO> getGames(String username) throws ConnectionException {
+    public ArrayList<GamePreviewDTO> getGames(String username, int page) throws ConnectionException {
         try {
-            return wishlistNeo4jDAO.getGames(username);
+            return wishlistNeo4jDAO.getGames(username, page);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

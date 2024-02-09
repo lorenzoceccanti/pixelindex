@@ -18,7 +18,9 @@ import it.unipi.largescale.pixelindex.model.RatingKind;
 import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
+import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
+import it.unipi.largescale.pixelindex.service.WishlistService;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
@@ -270,12 +272,19 @@ public class Main {
             System.out.println(g.getName());
     }
 
+    public static void testWishList() throws ConnectionException {
+        WishlistService wishlistService = ServiceLocator.getWishlistService();
+        wishlistService.addGame("ale1968", "65afd5ed7ae28aa3f604e020");
+        wishlistService.removeGame("ale1968", "65afd5ed7ae28aa3f604e020");
+        wishlistService.getGames("ale1968", 0);
+    }
+
     public static void main(String[] args) {
 
         // =================== LORE =====================
 
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        // Utils.clearConsole();
+        // ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*
@@ -302,7 +311,7 @@ public class Main {
         // testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
-        testGetReviewById();
+        // testGetReviewById();
 
 
         /*
@@ -322,5 +331,11 @@ public class Main {
          *
          */
 
+        // ========= NICCO ==============
+        try {
+            testWishList();
+        } catch (ConnectionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

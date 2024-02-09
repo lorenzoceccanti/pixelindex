@@ -43,14 +43,20 @@ public class WishlistNeo4jDAO {
         }
     }
 
-    public ArrayList<GamePreviewDTO> getGames(String username) throws DAOException {
+    public ArrayList<GamePreviewDTO> getGames(String username, int page) throws DAOException {
         ArrayList<GamePreviewDTO> returnObject;
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             returnObject = session.executeRead(tx -> {
-                Result result = tx.run("MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game) " +
-                                "RETURN g.mongoId, g.name, g.releaseYear",
-                        parameters("username", username));
+                Result result = tx.run(
+                                """
+                                MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game)
+                                RETURN g.mongoId, g.name, g.releaseYear
+                                SKIP $page * 10
+                                ORDER BY g.name DESC
+                                LIMIT 10;
+                                """,
+                        parameters("username", username, "page", page));
                 ArrayList<GamePreviewDTO> gamePreviewDTOs = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();

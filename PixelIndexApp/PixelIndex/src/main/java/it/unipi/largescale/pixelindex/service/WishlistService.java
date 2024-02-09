@@ -11,5 +11,5 @@ public interface WishlistService {
 
     void removeGame(String userId, String gameId) throws ConnectionException;
 
-    ArrayList<GamePreviewDTO> getGames(String username) throws ConnectionException;
+    ArrayList<GamePreviewDTO> getGames(String username, int page) throws ConnectionException;
 }
