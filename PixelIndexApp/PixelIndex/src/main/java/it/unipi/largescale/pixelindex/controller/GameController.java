@@ -4,6 +4,7 @@ import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.service.GameService;
+import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
@@ -18,12 +19,14 @@ public class GameController{
     private List<GamePreviewDTO> searchResult;
     private ArrayList<String> rows;
     private GameService gameService;
+    private LibraryService libraryService;
     private AtomicBoolean menuDisplayed;
     private ReviewController reviewController;
     private ConsistencyThread consistencyThread;
     private int rowSelection;
     private int totalPages;
     private String queryName;
+    private String sessionUsername;
     private int exitGameList;
     private int exitGameDetails;
 
@@ -62,29 +65,42 @@ public class GameController{
     private int viewGameDetail(int indexView, Integer exitGameDetails){
 
         /* Sfasamento di 3 posizioni in avanti
-        dovuto ai primi 3 pulsanti
+        dovuto ai primi 3 pulsanti dell'anteprima dei giochi
          */
+        int addToLibrarySts = -1;
         GamePreviewDTO gamePreviewDTO = searchResult.get(indexView-3);
         Game g; ListSelector ls = new ListSelector("Game details:");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Show top 10 most relevant reviews");
+        opt.add("Add this game to library");
         opt.add("Go back");
         // Making the query for get all the details of that specific game
 
         do{
             String gameId = gamePreviewDTO.getId();
             try{
+                System.out.println((addToLibrarySts != -1)?"":"Game successfully added to library");
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
                 ls.addOptions(opt, "gameDetailsDropdown", "Please select");
                 int sel = ls.askUserInteraction("gameDetailsDropdown");
-                if(sel == 1){
-                    // Go back pressed
-                    exitGameDetails = 1;
-                    exitGameList = 0;
-                    askGameQueryByName();
-                } else {
-                    reviewController.displayExcerpt(gameId,exitGameDetails);
+                switch(sel)
+                {
+                    case 0:
+                        addToLibrarySts = -1;
+                        reviewController.displayExcerpt(gameId, exitGameDetails);
+                        break;
+                    case 1:
+                        // Add to library
+                        addToLibrarySts = libraryService.addGame(sessionUsername, gamePreviewDTO);
+                        break;
+                    case 2:
+                        // Go back
+                        addToLibrarySts = -1;
+                        exitGameDetails = 1;
+                        exitGameList = 0;
+                        askGameQueryByName();
+                        break;
                 }
             }catch(ConnectionException ex){
                 return 1;
@@ -158,6 +174,8 @@ public class GameController{
     public GameController(AtomicBoolean inMenu, String sessionUsername, ConsistencyThread consistencyThread)
     {
         this.gameService = ServiceLocator.getGameService();
+        this.libraryService = ServiceLocator.getLibraryService();
+        this.sessionUsername = sessionUsername;
         this.reviewController = new ReviewController(sessionUsername, consistencyThread);
         this.queryName = "";
         this.rows = new ArrayList<>();

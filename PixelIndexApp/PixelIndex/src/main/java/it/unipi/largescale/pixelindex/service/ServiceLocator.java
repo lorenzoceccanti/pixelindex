@@ -17,6 +17,7 @@ public class ServiceLocator {
     private static ModeratorService moderatorService = new ModeratorServiceImpl();
     private static AnalyticsService analyticsService = new AnalyticsServiceImpl();
     private static ReviewService reviewService = new ReviewServiceImpl();
+    private static LibraryService libraryService = new LibraryServiceImpl();
     public static RegisteredUserService getRegisteredUserService(){
         return registeredUserService;
     }
@@ -25,4 +26,5 @@ public class ServiceLocator {
     public static ReviewService getReviewService(){return reviewService;}
     public static ModeratorService getModeratorService() {return moderatorService;}
     public static AnalyticsService getAnalyticsService() {return analyticsService;}
+    public static LibraryService getLibraryService() {return libraryService;}
 }

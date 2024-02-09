@@ -15,17 +15,19 @@ public class LibraryServiceImpl implements LibraryService {
         libraryNeo4jDAO = new LibraryNeo4jDAO();
     }
 
-    public void addGame(String username, GamePreviewDTO gamePreviewDTO) throws ConnectionException {
+    public int addGame(String username, GamePreviewDTO gamePreviewDTO) throws ConnectionException {
         try {
             libraryNeo4jDAO.addGame(username, gamePreviewDTO.getId());
+            return 0;
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
     }
 
-    public void removeGame(String username, GamePreviewDTO gameId) throws ConnectionException {
+    public int removeGame(String username, GamePreviewDTO gameId) throws ConnectionException {
         try {
             libraryNeo4jDAO.removeGame(username, gameId.getId());
+            return 0;
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
