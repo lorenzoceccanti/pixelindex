@@ -199,7 +199,7 @@ public class RegisteredUserController {
                 default:
                     // Viewing game details
                     GamePreviewDTO gamePreviewDTO = gameLibraryElementDTOS.get(choice-3);
-                    gameController.viewGameDetail(0, gamePreviewDTO);
+                    gameController.viewGameDetail(0, gamePreviewDTO, true); // qui la funzione deve capire di essere chiamata dalla library
                     break;
             }
         }while(exit != 1);

@@ -64,7 +64,7 @@ public class GameController{
     }
 
 
-    public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO){
+    public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
 
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti dell'anteprima dei giochi
@@ -107,7 +107,8 @@ public class GameController{
                         addToLibrarySts = -1;
                         exitGameDetails = 1;
                         exitGameList = 0;
-                        askGameQueryByName();
+                        if(!fromLibrary)
+                            askGameQueryByName();
                         break;
                 }
             }catch(ConnectionException ex){
@@ -164,7 +165,7 @@ public class GameController{
                     menuDisplayed.set(false);
                     exitGameList = 1;
                     GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
-                    viewGameDetail(0, gamePreviewDTO);
+                    viewGameDetail(0, gamePreviewDTO, false);
                     break;
             }
         }while(exitGameList != 1);
