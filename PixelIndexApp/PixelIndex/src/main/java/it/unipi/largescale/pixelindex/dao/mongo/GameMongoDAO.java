@@ -83,7 +83,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
         List<Game> games = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+        try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
 
@@ -131,7 +131,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public Game getGameById(String id) throws DAOException {
         Game gameObject = null;
-        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+        try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             ObjectId objectId = new ObjectId(id);

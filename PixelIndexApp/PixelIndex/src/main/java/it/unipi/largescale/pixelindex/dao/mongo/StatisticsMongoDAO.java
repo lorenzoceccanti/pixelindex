@@ -61,7 +61,7 @@ public class StatisticsMongoDAO {
     public ArrayList<GameRatingDTO> topGamesByPositiveRatingRatio(int n) throws DAOException {
         ArrayList<GameRatingDTO> gameByRatingDTOS = new ArrayList<>();
 
-        try (MongoClient mongoClient = beginConnectionWithoutReplica()) {
+        try (MongoClient mongoClient = beginConnection()) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
 
