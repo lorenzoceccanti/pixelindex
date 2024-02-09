@@ -2,6 +2,7 @@ package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
+import it.unipi.largescale.pixelindex.utils.Utils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
@@ -73,7 +74,7 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                     } else {
                         gameLibraryElementDTO.setReleaseYear(record.get("releaseYear").asInt());
                     }
-                    gameLibraryElementDTO.setAddedDate(record.get("addedDate").asLocalDate());
+                    gameLibraryElementDTO.setAddedDate(Utils.convertStringToLocalDate(record.get("addedDate").asString()));
                     gamePreviewDTOArrayList.add(gameLibraryElementDTO);
                 }
                 return gamePreviewDTOArrayList;
