@@ -1,7 +1,6 @@
 package it.unipi.largescale.pixelindex.dao.neo4j;
 
-import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
-import it.unipi.largescale.pixelindex.dto.UserLibraryDTO;
+import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
@@ -48,8 +47,8 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    public List<UserLibraryDTO> getGames(String username, Integer page) throws DAOException {
-        ArrayList<UserLibraryDTO> games;
+    public List<GameLibraryElementDTO> getGames(String username, Integer page) throws DAOException {
+        ArrayList<GameLibraryElementDTO> games;
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             games = session.executeRead(tx -> {
@@ -63,19 +62,19 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                                 """,
                         parameters("username", username, "page", page));
 
-                ArrayList<UserLibraryDTO> gamePreviewDTOArrayList = new ArrayList<>();
+                ArrayList<GameLibraryElementDTO> gamePreviewDTOArrayList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
-                    UserLibraryDTO userLibraryDTO = new UserLibraryDTO();
-                    userLibraryDTO.setId(record.get("id").asString());
-                    userLibraryDTO.setName(record.get("name").asString());
+                    GameLibraryElementDTO gameLibraryElementDTO = new GameLibraryElementDTO();
+                    gameLibraryElementDTO.setId(record.get("id").asString());
+                    gameLibraryElementDTO.setName(record.get("name").asString());
                     if (record.get("releaseYear").isNull()) {
-                        userLibraryDTO.setReleaseYear(null);
+                        gameLibraryElementDTO.setReleaseYear(null);
                     } else {
-                        userLibraryDTO.setReleaseYear(record.get("releaseYear").asInt());
+                        gameLibraryElementDTO.setReleaseYear(record.get("releaseYear").asInt());
                     }
-                    userLibraryDTO.setAddedDate(record.get("addedDate").asLocalDate());
-                    gamePreviewDTOArrayList.add(userLibraryDTO);
+                    gameLibraryElementDTO.setAddedDate(record.get("addedDate").asLocalDate());
+                    gamePreviewDTOArrayList.add(gameLibraryElementDTO);
                 }
                 return gamePreviewDTOArrayList;
             });

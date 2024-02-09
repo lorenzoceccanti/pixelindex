@@ -1,9 +1,8 @@
 package it.unipi.largescale.pixelindex.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-public class UserLibraryDTO extends GamePreviewDTO {
+public class GameLibraryElementDTO extends GamePreviewDTO {
     private LocalDate addedDate;
 
     public LocalDate getAddedDate() {

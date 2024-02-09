@@ -333,10 +333,10 @@ public class Main {
          */
 
         // ========= NICCO ==============
-        try {
-            testWishList();
-        } catch (ConnectionException e) {
-            throw new RuntimeException(e);
-        }
+        // try {
+        //     testWishList();
+        // } catch (ConnectionException e) {
+        //     throw new RuntimeException(e);
+        // }
     }
 }

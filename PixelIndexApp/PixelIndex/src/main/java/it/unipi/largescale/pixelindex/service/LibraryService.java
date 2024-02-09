@@ -1,7 +1,7 @@
 package it.unipi.largescale.pixelindex.service;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
-import it.unipi.largescale.pixelindex.dto.UserLibraryDTO;
+import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 
 import java.util.List;
@@ -11,5 +11,5 @@ public interface LibraryService {
 
     int removeGame(String username, GamePreviewDTO gameId) throws ConnectionException;
 
-    List<UserLibraryDTO> getGames(String username, Integer page) throws ConnectionException;
+    List<GameLibraryElementDTO> getGames(String username, Integer page) throws ConnectionException;
 }
