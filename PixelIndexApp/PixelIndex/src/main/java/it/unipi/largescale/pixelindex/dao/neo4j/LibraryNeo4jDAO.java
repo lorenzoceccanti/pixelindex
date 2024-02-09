@@ -37,9 +37,9 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (u: User)-[r:ADDS_TO_LIBRARY]->(g: Game)" +
-                                "WHERE u.username = $username AND g.mongoId = $gameId" +
-                                "DELETE (u)-[:ADDS_TO_LIBRARY]->(g);)",
+                tx.run("MATCH (u: User)-[r:ADDS_TO_LIBRARY]->(g: Game) " +
+                                "WHERE u.username = $username AND g.mongoId = $gameId " +
+                                "DELETE r;",
                         parameters("username", username, "gameId", gameId));
                 return null;
             });

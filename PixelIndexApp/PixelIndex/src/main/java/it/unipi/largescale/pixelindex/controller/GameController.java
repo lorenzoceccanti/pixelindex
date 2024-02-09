@@ -74,6 +74,10 @@ public class GameController{
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Show top 10 most relevant reviews");
         opt.add("Add this game to library");
+        opt.add("Remove this game from library");
+        opt.add("Add this game to whishlist");
+        opt.add("Remove this game from whishlist");
+        opt.add("Add review");
         opt.add("Go back");
         // Making the query for get all the details of that specific game
 
@@ -103,6 +107,25 @@ public class GameController{
                         }
                         break;
                     case 2:
+                        if(sessionUsername.isEmpty()){
+                            addToLibrarySts = 1;
+                            message = "Unathorized";
+                        } else {
+                            // Remove from library
+                            addToLibrarySts = libraryService.removeGame(sessionUsername, gamePreviewDTO);
+                            message = "Game successfully removed from library";
+                        }
+                        break;
+                    case 3:
+                        // Add to whishlist
+                        break;
+                    case 4:
+                        // Remove from whishlist
+                        break;
+                    case 5:
+                        // Add new review
+                        break;
+                    case 6:
                         // Go back
                         addToLibrarySts = -1;
                         exitGameDetails = 1;
