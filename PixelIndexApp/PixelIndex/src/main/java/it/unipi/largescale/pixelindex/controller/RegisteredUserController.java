@@ -194,7 +194,6 @@ public class RegisteredUserController {
                 case 2: // Go back
                     regMenuDisplayed.set(true);
                     exit = 1;
-                    queryName = "";
                     break;
                 default:
                     // Removing game from library
@@ -206,6 +205,7 @@ public class RegisteredUserController {
     {
         int opt = -1;
         do{
+            Utils.clearConsole();
             registeredMenu.getDisplayed().set(true);
             opt = registeredMenu.displayMenu(sessionUsername);
             functionsRegistered[opt].run();
