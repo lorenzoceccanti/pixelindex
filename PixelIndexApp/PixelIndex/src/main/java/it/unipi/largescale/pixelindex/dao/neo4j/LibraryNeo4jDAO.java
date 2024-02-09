@@ -1,6 +1,7 @@
 package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
+import it.unipi.largescale.pixelindex.dto.UserLibraryDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
@@ -8,7 +9,6 @@ import org.neo4j.driver.Session;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -48,24 +48,34 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
         }
     }
 
-    public List<GamePreviewDTO> getGames(String username) throws DAOException {
-        ArrayList<GamePreviewDTO> games;
+    public List<UserLibraryDTO> getGames(String username, Integer page) throws DAOException {
+        ArrayList<UserLibraryDTO> games;
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             games = session.executeRead(tx -> {
-                Result result = tx.run("MATCH (u:User {username: $username})-[:ADDS_TO_LIBRARY]->(g:Game) " +
-                                "RETURN g.mongoId AS id, g.name AS name, g.releaseDate AS releaseDate",
-                        parameters("username", username));
+                Result result = tx.run(
+                        """
+                                MATCH (u:User {username: $username})-[a:ADDS_TO_LIBRARY]->(g:Game)
+                                RETURN g.mongoId AS id, g.name AS name, g.releaseYear AS releaseYear, a.date AS addedDate
+                                ORDER BY addedDate DESC
+                                SKIP 10 * $page
+                                LIMIT 10
+                                """,
+                        parameters("username", username, "page", page));
 
-                ArrayList<GamePreviewDTO> gamePreviewDTOArrayList = new ArrayList<>();
+                ArrayList<UserLibraryDTO> gamePreviewDTOArrayList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
-                    GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
-                    gamePreviewDTO.setId(record.get("id").asString());
-                    gamePreviewDTO.setName(record.get("name").asString());
-                    LocalDate date = LocalDate.parse(record.get("releaseDate").asString());
-                    gamePreviewDTO.setReleaseYear(date.getYear());
-                    gamePreviewDTOArrayList.add(gamePreviewDTO);
+                    UserLibraryDTO userLibraryDTO = new UserLibraryDTO();
+                    userLibraryDTO.setId(record.get("id").asString());
+                    userLibraryDTO.setName(record.get("name").asString());
+                    if (record.get("releaseYear").isNull()) {
+                        userLibraryDTO.setReleaseYear(null);
+                    } else {
+                        userLibraryDTO.setReleaseYear(record.get("releaseYear").asInt());
+                    }
+                    userLibraryDTO.setAddedDate(record.get("addedDate").asLocalDate());
+                    gamePreviewDTOArrayList.add(userLibraryDTO);
                 }
                 return gamePreviewDTOArrayList;
             });

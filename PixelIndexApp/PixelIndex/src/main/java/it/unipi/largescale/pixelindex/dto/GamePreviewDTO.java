@@ -1,12 +1,10 @@
 package it.unipi.largescale.pixelindex.dto;
 
-import it.unipi.largescale.pixelindex.model.Game;
-
 public class GamePreviewDTO {
 
     private String id;
     private String name;
-    private int releaseYear;
+    private Integer releaseYear;
 
     public String getId() {
         return id;
@@ -28,15 +26,14 @@ public class GamePreviewDTO {
         this.name = name;
     }
 
-    public void setReleaseYear(int releaseYear) {
+    public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 
-    public String toString()
-    {
+    public String toString() {
         String result = "";
         result += ("Name: " + name);
-        if(releaseYear != 0)
+        if (releaseYear != null)
             result += (" Release Year: " + releaseYear);
         return result;
     }

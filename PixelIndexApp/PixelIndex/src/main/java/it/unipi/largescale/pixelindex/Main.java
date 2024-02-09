@@ -19,6 +19,7 @@ import it.unipi.largescale.pixelindex.model.Reaction;
 import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
+import it.unipi.largescale.pixelindex.service.impl.LibraryServiceImpl;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
@@ -136,13 +137,12 @@ public class Main {
         }
     }
 
-    public static void testReviewDetails(){
+    public static void testReviewDetails() {
         ReviewMongoDAO reviewMongoDAO = new ReviewMongoDAO();
-        try{
+        try {
             Review r = reviewMongoDAO.getReviewById("65b19626c6c1f28b326ea4e2");
             System.out.println(r);
-        }catch(DAOException ex)
-        {
+        } catch (DAOException ex) {
             ex.printStackTrace();
         }
     }
@@ -256,6 +256,17 @@ public class Main {
         }
     }
 
+    public static void testLibraryGetGames(Integer page) {
+        LibraryServiceImpl libraryService = new LibraryServiceImpl();
+        try {
+            List<UserLibraryDTO> games = libraryService.getGames("Chang Liu", page);
+            for (UserLibraryDTO g : games)
+                System.out.println(g);
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
+    }
+
     // ========== NICCO ==============
     public static void testAdvancedSearch() {
         List<Game> games = new ArrayList<>();
@@ -274,8 +285,8 @@ public class Main {
 
         // =================== LORE =====================
 
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        // Utils.clearConsole();
+        // ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*
@@ -302,7 +313,8 @@ public class Main {
         // testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
-        testGetReviewById();
+        // testGetReviewById();
+        // testLibraryGetGames(1);
 
 
         /*
