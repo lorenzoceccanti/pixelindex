@@ -3,7 +3,7 @@ package it.unipi.largescale.pixelindex.controller;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.User;
-import it.unipi.largescale.pixelindex.service.AnalyticsService;
+import it.unipi.largescale.pixelindex.service.SuggestionsService;
 import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -30,7 +30,7 @@ public class RegisteredUserController {
     private GameController gameController;
     private LibraryService libraryService;
     private RegisteredUserService registeredUserService;
-    private AnalyticsService analyticsService;
+    private SuggestionsService suggestionsService;
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialFriends;
@@ -129,7 +129,7 @@ public class RegisteredUserController {
     }
     private int friendsYouMightKnow(){
         try{
-            potentialFriends = analyticsService.suggestUsers(sessionUsername);
+            potentialFriends = suggestionsService.suggestUsers(sessionUsername);
             System.out.println("Friends you might know:");
             if(potentialFriends.isEmpty())
                 System.out.println("*** List empty ***");
@@ -160,7 +160,7 @@ public class RegisteredUserController {
         this.totalPages = 3;
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
-        this.analyticsService = ServiceLocator.getAnalyticsService();
+        this.suggestionsService = ServiceLocator.getAnalyticsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.libraryService = ServiceLocator.getLibraryService();
         registeredMenu = new RegisteredMenu();

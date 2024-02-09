@@ -19,13 +19,13 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (u: User) WHERE u.username = $username" +
-                                "MATCH (g: Game) WHERE g.mongoId = $gameId" +
-                                "MERGE (u)-[r:ADDS_TO_LIBRARY]->(g)" +
-                                "SET r.date = toString(date().year) + '-'" +
-                                "apoc.text.lpad(toString(date().month), 2, '0') + '-'" +
+                tx.run("MATCH (u: User) WHERE u.username = $username " +
+                                "MATCH (g: Game) WHERE g.mongoId = $gameId " +
+                                "MERGE (u)-[r:ADDS_TO_LIBRARY]->(g) " +
+                                "SET r.date = toString(date().year) + '-' + " +
+                                "apoc.text.lpad(toString(date().month), 2, '0') + '-' + " +
                                 "apoc.text.lpad(toString(date().day), 2, '0');",
-                        parameters("$username", username, "$gameId", gameId));
+                        parameters("username", username, "gameId", gameId));
                 return null;
             });
         } catch (ServiceUnavailableException ex) {
@@ -40,7 +40,7 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                 tx.run("MATCH (u: User)-[r:ADDS_TO_LIBRARY]->(g: Game)" +
                                 "WHERE u.username = $username AND g.mongoId = $gameId" +
                                 "DELETE (u)-[:ADDS_TO_LIBRARY]->(g);)",
-                        parameters("$username", username, "$gameId", gameId));
+                        parameters("username", username, "gameId", gameId));
                 return null;
             });
         } catch (ServiceUnavailableException ex) {
