@@ -133,14 +133,17 @@ public class RegisteredUserController {
         return result;
     }
     private int friendsYouMightKnow(){
+        List<String> rows = new ArrayList<>();
+        registeredMenu.getDisplayed().set(false);
         try{
             potentialFriends = suggestionsService.suggestUsers(sessionUsername);
-            System.out.println("Friends you might know:");
+            rows.add("Friends you might know");
             if(potentialFriends.isEmpty())
-                System.out.println("*** List empty ***");
-            for(int i=0; i<potentialFriends.size(); i++)
-                System.out.println((i+1)+") "+potentialFriends.get(i));
-            showRegisteredDropdown();
+                rows.add("*** List empty ***");
+            /*for(int i=0; i<potentialFriends.size(); i++)
+                System.out.println((i+1)+") "+potentialFriends.get(i));*/
+            rows.addAll(potentialFriends);
+            showRegisteredDropdown(rows);
             return 0;
         }catch(ConnectionException ex)
         {
@@ -196,19 +199,24 @@ public class RegisteredUserController {
                     exit = 1;
                     break;
                 default:
+                    break;
                     // Removing game from library
             }
         }while(exit != 1);
         return result;
     }
-    private int showRegisteredDropdown()
+    private int showRegisteredDropdown(List<String> view)
     {
         int opt = -1;
         do{
             Utils.clearConsole();
+            view.stream().forEach(elem -> {
+                System.out.println(elem);
+            });
             registeredMenu.getDisplayed().set(true);
             opt = registeredMenu.displayMenu(sessionUsername);
             functionsRegistered[opt].run();
+            view.clear();
         }while(registeredMenu.getDisplayed().get());
         return opt;
     }
@@ -246,7 +254,7 @@ public class RegisteredUserController {
         // After the login the thread starts
         consistencyThread.start();
         Utils.clearConsole();
-        int index = showRegisteredDropdown();
+        int index = showRegisteredDropdown(new ArrayList<>());
     }
 
 }
