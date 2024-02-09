@@ -1,6 +1,5 @@
 package it.unipi.largescale.pixelindex.service;
 
-import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.impl.*;
 
 public class ServiceLocator {
@@ -15,7 +14,7 @@ public class ServiceLocator {
     private static StatisticsService statisticsService = new StatisticsServiceImpl();
     private static GameService gameService = new GameServiceImpl();
     private static ModeratorService moderatorService = new ModeratorServiceImpl();
-    private static AnalyticsService analyticsService = new AnalyticsServiceImpl();
+    private static SuggestionsService suggestionsServic = new SuggestionsServiceImpl();
     private static ReviewService reviewService = new ReviewServiceImpl();
     private static LibraryService libraryService = new LibraryServiceImpl();
     public static RegisteredUserService getRegisteredUserService(){
@@ -25,6 +24,6 @@ public class ServiceLocator {
     public static GameService getGameService() {return gameService;}
     public static ReviewService getReviewService(){return reviewService;}
     public static ModeratorService getModeratorService() {return moderatorService;}
-    public static AnalyticsService getAnalyticsService() {return analyticsService;}
+    public static SuggestionsService getAnalyticsService() {return suggestionsServic;}
     public static LibraryService getLibraryService() {return libraryService;}
 }

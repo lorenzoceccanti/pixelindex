@@ -5,7 +5,7 @@ import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 
 import java.util.List;
 
-public interface AnalyticsService {
+public interface SuggestionsService {
     List<GamePreviewDTO> suggestGames(String username) throws ConnectionException;
 
     List<String> suggestUsers(String username) throws ConnectionException;

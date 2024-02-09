@@ -1,23 +1,23 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
-import it.unipi.largescale.pixelindex.dao.neo4j.AnalyticsNeo4jDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.SuggestionsNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
-import it.unipi.largescale.pixelindex.service.AnalyticsService;
+import it.unipi.largescale.pixelindex.service.SuggestionsService;
 
 import java.util.List;
 
-public class AnalyticsServiceImpl implements AnalyticsService {
-    private AnalyticsNeo4jDAO analyticsNeo4jDAO;
+public class SuggestionsServiceImpl implements SuggestionsService {
+    private SuggestionsNeo4jDAO suggestionsNeo4JDAO;
 
-    public AnalyticsServiceImpl() {
-        this.analyticsNeo4jDAO = new AnalyticsNeo4jDAO();
+    public SuggestionsServiceImpl() {
+        this.suggestionsNeo4JDAO = new SuggestionsNeo4jDAO();
     }
 
     public List<GamePreviewDTO> suggestGames(String username) throws ConnectionException {
         try {
-            return analyticsNeo4jDAO.getSuggestedGames(username);
+            return suggestionsNeo4JDAO.getSuggestedGames(username);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }
@@ -25,7 +25,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
     public List<String> suggestUsers(String username) throws ConnectionException {
         try {
-            return analyticsNeo4jDAO.getSuggestedUsers(username);
+            return suggestionsNeo4JDAO.getSuggestedUsers(username);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

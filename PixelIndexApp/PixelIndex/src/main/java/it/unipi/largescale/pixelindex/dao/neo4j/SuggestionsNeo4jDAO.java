@@ -8,12 +8,11 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
 
-public class AnalyticsNeo4jDAO extends BaseNeo4jDAO {
+public class SuggestionsNeo4jDAO extends BaseNeo4jDAO {
 
     public List<GamePreviewDTO> getSuggestedGames(String username) throws DAOException {
         ArrayList<GamePreviewDTO> suggestedGames;

@@ -19,10 +19,12 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (u: User) WHERE u.username = $username " +
-                                "MATCH (g: Game) WHERE g.mongoId = $gameId " +
-                                "MERGE (u)-[r:ADDS_TO_LIBRARY {date}]->(g) " +
-                                "SET r.date = date().year + '-' + apoc.text.lpad(date().month, 2, '0') + '-' + apoc.text.lpad(date().day, 2, '0');",
+                tx.run("MATCH (u: User) WHERE u.username = $username" +
+                                "MATCH (g: Game) WHERE g.mongoId = $gameId" +
+                                "MERGE (u)-[r:ADDS_TO_LIBRARY]->(g)" +
+                                "SET r.date = toString(date().year) + '-'" +
+                                "apoc.text.lpad(toString(date().month), 2, '0') + '-'" +
+                                "apoc.text.lpad(toString(date().day), 2, '0');",
                         parameters("$username", username, "$gameId", gameId));
                 return null;
             });
