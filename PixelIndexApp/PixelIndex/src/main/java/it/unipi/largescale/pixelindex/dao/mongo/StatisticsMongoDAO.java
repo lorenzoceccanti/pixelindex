@@ -36,6 +36,7 @@ public class StatisticsMongoDAO {
             // Aggregation Pipeline
             results = usersCollection.aggregate(
                     Arrays.asList(
+                            Aggregates.match(Filters.exists("isBanned",false)),
                             Aggregates.match(Filters.exists("reported_by")),
                             Aggregates.project(Projections.fields(
                                     Projections.excludeId(),
