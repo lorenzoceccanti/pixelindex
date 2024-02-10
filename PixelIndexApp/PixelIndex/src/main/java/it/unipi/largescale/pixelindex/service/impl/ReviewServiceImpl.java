@@ -23,7 +23,7 @@ public class ReviewServiceImpl implements ReviewService {
         this.reviewNeo4jDAO = new ReviewNeo4jDAO();
     }
 
-    public void insertReview(Review review, String gameName, Integer gameReleaseYear, ConsistencyThread consistencyThread) throws ConnectionException {
+    public void insertReview(Review review, String gameName, Integer gameReleaseYear) throws ConnectionException {
         try {
             reviewMongoDAO.insertReview(review, gameName, gameReleaseYear);
         } catch (DAOException e) {

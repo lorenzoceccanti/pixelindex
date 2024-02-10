@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface ReviewService {
 
-    void insertReview(Review review, String gameName, Integer gameReleaseYear, ConsistencyThread consistencyThread) throws ConnectionException;
+    void insertReview(Review review, String gameName, Integer gameReleaseYear) throws ConnectionException;
 
     void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException;
 
