@@ -147,9 +147,11 @@ public class GameMongoDAO extends BaseMongoDAO {
     }
 
     public String insertGame(Game game) throws DAOException {
+        System.out.println(game);
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
+
             Document document = new Document();
             document.append("name", game.getName());
             document.append("category", game.getCategory());
