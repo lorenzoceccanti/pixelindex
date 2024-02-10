@@ -3,6 +3,8 @@ package it.unipi.largescale.pixelindex.controller;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.Game;
+import it.unipi.largescale.pixelindex.model.RatingKind;
+import it.unipi.largescale.pixelindex.model.Review;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.LibraryService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -11,6 +13,7 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -65,6 +68,30 @@ public class GameController{
         /* Introdurre qui un eventuale conto del numero totale di giochi*/
     }
 
+    private void formNewReview(String gameId, String gameName, Integer date){
+        ListSelector ls = new ListSelector("*** Inserting new review ***");
+        ArrayList<String> opt = new ArrayList<>();
+        opt.add("Yes");
+        opt.add("No");
+        opt.add("I don't know");
+        ls.addOptions(opt, "newReviewDropDown", "Do you recommend this game?");
+        int choice = ls.askUserInteraction("newReviewDropDown");
+        System.out.println("Write something: (end with enter)");
+        Scanner sc = new Scanner(System.in);
+        String text = sc.nextLine();
+
+        Review r = new Review();
+        if(choice == 0)
+            r.setRating(RatingKind.RECOMMENDED);
+        else if(choice == 1)
+            r.setRating(RatingKind.NOT_RECOMMENDED);
+        else
+            r.setRating(RatingKind.NOT_AVAILABLE);
+        r.setText(text);
+        r.setAuthor(sessionUsername);
+        r.setGameId(gameId);
+        r.setTimestamp(LocalDateTime.now());
+    }
 
     public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
         /* Sfasamento di 3 posizioni in avanti
@@ -138,8 +165,12 @@ public class GameController{
                         }
                         break;
                     case 5:
-                        // Add new review
-                        System.out.println("Not implemented");
+                        if(sessionUsername.isEmpty()){
+                            addToLibrarySts = 1;
+                            message = "Unauthorized";
+                        } else {
+                            // Add new review
+                        }
                         break;
                     case 6:
                         // Go back
