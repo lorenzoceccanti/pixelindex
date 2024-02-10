@@ -75,6 +75,7 @@ public class GameServiceImpl implements GameService {
                     gameNeo4jDAO.insertGame(game);
                     gameMongoDAO.updateConsistencyFlag(game.getId());
                 } catch (DAOException e) {
+                    e.printStackTrace();
                 }
             });
         } catch (DAOException e) {

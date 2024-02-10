@@ -155,7 +155,7 @@ public class ModeratorController {
 
         System.out.println("Specify the languages [comma separated]:");
         String languageString = sc.nextLine();
-        String[] languages = genresString.split(",");
+        String[] languages = languageString.split(",");
         g.setLanguages(languages);
 
         System.out.println("Specify summary:");

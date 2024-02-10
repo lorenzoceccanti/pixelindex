@@ -23,14 +23,11 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
     public void insertGame(Game game) throws DAOException {
         try (Driver neoDriver = beginConnection()) {
             String query = "CREATE (g:Game {mongoId: $id, name: $name, releaseYear: $releaseYear})";
-            Map<String, Object> params = new HashMap<>();
-            parameters("id", game.getId(),
-                    "name", game.getName(),
-                    "releaseYear", game.getReleaseDate().getYear());
-
             try (Session session = neoDriver.session()) {
                 session.executeWrite(tx -> {
-                    tx.run(query, params);
+                    tx.run(query, parameters("id", game.getId(),
+                            "name", game.getName(),
+                            "releaseYear", game.getReleaseDate().getYear()));
                     return null;
                 });
             }

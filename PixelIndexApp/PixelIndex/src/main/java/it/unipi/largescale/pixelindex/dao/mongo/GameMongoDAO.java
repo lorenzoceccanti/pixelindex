@@ -90,7 +90,8 @@ public class GameMongoDAO extends BaseMongoDAO {
             MongoCollection<Document> collection = database.getCollection("games");
 
             List<Bson> aggregationPipeline = new ArrayList<>();
-
+            // Filter only documents with consistent equal to true
+            aggregationPipeline.add(Aggregates.match(Filters.eq("consistent", true)));
             // Search criteria
             if (name != null && !name.isEmpty()) {
                 aggregationPipeline.add(Aggregates.match(Filters.regex("name", name, "i")));
@@ -177,6 +178,7 @@ public class GameMongoDAO extends BaseMongoDAO {
             document.append("languages",languagesList);
             document.append("platforms",platformsList);
             document.append("summary", game.getSummary());
+            document.append("consistent",false);
             collection.insertOne(document);
             return document.get("_id").toString();
         } catch (Exception e) {
@@ -189,7 +191,7 @@ public class GameMongoDAO extends BaseMongoDAO {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             Document filter = new Document("_id", new ObjectId(gameId));
-            Document updateOperation = new Document("$set", new Document("consistency", true));
+            Document updateOperation = new Document("$set", new Document("consistent", true));
             collection.updateOne(filter, updateOperation);
         } catch (Exception e) {
             throw new DAOException("Error updating consistency flag: " + e);
