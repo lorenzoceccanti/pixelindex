@@ -66,7 +66,7 @@ public class GameController{
         /* Introdurre qui un eventuale conto del numero totale di giochi*/
     }
 
-    private void formNewReview(String gameId, String gameName, Integer date){
+    private void formNewReview(String gameId, String gameName, Integer gameReleaseYear){
         ListSelector ls = new ListSelector("*** Inserting new review ***");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Yes");
@@ -91,7 +91,7 @@ public class GameController{
         r.setTimestamp(LocalDateTime.now());
 
         try{
-            reviewService.insertReview(r,gameName, date);
+            reviewService.insertReview(r,gameName, gameReleaseYear);
         }catch (ConnectionException ex){
             ex.printStackTrace();
         }
@@ -115,6 +115,8 @@ public class GameController{
 
         do{
             String gameId = gamePreviewDTO.getId();
+            String gameName = gamePreviewDTO.getName();
+            Integer gameReleaseYear = gamePreviewDTO.getReleaseYear();
             try{
                 // Utils.clearConsole();
                 System.out.println((addToLibrarySts == -1)?"":message);
@@ -174,6 +176,9 @@ public class GameController{
                             message = "Unauthorized";
                         } else {
                             // Add new review
+                            formNewReview(gameId, gameName, gameReleaseYear);
+                            addToLibrarySts = 1;
+                            message = "Review successfully added";
                         }
                         break;
                     case 6:
