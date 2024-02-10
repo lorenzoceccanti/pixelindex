@@ -14,9 +14,8 @@ public class ModeratorMenu {
     public ModeratorMenu(){
         displayed = new AtomicBoolean(true);
         options = new ArrayList<>();
-        // options.add("Add game");
-        // options.add("Remove ")
         options.add("View reports");
+        options.add("Add game");
         options.add("Exit app");
     }
     public int displayMenu(){

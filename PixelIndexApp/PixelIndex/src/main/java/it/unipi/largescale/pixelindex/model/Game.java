@@ -104,6 +104,7 @@ public class Game {
         this.status = status;
     }
 
+    /*
     @Override
     public String toString(){
         String result = "";
@@ -119,5 +120,22 @@ public class Game {
         result += (summary == null ? "" : ("\nSummary: " + summary));
 
         return result;
+    }*/
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", releaseDate=" + releaseDate +
+                ", gameModes=" + Arrays.toString(gameModes) +
+                ", genres=" + Arrays.toString(genres) +
+                ", companies=" + Arrays.toString(companies) +
+                ", languages=" + Arrays.toString(languages) +
+                ", platforms=" + Arrays.toString(platforms) +
+                ", summary='" + summary + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
