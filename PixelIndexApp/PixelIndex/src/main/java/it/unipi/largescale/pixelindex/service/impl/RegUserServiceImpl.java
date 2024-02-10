@@ -67,7 +67,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
 
         // Starting a MongoDAO transaction
         MongoDatabase db;
-        try (MongoClient mongoClient = BaseMongoDAO.beginConnection()) {
+        try (MongoClient mongoClient = BaseMongoDAO.beginConnection(true)) {
             try (ClientSession clientSession = mongoClient.startSession()) {
                 clientSession.startTransaction();
                 try {

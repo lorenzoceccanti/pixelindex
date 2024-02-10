@@ -83,7 +83,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
         List<Game> games = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
 
@@ -131,7 +131,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
     public Game getGameById(String id) throws DAOException {
         Game gameObject = null;
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             ObjectId objectId = new ObjectId(id);
@@ -147,7 +147,7 @@ public class GameMongoDAO extends BaseMongoDAO {
     }
 
     public String insertGame(Game game) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             Document document = new Document();
@@ -168,7 +168,7 @@ public class GameMongoDAO extends BaseMongoDAO {
     }
 
     public void updateConsistencyFlag(String gameId) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             Document filter = new Document("_id", new ObjectId(gameId));
@@ -180,7 +180,7 @@ public class GameMongoDAO extends BaseMongoDAO {
     }
 
     public ArrayList<Game> getInconsistentGames() throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
             Document filter = new Document("consistent", true);

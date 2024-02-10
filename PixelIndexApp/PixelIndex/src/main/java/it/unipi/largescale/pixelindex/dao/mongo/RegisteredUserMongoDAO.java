@@ -33,7 +33,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
     public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, DAOException {
         MongoDatabase db;
         List<Document> results = null;
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(true)) {
 
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
@@ -112,7 +112,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         if (usernameReported.equals(usernameReporting))
             return;
         MongoDatabase db;
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
             Bson myMatch1 = (eq("username", usernameReported));
@@ -131,7 +131,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
     public void banUser(String username) throws DAOException {
         // Starting a MongoDAO transaction
         MongoDatabase db;
-        try (MongoClient mongoClient = BaseMongoDAO.beginConnection()) {
+        try (MongoClient mongoClient = BaseMongoDAO.beginConnection(false)) {
             try (ClientSession clientSession = mongoClient.startSession()) {
                 clientSession.startTransaction();
                 try {
@@ -156,7 +156,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
     public ArrayList<UserSearchDTO> searchUser(String username, int page) throws DAOException {
         ArrayList<UserSearchDTO> users = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("users");
 
@@ -198,7 +198,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
     public void updateFollowers(String src, String dst, int followingSrc, int followerDst) throws DAOException
     {
         MongoDatabase db;
-        try(MongoClient mc = beginConnection())
+        try(MongoClient mc = beginConnection(false))
         {
             MongoDatabase database = mc.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = database.getCollection("users");

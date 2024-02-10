@@ -29,7 +29,7 @@ public class StatisticsMongoDAO {
         MongoDatabase db;
         ArrayList<Document> results = null;
         ArrayList<UserReportsDTO> userReportsDTOs = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
 
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
@@ -61,7 +61,7 @@ public class StatisticsMongoDAO {
     public ArrayList<GameRatingDTO> topGamesByPositiveRatingRatio(int n) throws DAOException {
         ArrayList<GameRatingDTO> gameByRatingDTOS = new ArrayList<>();
 
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
 

@@ -6,11 +6,14 @@ import it.unipi.largescale.pixelindex.service.ModeratorService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
+import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.ModeratorMenu;
+import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModeratorController {
     BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
@@ -30,7 +33,7 @@ public class ModeratorController {
             return 1;
         }
     }
-    private void viewReport(){
+    private void buildReport(){
         rows.clear();
         rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
         userReportsDTOS.stream().forEach(userReport -> {
@@ -40,8 +43,19 @@ public class ModeratorController {
             System.out.println("*** Empty ***");
         }
     }
-    private void displayReport(){
-        /** TO DO **/
+    private int displayReport(){
+        int result = 1; int choice = -1;
+        moderatorMenu.setDisplayed(new AtomicBoolean(false));
+        do{
+            Utils.clearConsole();
+            ListSelector ls = new ListSelector("Most reported users:");
+            result = queryReports();
+            if(result != 0)
+                return result;
+            buildReport();
+            ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
+            choice = ls.askUserInteraction("reportsDropdown", )
+        }
     }
     public ModeratorController(){
         this.moderatorMenu = new ModeratorMenu();

@@ -41,7 +41,7 @@ public abstract class BaseMongoDAO {
         return mongoclient;
     }
 
-    public static MongoClient beginConnection() {
+    public static MongoClient beginConnection(boolean primaryPref) {
 
         String[] var = new String[2];
         ArrayList<String> params = new ArrayList<>();
@@ -57,9 +57,9 @@ public abstract class BaseMongoDAO {
         String MONGO_PASS = params.get(3).trim();
 
 
-        String connectionString = String.format("mongodb://%s:%s@%s:%d,%s:%d,%s:%d/",
+        String connectionString = String.format("mongodb://%s:%s@%s:%d,%s:%d,%s:%d/?w=2&connectTimeoutMS=5000&readPreference=%s",
                 MONGO_USER, MONGO_PASS, SERVER_ADDRESS,
-                MONGO_PORT, SERVER_ADDRESS, MONGO_PORT + 1, SERVER_ADDRESS, MONGO_PORT + 2);
+                MONGO_PORT, SERVER_ADDRESS, MONGO_PORT + 1, SERVER_ADDRESS, MONGO_PORT + 2,(primaryPref)?"primaryPreferred":"nearest");
         ConnectionString uri = new ConnectionString(connectionString);
         MongoClientSettings mcs = MongoClientSettings.builder()
                 .applyConnectionString(uri)

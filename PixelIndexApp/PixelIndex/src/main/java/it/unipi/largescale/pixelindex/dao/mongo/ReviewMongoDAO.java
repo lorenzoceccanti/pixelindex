@@ -57,7 +57,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
 
     public Review getReviewById(String id) throws DAOException {
         Review review = null;
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
             Document query = new Document("_id", new ObjectId(id));
@@ -73,7 +73,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public String insertReview(Review review, String gameName, Integer gameReleaseYear) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
             Document document = new Document();
@@ -94,7 +94,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public void deleteReview(String reviewId) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
             Document query = new Document("_id", new ObjectId(reviewId));
@@ -105,7 +105,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public void setReactionsCount(String reviewId, int likes, int dislikes) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
             Document query = new Document("_id", new ObjectId(reviewId));
@@ -117,7 +117,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
     }
 
     public ReviewPageDTO getReviewsByGameId(String gameId, String username, Integer page) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
 

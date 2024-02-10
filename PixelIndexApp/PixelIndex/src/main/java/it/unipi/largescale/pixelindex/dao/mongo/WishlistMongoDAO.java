@@ -15,7 +15,7 @@ import java.util.List;
 public class WishlistMongoDAO extends BaseMongoDAO {
 
     public void insertGame(String userId, GamePreviewDTO game) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("wishlists");
 
@@ -41,7 +41,7 @@ public class WishlistMongoDAO extends BaseMongoDAO {
     }
 
     public void removeGame(String userId, String gameId) throws DAOException {
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("wishlists");
 
@@ -57,7 +57,7 @@ public class WishlistMongoDAO extends BaseMongoDAO {
 
     public List<GamePreviewDTO> getGames(String userId) throws DAOException {
         List<GamePreviewDTO> wishlistGames = new ArrayList<>();
-        try (MongoClient mongoClient = beginConnection()) {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("wishlists");
 
