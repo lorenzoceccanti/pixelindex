@@ -24,6 +24,7 @@ public class ModeratorController {
     private ArrayList<UserReportsDTO> userReportsDTOS;
     private ModeratorService moderatorService;
     private Runnable[] functionsModerator;
+    private int exitReportList;
 
     private int queryReports(){
         try{
@@ -43,9 +44,17 @@ public class ModeratorController {
             System.out.println("*** Empty ***");
         }
     }
+    private int banUser(String username){
+        try{
+            moderatorService.banUser(username);
+            return 0;
+        }catch(ConnectionException ex){
+            return 1;
+        }
+    }
     private int displayReport(){
         int result = 1; int choice = -1;
-        moderatorMenu.setDisplayed(new AtomicBoolean(false));
+        moderatorMenu.getDisplayed().set(false);
         do{
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Most reported users:");
@@ -54,8 +63,21 @@ public class ModeratorController {
                 return result;
             buildReport();
             ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
-            choice = ls.askUserInteraction("reportsDropdown", )
-        }
+            choice = ls.askUserInteraction("reportsDropdown");
+            switch(choice)
+            {
+                case 0:
+                    moderatorMenu.getDisplayed().set(true);
+                    exitReportList = 0;
+                    break;
+                default:
+                    exitReportList = 1;
+                    // Ban the user
+                    UserReportsDTO user = userReportsDTOS.get(choice-1);
+                    banUser(user.getUsername());
+            }
+        }while(exitReportList != 1);
+        return result;
     }
     public ModeratorController(){
         this.moderatorMenu = new ModeratorMenu();
