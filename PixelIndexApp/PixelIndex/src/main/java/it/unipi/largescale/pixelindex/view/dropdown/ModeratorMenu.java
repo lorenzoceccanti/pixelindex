@@ -17,7 +17,7 @@ public class ModeratorMenu {
         options.add("View reports");
         options.add("Exit app");
     }
-    public int displayMenu(String username){
+    public int displayMenu(){
         listSelector = new ListSelector("*** Moderator Area ***");
         listSelector.addOptions(options, "moderator_menu", "Make your choice");
         selection = listSelector.askUserInteraction("moderator_menu");

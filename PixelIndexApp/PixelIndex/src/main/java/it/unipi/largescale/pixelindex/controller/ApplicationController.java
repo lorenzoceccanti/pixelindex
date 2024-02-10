@@ -7,6 +7,7 @@ public class ApplicationController {
     private UnregisteredMenu unregisteredMenu;
     private UnregisteredUserController unregisteredUserController;
     private RegisteredUserController registeredUserController;
+    private ModeratorController moderatorController;
     private RegisteredMenu registeredMenu;
     private Runnable[] functionsUnregistered;
     private Runnable[] functionsRegistered;
@@ -23,8 +24,8 @@ public class ApplicationController {
             registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername());
             registeredUserController.execute();
         } else if(fun == 6){
-            System.out.println("Moderator");
-            System.exit(0);
+            moderatorController = new ModeratorController();
+            moderatorController.execute();
         }
 
     }

@@ -9,8 +9,10 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.ModeratorMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
+import jline.internal.Ansi;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,7 +26,18 @@ public class ModeratorController {
     private ArrayList<UserReportsDTO> userReportsDTOS;
     private ModeratorService moderatorService;
     private Runnable[] functionsModerator;
+    private int exitReportList;
 
+    private int showModeratorDropdown(){
+        int opt = -1;
+        do{
+            Utils.clearConsole();
+            moderatorMenu.getDisplayed().set(true);
+            opt = moderatorMenu.displayMenu();
+            functionsModerator[opt].run();
+        }while(moderatorMenu.getDisplayed().get());
+        return opt;
+    }
     private int queryReports(){
         try{
             userReportsDTOS = statisticsService.topNReportedUser(10);
@@ -37,16 +50,50 @@ public class ModeratorController {
         rows.clear();
         rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
         userReportsDTOS.stream().forEach(userReport -> {
-            rows.add(userReportsDTOS.toString());
+            rows.add(userReport.toString());
         });
         if(rows.size() <= 1){
             System.out.println("*** Empty ***");
         }
     }
+    private int banUser(String username){
+        try{
+            moderatorService.banUser(username);
+            return 0;
+        }catch(ConnectionException ex){
+            return 1;
+        }
+    }
     private int displayReport(){
         int result = 1; int choice = -1;
-        moderatorMenu.setDisplayed(new AtomicBoolean(false));
-        return 0;
+        String messageDisp = "";
+        moderatorMenu.getDisplayed().set(false);
+        do{
+            Utils.clearConsole();
+            System.out.println(messageDisp);
+            ListSelector ls = new ListSelector("Most reported users:");
+            result = queryReports();
+            if(result != 0)
+                return result;
+            buildReport();
+            ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
+            choice = ls.askUserInteraction("reportsDropdown");
+            switch(choice)
+            {
+                case 0:
+                    exitReportList = 1;
+                    break;
+                default:
+                    exitReportList = 0;
+                    // Ban the user
+                    UserReportsDTO user = userReportsDTOS.get(choice-1);
+                    int sts = banUser(user.getUsername());
+                    messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW+user.getUsername()+AnsiColor.ANSI_RESET+" banned successfully":messageDisp;
+            }
+        }while(exitReportList != 1);
+        moderatorMenu.getDisplayed().set(true);
+        showModeratorDropdown();
+        return result;
     }
     public ModeratorController(){
         this.moderatorMenu = new ModeratorMenu();
@@ -54,11 +101,18 @@ public class ModeratorController {
         this.statisticsService = ServiceLocator.getStatisticsService();
         functionsModerator = new Runnable[]{
                 () -> {
-
+                    displayReport();
                 },
                 () -> {
                     System.exit(0);
                 }
         };
+    }
+
+    public void execute(){
+        // After the login the consistency thread starts
+        consistencyThread.start();
+        Utils.clearConsole();
+        int index = showModeratorDropdown();
     }
 }

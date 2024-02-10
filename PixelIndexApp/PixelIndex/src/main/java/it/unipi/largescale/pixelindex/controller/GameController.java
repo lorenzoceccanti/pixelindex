@@ -118,7 +118,7 @@ public class GameController{
             String gameName = gamePreviewDTO.getName();
             Integer gameReleaseYear = gamePreviewDTO.getReleaseYear();
             try{
-                // Utils.clearConsole();
+                Utils.clearConsole();
                 System.out.println((addToLibrarySts == -1)?"":message);
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
