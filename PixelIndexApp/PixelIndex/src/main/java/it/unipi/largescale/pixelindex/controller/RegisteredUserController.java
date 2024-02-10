@@ -229,7 +229,7 @@ public class RegisteredUserController {
         }while(exit != 1);
         return result;
     }
-    // == LOOK FROM HERE ==
+
     private int queryUserWishlist(String username, int page){
         try{
             gameWishlistDTOs = wishlistService.getGames(username, page);
@@ -288,7 +288,6 @@ public class RegisteredUserController {
         }while(exit != 1);
         return result;
     }
-    // == TO HERE ==
     private int showRegisteredDropdown(List<String> view)
     {
         int opt = -1;
