@@ -9,6 +9,8 @@ import com.mongodb.client.MongoClients;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public abstract class BaseMongoDAO {
@@ -42,31 +44,40 @@ public abstract class BaseMongoDAO {
     }
 
     public static MongoClient beginConnection(boolean primaryPref) {
-
-        String[] var = new String[2];
-        ArrayList<String> params = new ArrayList<>();
+        HashMap<String, String> params = new HashMap<>();
         String envPayload = Utils.retrieveEnv();
         StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
         while (tokens.hasMoreTokens()) {
-            var = tokens.nextToken().split("=", 2);
-            params.add(var.length == 1 ? "" : var[1]);
+            String[] var = tokens.nextToken().split("=", 2);
+            if (var.length == 2) {
+                params.put(var[0].trim(), var[1].trim());
+            }
         }
-        String SERVER_ADDRESS = params.get(0).trim();
-        int MONGO_PORT = Integer.parseInt(params.get(1).trim());
-        String MONGO_USER = params.get(2).trim();
-        String MONGO_PASS = params.get(3).trim();
 
+        String envSuffix = params.get("ENVIRONMENT").equals("PRODUCTION") ? "_PROD" : "_TEST";
+        String MONGO_USER = params.getOrDefault("MONGO_USER" + envSuffix, "");
+        String MONGO_PASS = params.getOrDefault("MONGO_PASS" + envSuffix, "");
 
-        String connectionString = String.format("mongodb://%s:%s@%s:%d,%s:%d,%s:%d/?w=2&connectTimeoutMS=5000&readPreference=%s",
-                MONGO_USER, MONGO_PASS, SERVER_ADDRESS,
-                MONGO_PORT, SERVER_ADDRESS, MONGO_PORT + 1, SERVER_ADDRESS, MONGO_PORT + 2,(primaryPref)?"primaryPreferred":"nearest");
-        ConnectionString uri = new ConnectionString(connectionString);
+        List<String> replicas = new ArrayList<>();
+        replicas.add(String.format("%s:%d", params.get("MONGO_PRIMARY"+envSuffix),
+                Integer.parseInt(params.get("MONGO_PRIMARY_PORT"+envSuffix))));
+
+        for (int i = 1; params.containsKey("MONGO_REPLICA_" + i + envSuffix); i++) {
+            String address = params.get("MONGO_REPLICA_" + i + envSuffix);
+            int port = Integer.parseInt(params.get("MONGO_REPLICA_" + i + "_PORT" + envSuffix));
+            replicas.add(String.format("%s:%d", address, port));
+        }
+
+        String authPart = (!MONGO_USER.isEmpty() && !MONGO_PASS.isEmpty()) ? MONGO_USER + ":" + MONGO_PASS + "@" : "";
+        String connectionString = String.format("mongodb://%s%s/?connectTimeoutMS=5000",
+                authPart, String.join(",", replicas));
+
         MongoClientSettings mcs = MongoClientSettings.builder()
-                .applyConnectionString(uri)
-                .readPreference(ReadPreference.primary())
-                .retryWrites(true)
-                .writeConcern(WriteConcern.ACKNOWLEDGED).build();
-        mongoclient = MongoClients.create(mcs);
-        return mongoclient;
+                .applyConnectionString(new ConnectionString(connectionString))
+                .readPreference(primaryPref ? ReadPreference.primaryPreferred() : ReadPreference.nearest())
+                .writeConcern(WriteConcern.W2)
+                .build();
+
+        return MongoClients.create(mcs);
     }
 }
