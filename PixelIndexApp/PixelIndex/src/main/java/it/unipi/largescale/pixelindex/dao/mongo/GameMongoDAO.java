@@ -16,12 +16,14 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Field;
 import org.bson.conversions.Bson;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
+import java.util.stream.Collectors;
 
 public class GameMongoDAO extends BaseMongoDAO {
 
@@ -147,7 +149,6 @@ public class GameMongoDAO extends BaseMongoDAO {
     }
 
     public String insertGame(Game game) throws DAOException {
-        System.out.println(game);
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
@@ -155,13 +156,27 @@ public class GameMongoDAO extends BaseMongoDAO {
             Document document = new Document();
             document.append("name", game.getName());
             document.append("category", game.getCategory());
-            document.append("first_release_date", game.getReleaseDate());
-            document.append("game_modes", game.getGameModes());
-            document.append("genres", game.getGenres());
-            document.append("companies", game.getCompanies());
-            document.append("languages", game.getLanguages());
+            Date date = Date.from(game.getReleaseDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            document.append("first_release_date", date);
+
+            // I have to convert the arrays in list of strings
+            List<String> gameModesList = Arrays.asList(game.getGameModes());
+            List<String> genresList = Arrays.stream(game.getGenres())
+                    .map(Genre::toString)
+                    .collect(Collectors.toList());
+
+            List<String> companiesList = Arrays.stream(game.getCompanies())
+                    .map(Company::toString)
+                    .collect(Collectors.toList());
+            List<String> languagesList = Arrays.asList(game.getLanguages());
+            List<String> platformsList = Arrays.asList(game.getPlatforms());
+
+            document.append("game_modes",gameModesList);
+            document.append("genres",genresList);
+            document.append("companies",companiesList);
+            document.append("languages",languagesList);
+            document.append("platforms",platformsList);
             document.append("summary", game.getSummary());
-            document.append("platforms", game.getPlatforms());
             collection.insertOne(document);
             return document.get("_id").toString();
         } catch (Exception e) {

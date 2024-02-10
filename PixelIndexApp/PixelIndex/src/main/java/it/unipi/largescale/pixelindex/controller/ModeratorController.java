@@ -140,7 +140,7 @@ public class ModeratorController {
 
         System.out.println("Specify the platforms [comma separated]:");
         String platfromString = sc.nextLine();
-        String[] platforms = genresString.split(",");
+        String[] platforms = platfromString.split(",");
         g.setPlatforms(platforms);
 
         System.out.println("Specify the companies [comma separated]:");
