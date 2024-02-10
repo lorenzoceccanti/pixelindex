@@ -281,7 +281,6 @@ public class RegisteredUserController {
                 default:
                     // Viewing game details
                     GamePreviewDTO gamePreviewDTO = gameWishlistDTOs.get(choice-3);
-                    System.out.println(gamePreviewDTO.getId());
                     gameController.viewGameDetail(0, gamePreviewDTO, true);
                     break;
             }
