@@ -4,6 +4,7 @@ import com.mongodb.MongoSocketException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
@@ -108,21 +109,30 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         return u;
     }
 
-    public void reportUser(String usernameReporting, String usernameReported) throws DAOException {
+    /**
+     * @return 1 if the user reports itself, -1 if you are trying to report a mod,
+     * 0 if everything is fine
+     * @throws DAOException
+     */
+    public int reportUser(String usernameReporting, String usernameReported) throws DAOException {
         if (usernameReported.equals(usernameReporting))
-            return;
+            return 1;
         MongoDatabase db;
         try (MongoClient mongoClient = beginConnection(false)) {
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
-            Bson myMatch1 = (eq("username", usernameReported));
+            Bson myMatch1 = (and(eq("username", usernameReported),eq("role","user")));
             Document or1 = new Document("$expr", new Document("$lt",
                     Arrays.asList(new Document("$size", "$reported_by"), 50)));
             Document or2 = new Document("reported_by", new Document("$exists", false));
             Bson or = or(or1, or2);
             Bson filter = and(myMatch1, or);
             Document update = new Document("$addToSet", new Document("reported_by", usernameReporting));
-            usersCollection.updateOne(filter, update);
+            UpdateResult updateResult = usersCollection.updateOne(filter, update);
+            if(updateResult.getMatchedCount() == 0)
+                return -1;
+            else
+                return 0;
         } catch (MongoSocketException ex) {
             throw new DAOException("Error in connecting to MongoDB");
         }
@@ -163,7 +173,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             List<Bson> aggregationPipeline = new ArrayList<>();
 
             aggregationPipeline.add(Aggregates.match(Filters.exists("isBanned",false)));
-            
+
             // Add field for similarity score based on string lengths
             aggregationPipeline.add(Aggregates.addFields(new Field<>("similarityScore",
                     new Document("$divide", Arrays.asList(

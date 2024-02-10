@@ -15,5 +15,5 @@ public interface RegisteredUserService {
     AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage) throws ConnectionException;
     ArrayList<UserSearchDTO> searchUser(String username, int page) throws ConnectionException;
     String followUser(String usernameSrc, String usernameDst, ConsistencyThread consistencyThread) throws ConnectionException;
-    void reportUser(String usernameReporting, String usernameReported) throws ConnectionException;
+    int reportUser(String usernameReporting, String usernameReported) throws ConnectionException;
 }

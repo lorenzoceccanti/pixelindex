@@ -122,9 +122,9 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void reportUser(String usernameReporting, String usernameReported) throws ConnectionException {
+    public int reportUser(String usernameReporting, String usernameReported) throws ConnectionException {
         try {
-            registeredUserMongo.reportUser(usernameReporting, usernameReported);
+            return registeredUserMongo.reportUser(usernameReporting, usernameReported);
         } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }

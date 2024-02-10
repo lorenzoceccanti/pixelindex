@@ -58,7 +58,7 @@ public class ModeratorController {
     }
     private int banUser(String username){
         try{
-            moderatorService.banUser(username);
+            moderatorService.banUser(username, consistencyThread);
             return 0;
         }catch(ConnectionException ex){
             return 1;

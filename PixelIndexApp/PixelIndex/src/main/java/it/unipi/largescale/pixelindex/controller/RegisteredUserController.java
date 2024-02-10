@@ -89,8 +89,11 @@ public class RegisteredUserController {
             return 1;
         }
         try{
-            registeredUserService.reportUser(sessionUsername, username);
-            message.replace(0, message.toString().length(),"[Operation]: "+AnsiColor.ANSI_YELLOW+username+AnsiColor.ANSI_RESET+" reported successfully");
+            int sts = registeredUserService.reportUser(sessionUsername, username);
+            if(sts == 0)
+                message.replace(0, message.toString().length(),"[Operation]: "+AnsiColor.ANSI_YELLOW+username+AnsiColor.ANSI_RESET+" reported successfully");
+            else if(sts == -1)
+                message.replace(0, message.toString().length(),"[Message]: Cannot report a moderator!");
             return 0;
         }catch (ConnectionException ex){
             return 1;

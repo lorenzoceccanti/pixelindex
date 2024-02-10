@@ -1,5 +1,7 @@
 package it.unipi.largescale.pixelindex.dto;
 
+import it.unipi.largescale.pixelindex.utils.AnsiColor;
+
 public class UserReportsDTO {
     private String username;
     private int numberReports;
@@ -21,6 +23,6 @@ public class UserReportsDTO {
     }
 
     public String toString(){
-        return username + " " + numberReports;
+        return AnsiColor.ANSI_BLUE+"User: " + username + AnsiColor.ANSI_RESET+" " + AnsiColor.ANSI_PURPLE+"Number of reports: " + numberReports+AnsiColor.ANSI_RESET;
     }
 }
