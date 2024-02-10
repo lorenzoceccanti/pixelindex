@@ -90,6 +90,11 @@ public class GameController{
         r.setGameId(gameId);
         r.setTimestamp(LocalDateTime.now());
 
+        try{
+            reviewService.insertReview(r,gameName, date);
+        }catch (ConnectionException ex){
+            ex.printStackTrace();
+        }
     }
 
     public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
