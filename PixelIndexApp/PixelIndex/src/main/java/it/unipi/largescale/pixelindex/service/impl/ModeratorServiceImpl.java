@@ -30,24 +30,25 @@ public class ModeratorServiceImpl implements ModeratorService {
      *
      * @param username The username to be removed
      */
-    public void banUser(String username) throws ConnectionException {
+
+    @Override
+    public void banUser(String username, ConsistencyThread consistencyThread) throws ConnectionException {
         try{
             registeredUserMongo.banUser(username);
+            consistencyThread.addTask(() -> {
+                try {
+                    registeredUserNeo.deleteUser(username);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                }
+            });
         }catch(DAOException ex)
         {
             throw new ConnectionException(ex);
         }
     }
 
-    public void deleteUserFromGraph(String username) throws ConnectionException{
-        try{
-            registeredUserNeo.deleteUser(username);
-        }catch(DAOException ex)
-        {
-            throw new ConnectionException(ex);
-        }
-    }
-
+    @Override
     public void synchronizeGames(ConsistencyThread consistencyThread) throws ConnectionException {
         try {
             ArrayList<Game> inconsistentGames = gameMongoDAO.getInconsistentGames();

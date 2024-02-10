@@ -46,16 +46,7 @@ public class ModeratorController {
     private int displayReport(){
         int result = 1; int choice = -1;
         moderatorMenu.setDisplayed(new AtomicBoolean(false));
-        do{
-            Utils.clearConsole();
-            ListSelector ls = new ListSelector("Most reported users:");
-            result = queryReports();
-            if(result != 0)
-                return result;
-            buildReport();
-            ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
-            choice = ls.askUserInteraction("reportsDropdown", )
-        }
+        return 0;
     }
     public ModeratorController(){
         this.moderatorMenu = new ModeratorMenu();
