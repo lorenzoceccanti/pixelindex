@@ -16,6 +16,7 @@ public class ModeratorMenu {
         options = new ArrayList<>();
         options.add("View reports");
         options.add("Add game");
+        options.add("Synchronized games");
         options.add("Exit app");
     }
     public int displayMenu(){

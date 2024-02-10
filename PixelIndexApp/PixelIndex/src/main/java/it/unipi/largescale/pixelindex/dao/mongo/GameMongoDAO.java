@@ -202,7 +202,7 @@ public class GameMongoDAO extends BaseMongoDAO {
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
-            Document filter = new Document("consistent", true);
+            Document filter = new Document("consistent", false);
             ArrayList<Document> results = collection.find(filter).into(new ArrayList<>());
             ArrayList<Game> games = new ArrayList<>();
             for (Document result : results) {

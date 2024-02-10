@@ -165,12 +165,19 @@ public class ModeratorController {
         try{
             gameService.insertGame(g, consistencyThread);
         }catch (ConnectionException ex){
-            ex.printStackTrace();
             System.out.println("Connection lost");
             System.exit(1);
         }
         moderatorMenu.getDisplayed().set(true);
         showModeratorDropdown(str);
+    }
+    private void synchronizeGames(){
+        try{
+            moderatorService.synchronizeGames(consistencyThread);
+            showModeratorDropdown("Synchronized performed");
+        }catch(ConnectionException ex){
+            showModeratorDropdown("Could not perform synchronization, try later");
+        }
     }
     public ModeratorController(){
         this.moderatorMenu = new ModeratorMenu();
@@ -184,6 +191,10 @@ public class ModeratorController {
                 () -> {
                     // Add game
                     promptNewGameForm();
+                },
+                () -> {
+                    // Sync games
+                    synchronizeGames();
                 },
                 () -> {
                     System.exit(0);
