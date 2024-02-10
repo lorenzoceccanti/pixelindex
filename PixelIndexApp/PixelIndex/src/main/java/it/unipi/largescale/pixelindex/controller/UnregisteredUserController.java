@@ -1,5 +1,6 @@
 package it.unipi.largescale.pixelindex.controller;
 
+import it.unipi.largescale.pixelindex.dto.AuthUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserLoginDTO;
 import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -25,6 +26,7 @@ public class UnregisteredUserController {
     private Runnable[] functionsUnregistered;
     private GameController gameController;
     private String sessionUsername = "";
+    private int isModerator;
     int errorCode = -1;
 
     /** Invokes the userService for making the login
@@ -32,12 +34,16 @@ public class UnregisteredUserController {
      * @return 1 if the login failed due to connection errors
      * 2 if the login failed due to wrong username
      * 3 if the login failed due to wrong password
+     * 6 if the login succeded as mod
      * 0 if the login succeded
      */
     private int login(){
         try{
-            registeredUserService.makeLogin(userLoginDTO.getUsername(), userLoginDTO.getPassword());
-            return 0;
+            AuthUserDTO authUserDTO = registeredUserService.makeLogin(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+            if(authUserDTO.getRole().equals("moderator"))
+                return 6;
+            else
+                return 0;
         }catch(ConnectionException ex)
         {
             System.out.println(ex.getMessage());
@@ -87,14 +93,18 @@ public class UnregisteredUserController {
         userLoginDTO.setPassword(password);
 
         int ret = login();
-        if(ret != 0)
-            displayed.set(true);
-        else
+        if(ret == 0)
         {
             displayed.set(false);
             sessionUsername = username;
+            isModerator = 0;
+        } else if(ret == 6){
+            displayed.set(false);
+            sessionUsername = username;
+            isModerator = 1;
+        } else{
+            displayed.set(true);
         }
-
         return ret;
     }
 
@@ -145,6 +155,7 @@ public class UnregisteredUserController {
         userLoginDTO = new UserLoginDTO();
         userRegistrationDTO = new UserRegistrationDTO();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
+        this.isModerator = -1;
         this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(unregisteredMenu.getDisplayed());
         functionsUnregistered = new Runnable[]{
@@ -179,8 +190,6 @@ public class UnregisteredUserController {
     /**
      * Shows the dropdown and after the user selection proceeds
      * to execute the proper functionality
-     * @return The index corresponding to the choice made
-     * -1 in case of errors
      */
     public int showUnregisteredDropdown()
     {
@@ -219,7 +228,7 @@ public class UnregisteredUserController {
             index = unregisteredMenu.displayMenu(messageText);
             functionsUnregistered[index].run();
         }
-        return index;
+        return errorCode;
     }
 
 }

@@ -18,8 +18,15 @@ public class ApplicationController {
 
         unregisteredUserController = new UnregisteredUserController();
         int fun = unregisteredUserController.showUnregisteredDropdown();
-        registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername());
-        registeredUserController.execute();
+        if(fun == 0 || fun == 5)
+        {
+            registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername());
+            registeredUserController.execute();
+        } else if(fun == 6){
+            System.out.println("Moderator");
+            System.exit(0);
+        }
+
     }
 
         /*
