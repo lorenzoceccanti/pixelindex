@@ -94,11 +94,11 @@ public class ReviewController {
             Utils.clearConsole();
             ListSelector ls = new ListSelector("Query result");
             result = constructExcerpt(gameId,pageSelection);
-            totalPages = (int)Math.ceil((double)(countAllReviews/REVIEWS_PER_PAGE));
+            totalPages = (int)Math.ceil((double)countAllReviews/REVIEWS_PER_PAGE);
             if(totalPages == 0)
                 System.out.println("***List empty ***");
             else
-                System.out.println("Page displayed: " + (pageSelection+1) + "of "+ totalPages);
+                System.out.println("Page displayed: " + (pageSelection+1) + " of "+ totalPages);
             if(result != 0)
                 break;
             constructView();
