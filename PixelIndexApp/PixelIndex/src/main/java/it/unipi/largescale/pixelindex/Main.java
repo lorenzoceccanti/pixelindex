@@ -284,8 +284,8 @@ public class Main {
 
         // =================== LORE =====================
 
-        // Utils.clearConsole();
-        // ApplicationController applicationController = new ApplicationController();
+         Utils.clearConsole();
+         ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*
