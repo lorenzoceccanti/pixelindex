@@ -162,6 +162,8 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
             List<Bson> aggregationPipeline = new ArrayList<>();
 
+            aggregationPipeline.add(Aggregates.match(Filters.exists("isBanned",false)));
+            
             // Add field for similarity score based on string lengths
             aggregationPipeline.add(Aggregates.addFields(new Field<>("similarityScore",
                     new Document("$divide", Arrays.asList(
