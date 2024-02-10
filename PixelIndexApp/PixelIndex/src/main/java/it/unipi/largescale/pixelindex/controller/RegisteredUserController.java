@@ -10,6 +10,7 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
+import jline.internal.Ansi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,21 @@ public class RegisteredUserController {
         }
     }
 
+    private int reportUser(String username, StringBuilder message)
+    {
+        // Check if the user is reporting by itself
+        if(sessionUsername.equals(username)){
+            message.replace(0, message.toString().length(),"[Message]: Cannot report by yourself!");
+            return 1;
+        }
+        try{
+            registeredUserService.reportUser(sessionUsername, username);
+            message.replace(0, message.toString().length(),"[Operation]: "+AnsiColor.ANSI_YELLOW+username+AnsiColor.ANSI_RESET+" reported successfully");
+            return 0;
+        }catch (ConnectionException ex){
+            return 1;
+        }
+    }
 
     private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
         int pageSelection = 0;
@@ -103,7 +119,7 @@ public class RegisteredUserController {
             if(result != 0)
                 return result;
             displayUsers();
-            ls.addOptions(rows, "searchUserByUsername", "Press enter to edit your follow");
+            ls.addOptions(rows, "searchUserByUsername", "Select an user:");
             choice = ls.askUserInteraction("searchUserByUsername");
             switch(choice)
             {
@@ -121,10 +137,18 @@ public class RegisteredUserController {
                     queryName = "";
                     break;
                 default:
-                    UserSearchDTO u = userSearchDTOs.get(choice-3);
-                    // Follow or unfollow
                     // To access the userSearchDTOs access with an index decreased by 3
-                    pressFollow(u.getUsername(), followMessage);
+                    UserSearchDTO u = userSearchDTOs.get(choice-3);
+                    ListSelector ls1 = new ListSelector("User selected: "+ AnsiColor.ANSI_YELLOW+u.getUsername()+AnsiColor.ANSI_RESET);
+                    ArrayList<String> userOpt = new ArrayList<>();
+                    userOpt.add(AnsiColor.ANSI_BLUE+"Edit your follow"+AnsiColor.ANSI_RESET);
+                    userOpt.add(AnsiColor.ANSI_RED+"Report"+AnsiColor.ANSI_RESET);
+                    ls1.addOptions(userOpt, "selectedUserDrop", "Make your choice");
+                    int sel = ls1.askUserInteraction("selectedUserDrop");
+                    if(sel == 0)
+                        pressFollow(u.getUsername(), followMessage);
+                    else
+                        reportUser(u.getUsername(), followMessage);
                     exit = 0;
             }
         }while(exit != 1);
