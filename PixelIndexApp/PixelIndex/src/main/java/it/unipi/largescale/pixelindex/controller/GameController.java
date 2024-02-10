@@ -5,10 +5,7 @@ import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.model.RatingKind;
 import it.unipi.largescale.pixelindex.model.Review;
-import it.unipi.largescale.pixelindex.service.GameService;
-import it.unipi.largescale.pixelindex.service.LibraryService;
-import it.unipi.largescale.pixelindex.service.ServiceLocator;
-import it.unipi.largescale.pixelindex.service.WishlistService;
+import it.unipi.largescale.pixelindex.service.*;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
@@ -24,6 +21,7 @@ public class GameController{
     private ArrayList<String> rows;
     private GameService gameService;
     private LibraryService libraryService;
+    private ReviewService reviewService;
     private WishlistService wishlistService;
     private AtomicBoolean menuDisplayed;
     private ReviewController reviewController;
@@ -91,6 +89,7 @@ public class GameController{
         r.setAuthor(sessionUsername);
         r.setGameId(gameId);
         r.setTimestamp(LocalDateTime.now());
+
     }
 
     public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
@@ -258,6 +257,7 @@ public class GameController{
         this.gameService = ServiceLocator.getGameService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
+        this.reviewService = ServiceLocator.getReviewService();
         this.sessionUsername = sessionUsername;
         this.reviewController = new ReviewController(sessionUsername, consistencyThread);
         this.queryName = "";
