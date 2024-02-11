@@ -12,20 +12,7 @@ import java.util.*;
 
 public abstract class BaseMongoDAO {
 
-    private static final Map<Boolean, MongoClient> mongoClientMap = new HashMap<>();
-
-    // Synchronized function to guarantee thread safety
-    public static synchronized MongoClient beginConnection(boolean primaryPref) {
-        if (mongoClientMap.containsKey(primaryPref) && mongoClientMap.get(primaryPref) != null) {
-            return mongoClientMap.get(primaryPref);
-        }
-
-        MongoClient client = createNewMongoClient(primaryPref);
-        mongoClientMap.put(primaryPref, client);
-        return client;
-    }
-
-    private static MongoClient createNewMongoClient(boolean primaryPref) {
+    public static MongoClient beginConnection(boolean primaryPref) {
         HashMap<String, String> params = Utils.parseEnv();
 
         String envSuffix = params.get("ENVIRONMENT").equals("PRODUCTION") ? "_PROD" : "_TEST";
