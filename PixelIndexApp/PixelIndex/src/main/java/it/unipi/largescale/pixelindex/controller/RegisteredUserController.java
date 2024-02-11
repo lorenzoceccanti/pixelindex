@@ -26,6 +26,7 @@ public class RegisteredUserController {
     private Runnable[] functionsRegistered;
     private String sessionUsername;
     private GameController gameController;
+    private StatisticsController statisticsController;
     private LibraryService libraryService;
     private WishlistService wishlistService;
     private RegisteredUserService registeredUserService;
@@ -316,6 +317,7 @@ public class RegisteredUserController {
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
         this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, consistencyThread);
+        this.statisticsController = new StatisticsController();
         functionsRegistered = new Runnable[]{
                 () -> {
                     gameController.askGameQueryByName();
@@ -334,6 +336,14 @@ public class RegisteredUserController {
                 () -> {
                     registeredMenu.getDisplayed().set(false);
                     friendsYouMightKnow();
+                },
+                () -> {
+                    registeredMenu.getDisplayed().set(false);
+                    statisticsController.findTopReviewersByPostCountLastMonth(registeredMenu.getDisplayed());
+                },
+                () -> {
+                    registeredMenu.getDisplayed().set(false);
+                    statisticsController.top10GamesByPositiveRatingRatio(registeredMenu.getDisplayed());
                 },
                 () ->{
                     System.exit(0);

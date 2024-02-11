@@ -175,7 +175,8 @@ public class UnregisteredUserController {
                     statisticsController.findTopReviewersByPostCountLastMonth(unregisteredMenu.getDisplayed());
                 },
                 () -> {//4 Top rated games
-                    System.exit(0);
+                    unregisteredMenu.getDisplayed().set(false);
+                    statisticsController.top10GamesByPositiveRatingRatio(unregisteredMenu.getDisplayed());
                 },
                 () -> {//5
                     System.exit(0);

@@ -17,6 +17,9 @@ public class ModeratorMenu {
         options.add("View reports");
         options.add("Add game");
         options.add("Synchronized games");
+        options.add("Most active reviewers");
+        options.add("Top rated games");
+        options.add("User Registrations Stats");
         options.add("Exit app");
     }
     public int displayMenu(){

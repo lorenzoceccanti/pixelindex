@@ -20,6 +20,8 @@ public class RegisteredMenu {
         options.add("View your library");
         options.add("View your wishlist");
         options.add("Friends you might know");
+        options.add("Most active reviewers");
+        options.add("Top rated games");
         options.add("Exit app");
     }
 

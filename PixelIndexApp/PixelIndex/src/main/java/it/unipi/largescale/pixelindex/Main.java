@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
 
@@ -171,15 +173,16 @@ public class Main {
         System.out.println(review);
     }
 
+    /*
     public static void insertReviewNeo4j() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
         try {
-            reviewNeo4jDAO.insertReview("65be128e0bc3c618299c53a8", "65afd5ed7ae28aa3f604e020", "Nicco");
+            // reviewNeo4jDAO.insertReview("65be128e0bc3c618299c53a8", "65afd5ed7ae28aa3f604e020", "Nicco");
         } catch (DAOException e) {
             e.printStackTrace();
         }
         System.out.println("Recensione inserita");
-    }
+    }*/
 
     public static void removeReviewNeo4j() {
         ReviewNeo4jDAO reviewNeo4jDAO = new ReviewNeo4jDAO();
@@ -281,11 +284,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
         // =================== LORE =====================
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.OFF);
+        mongoLogger.setUseParentHandlers(false);
 
-         Utils.clearConsole();
-         ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
 
         // ===============================================
         /*

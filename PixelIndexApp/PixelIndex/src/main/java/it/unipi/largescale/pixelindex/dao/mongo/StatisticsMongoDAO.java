@@ -12,9 +12,7 @@ import com.mongodb.client.model.Sorts;
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
 import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
-import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
-import it.unipi.largescale.pixelindex.model.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -36,7 +34,7 @@ public class StatisticsMongoDAO {
 
     public ArrayList<UserReportsDTO> topNReportedUser(int n) throws DAOException {
         MongoDatabase db;
-        ArrayList<Document> results = null;
+        ArrayList<Document> results;
         ArrayList<UserReportsDTO> userReportsDTOs = new ArrayList<>();
         try (MongoClient mongoClient = beginConnection(false)) {
 
@@ -119,14 +117,7 @@ public class StatisticsMongoDAO {
         try(MongoClient mongoClient = beginConnection(false)){
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
-            /*
-            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-            ZonedDateTime firstDayLastMonth = now.minusMonths(1).with(
-                    TemporalAdjusters.firstDayOfMonth()).toLocalDate().atStartOfDay(ZoneId.of("UTC"));
-            ZonedDateTime lastDayLastMonth = now.with(
-                    TemporalAdjusters.firstDayOfMonth()).minusDays(1).toLocalDate().atStartOfDay(ZoneId.of("UTC"))
-                    .plusDays(1).minusSeconds(1);
-            */
+
             // For the sake of setting, we set the month to November 2023
             ZonedDateTime now = ZonedDateTime.of(2023, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
             ZonedDateTime firstDayLastMonth =
