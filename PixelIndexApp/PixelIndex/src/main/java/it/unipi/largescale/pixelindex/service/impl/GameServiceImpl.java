@@ -4,6 +4,7 @@ import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.GameNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
+import it.unipi.largescale.pixelindex.dto.TrendingGamesDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Game;
@@ -74,6 +75,14 @@ public class GameServiceImpl implements GameService {
                 } catch (DAOException e) {
                 }
             });
+        } catch (DAOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    public List<TrendingGamesDTO> getTrendingGames(Integer year, Integer limit) throws ConnectionException {
+        try {
+            return gameNeo4jDAO.getMostAddedToLibraryGames(year, limit);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

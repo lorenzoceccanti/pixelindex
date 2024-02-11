@@ -6,6 +6,7 @@ import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Game;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Value;
 
 import java.util.List;
 
@@ -30,24 +31,28 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
     }
 
     public List<TrendingGamesDTO> getMostAddedToLibraryGames(Integer year, Integer limit) throws DAOException {
+        String startDate = year + "-01-01";
+        String endDate = year + "-12-31";
+
         try (Driver neoDriver = beginConnection()) {
             String query = """
-                    MATCH (g:Game)
-                    WHERE g.releaseYear = $year
-                    RETURN g.mongoId AS id, g.name AS name, g.releaseYear AS releaseYear
-                    ORDER BY g.mongoId
+                    MATCH (g:Game)<-[r:ADDS_TO_LIBRARY]-(u:User)
+                    WHERE r.date >= DATE($startDate) AND r.date <= DATE($endDate)
+                    WITH g, COUNT(r) AS count
+                    ORDER BY count DESC
                     LIMIT $limit
+                    RETURN g.name AS name, count
                     """;
+            Value parameters = parameters("startDate", startDate, "endDate", endDate, "limit", limit);
+
             try (Session session = neoDriver.session()) {
-                return session.executeRead(tx -> {
-                    return tx.run(query, parameters("year", year, "limit", limit))
-                            .list(record -> {
-                                TrendingGamesDTO game = new TrendingGamesDTO();
-                                game.setGameName(record.get("name").asString());
-                                game.setCount(record.get("releaseYear").asInt());
-                                return game;
-                            });
-                });
+                return session.executeRead(tx -> tx.run(query, parameters)
+                        .list(record -> {
+                            TrendingGamesDTO game = new TrendingGamesDTO();
+                            game.setGameName(record.get("name").asString());
+                            game.setCount(record.get("count").asInt());
+                            return game;
+                        }));
             }
         } catch (Exception ex) {
             throw new DAOException(ex);

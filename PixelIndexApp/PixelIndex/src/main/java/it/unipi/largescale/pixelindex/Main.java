@@ -6,6 +6,7 @@ import it.unipi.largescale.pixelindex.controller.ApplicationController;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
+import it.unipi.largescale.pixelindex.dao.neo4j.GameNeo4jDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.RegisteredUserNeo4jDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.ReviewNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.*;
@@ -21,6 +22,7 @@ import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.service.WishlistService;
+import it.unipi.largescale.pixelindex.service.impl.GameServiceImpl;
 import it.unipi.largescale.pixelindex.service.impl.ReviewServiceImpl;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
@@ -260,6 +262,18 @@ public class Main {
         }
     }
 
+    public static void testGetTrendingGames() {
+        GameServiceImpl gameService = new GameServiceImpl();
+        try {
+            List<TrendingGamesDTO> games = gameService.getTrendingGames(2023, 20);
+            for (TrendingGamesDTO g : games)
+                System.out.println(g);
+        } catch (ConnectionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     // ========== NICCO ==============
     public static void testAdvancedSearch() {
         List<Game> games = new ArrayList<>();
@@ -318,7 +332,7 @@ public class Main {
         // testSetReactionsCountMongo();
         // testAddReaction();
         // testGetReviewById();
-
+        // testGetTrendingGames();
 
         /*
          *

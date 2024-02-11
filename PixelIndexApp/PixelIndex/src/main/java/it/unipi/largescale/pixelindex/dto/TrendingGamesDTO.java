@@ -21,6 +21,6 @@ public class TrendingGamesDTO {
     }
 
     public String toString() {
-        return gameName + " " + count;
+        return "Game: " + gameName + "\t-\tCount: " + count;
     }
 }
