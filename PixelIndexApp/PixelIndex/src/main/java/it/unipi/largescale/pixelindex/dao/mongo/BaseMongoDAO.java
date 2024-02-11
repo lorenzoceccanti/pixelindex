@@ -8,51 +8,25 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public abstract class BaseMongoDAO {
 
-    private static final String ENV_FILE = ".env";
-    private static final String PEM_FILE = "mongodb.pem";
-    private static MongoClient mongoclient;
+    private static final Map<Boolean, MongoClient> mongoClientMap = new HashMap<>();
 
-    public static MongoClient beginConnectionWithoutReplica() {
-        String[] var = new String[2];
-        ArrayList<String> params = new ArrayList<>();
-        String envPayload = Utils.retrieveEnv();
-        StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
-        while (tokens.hasMoreTokens()) {
-            var = tokens.nextToken().split("=", 2);
-            params.add(var.length == 1 ? "" : var[1]);
+    // Synchronized function to guarantee thread safety
+    public static synchronized MongoClient beginConnection(boolean primaryPref) {
+        if (mongoClientMap.containsKey(primaryPref) && mongoClientMap.get(primaryPref) != null) {
+            return mongoClientMap.get(primaryPref);
         }
-        String SERVER_ADDRESS = params.get(0).trim();
-        int MONGO_PORT = Integer.parseInt(params.get(1).trim());
-        String MONGO_USER = params.get(2).trim();
-        String MONGO_PASS = params.get(3).trim();
 
-        String connectionString = String.format("mongodb://%s:%s@%s:%d/", MONGO_USER, MONGO_PASS, SERVER_ADDRESS,
-                MONGO_PORT);
-
-        mongoclient = MongoClients.create(
-                MongoClientSettings.builder()
-                        .applyConnectionString(new ConnectionString(connectionString))
-                        .build());
-        return mongoclient;
+        MongoClient client = createNewMongoClient(primaryPref);
+        mongoClientMap.put(primaryPref, client);
+        return client;
     }
 
-    public static MongoClient beginConnection(boolean primaryPref) {
-        HashMap<String, String> params = new HashMap<>();
-        String envPayload = Utils.retrieveEnv();
-        StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
-        while (tokens.hasMoreTokens()) {
-            String[] var = tokens.nextToken().split("=", 2);
-            if (var.length == 2) {
-                params.put(var[0].trim(), var[1].trim());
-            }
-        }
+    private static MongoClient createNewMongoClient(boolean primaryPref) {
+        HashMap<String, String> params = Utils.parseEnv();
 
         String envSuffix = params.get("ENVIRONMENT").equals("PRODUCTION") ? "_PROD" : "_TEST";
         String MONGO_USER = params.getOrDefault("MONGO_USER" + envSuffix, "");
@@ -81,3 +55,4 @@ public abstract class BaseMongoDAO {
         return MongoClients.create(mcs);
     }
 }
+
