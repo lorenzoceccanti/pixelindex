@@ -72,7 +72,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         return review;
     }
 
-    public String insertReview(Review review, String gameName, Integer gameReleaseYear) throws DAOException {
+    public void insertReview(Review review, String gameName, Integer gameReleaseYear) throws DAOException {
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
@@ -86,7 +86,6 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             document.append("gameName", gameName);
             document.append("gameReleaseYear", gameReleaseYear);
             collection.insertOne(document);
-            return document.get("_id").toString();
 
         } catch (Exception e) {
             throw new DAOException("Error while inserting review" + e);
@@ -188,17 +187,4 @@ public class ReviewMongoDAO extends BaseMongoDAO {
         }
 
     }
-
-    public ReviewPageDTO getReviewsByGameId(String gameId) throws DAOException {
-        return getReviewsByGameId(gameId, "", 0);
-    }
-
-    public ReviewPageDTO getReviewsByGameId(String gameId, String username) throws DAOException {
-        return getReviewsByGameId(gameId, username, 0);
-    }
-
-    public ReviewPageDTO getReviewsByGameId(String gameId, int page) throws DAOException {
-        return getReviewsByGameId(gameId, "", page);
-    }
-
 }

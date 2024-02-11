@@ -4,7 +4,6 @@ import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface WishlistService {
     int addGame(String userId, String gameId) throws ConnectionException;

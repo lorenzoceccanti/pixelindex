@@ -1,7 +1,6 @@
 package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.mongo.StatisticsMongoDAO;
-import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
 import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;

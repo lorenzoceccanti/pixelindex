@@ -9,7 +9,7 @@ import it.unipi.largescale.pixelindex.service.SuggestionsService;
 import java.util.List;
 
 public class SuggestionsServiceImpl implements SuggestionsService {
-    private SuggestionsNeo4jDAO suggestionsNeo4JDAO;
+    private final SuggestionsNeo4jDAO suggestionsNeo4JDAO;
 
     public SuggestionsServiceImpl() {
         this.suggestionsNeo4JDAO = new SuggestionsNeo4jDAO();

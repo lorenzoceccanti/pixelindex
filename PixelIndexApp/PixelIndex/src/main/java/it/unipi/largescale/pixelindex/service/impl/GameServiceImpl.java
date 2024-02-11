@@ -10,11 +10,9 @@ import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 public class GameServiceImpl implements GameService {
     private final GameMongoDAO gameMongoDAO;
@@ -61,7 +59,6 @@ public class GameServiceImpl implements GameService {
         try {
             return gameMongoDAO.getGameById(id);
         } catch (DAOException e) {
-            e.printStackTrace();
             throw new ConnectionException(e);
         }
     }

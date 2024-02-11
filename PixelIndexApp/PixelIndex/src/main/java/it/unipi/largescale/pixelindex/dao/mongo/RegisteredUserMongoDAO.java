@@ -6,13 +6,11 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
-import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
 import it.unipi.largescale.pixelindex.model.Moderator;
 import it.unipi.largescale.pixelindex.model.RegisteredUser;
-import it.unipi.largescale.pixelindex.model.User;
 import it.unipi.largescale.pixelindex.utils.Utils;
 
 import org.bson.Document;
@@ -21,19 +19,26 @@ import org.bson.conversions.Bson;
 
 import it.unipi.largescale.pixelindex.security.Crypto;
 
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import static com.mongodb.client.model.Aggregates.set;
 import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-
 
 public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
+    private static void populateUserFieldsFromDocument(RegisteredUser user, Document document) {
+        user.setId(document.getObjectId("_id").toHexString());
+        user.setUsername(document.getString("username"));
+        user.setName(document.getString("name"));
+        user.setSurname(document.getString("surname"));
+        user.setRole(document.getString("role"));
+        user.setLanguage(document.getString("language"));
+        user.setEmail(document.getString("email"));
+        user.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
+    }
+
     public RegisteredUser makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, DAOException {
         MongoDatabase db;
-        List<Document> results = null;
+        List<Document> results;
         try (MongoClient mongoClient = beginConnection(true)) {
 
             db = mongoClient.getDatabase("pixelindex");
@@ -53,34 +58,18 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             throw new UserNotFoundException();
         Document document = results.get(0);
         String hashedPassword = document.getString("hashedPassword");
-        RegisteredUser u = null;
         if (Crypto.validatePassword(password, hashedPassword)) {
-            // Qua poi bisogna riconoscere che tipo di utente è
             String role = document.getString("role");
-            if (role.equals("user")) {
-                RegisteredUser ru = new RegisteredUser();
-                ru.setId(document.getObjectId("_id").toHexString());
-                ru.setUsername(document.getString("username"));
-                ru.setName(document.getString("name"));
-                ru.setSurname(document.getString("surname"));
-                ru.setRole(document.getString("role"));
-                ru.setLanguage(document.getString("language"));
-                ru.setEmail(document.getString("email"));
-                ru.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
-                u = ru;
-            } else if (role.equals("moderator")) {
-                Moderator mo = new Moderator();
-                mo.setId(document.getObjectId("_id").toHexString());
-                mo.setUsername(document.getString("username"));
-                mo.setName(document.getString("name"));
-                mo.setSurname(document.getString("surname"));
-                mo.setRole(document.getString("role"));
-                mo.setLanguage(document.getString("language"));
-                mo.setEmail(document.getString("email"));
-                mo.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
-                u = mo;
+            RegisteredUser user;
+
+            if (role.equals("moderator")) {
+                user = new Moderator();
+            } else {
+                user = new RegisteredUser();
             }
-            return u;
+
+            populateUserFieldsFromDocument(user, document);
+            return user;
         } else {
             throw new WrongPasswordException();
         }
@@ -112,7 +101,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
     /**
      * @return 1 if the user reports itself, -1 if you are trying to report a mod,
      * 0 if everything is fine
-     * @throws DAOException
+     * @throws DAOException throws DAOException if something goes wrong
      */
     public int reportUser(String usernameReporting, String usernameReported) throws DAOException {
         if (usernameReported.equals(usernameReporting))
@@ -209,7 +198,6 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
     public void updateFollowers(String src, String dst, int followingSrc, int followerDst) throws DAOException
     {
-        MongoDatabase db;
         try(MongoClient mc = beginConnection(false))
         {
             MongoDatabase database = mc.getDatabase("pixelindex");

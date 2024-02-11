@@ -2,9 +2,6 @@ package it.unipi.largescale.pixelindex.dto;
 
 import it.unipi.largescale.pixelindex.model.RatingKind;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
-import jline.internal.Ansi;
-
-import java.time.LocalDateTime;
 
 public class ReviewPreviewDTO {
     

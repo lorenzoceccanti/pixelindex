@@ -13,10 +13,10 @@ import it.unipi.largescale.pixelindex.service.ModeratorService;
 import java.util.ArrayList;
 
 public class ModeratorServiceImpl implements ModeratorService {
-    private RegisteredUserMongoDAO registeredUserMongo;
-    private RegisteredUserNeo4jDAO registeredUserNeo;
-    private GameMongoDAO gameMongoDAO;
-    private GameNeo4jDAO gameNeo4jDAO;
+    private final RegisteredUserMongoDAO registeredUserMongo;
+    private final RegisteredUserNeo4jDAO registeredUserNeo;
+    private final GameMongoDAO gameMongoDAO;
+    private final GameNeo4jDAO gameNeo4jDAO;
 
 
     public ModeratorServiceImpl()
@@ -39,7 +39,6 @@ public class ModeratorServiceImpl implements ModeratorService {
                 try {
                     registeredUserNeo.deleteUser(username);
                 } catch (DAOException e) {
-                    e.printStackTrace();
                 }
             });
         }catch(DAOException ex)
@@ -59,7 +58,6 @@ public class ModeratorServiceImpl implements ModeratorService {
                         gameNeo4jDAO.insertGame(game);
                         gameMongoDAO.updateConsistencyFlag(game.getId());
                     } catch (DAOException e) {
-                        e.printStackTrace();
                     }
                 });
             }
