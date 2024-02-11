@@ -22,9 +22,7 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                 tx.run("MATCH (u: User) WHERE u.username = $username " +
                                 "MATCH (g: Game) WHERE g.mongoId = $gameId " +
                                 "MERGE (u)-[r:ADDS_TO_LIBRARY]->(g) " +
-                                "SET r.date = toString(date().year) + '-' + " +
-                                "apoc.text.lpad(toString(date().month), 2, '0') + '-' + " +
-                                "apoc.text.lpad(toString(date().day), 2, '0');",
+                                "SET r.date = date();",
                         parameters("username", username, "gameId", gameId));
                 return null;
             });
