@@ -25,6 +25,7 @@ public class UnregisteredUserController {
     private GameService gameService;
     private Runnable[] functionsUnregistered;
     private GameController gameController;
+    private StatisticsController statisticsController;
     private String sessionUsername = "";
     private int isModerator;
     int errorCode = -1;
@@ -158,6 +159,7 @@ public class UnregisteredUserController {
         this.isModerator = -1;
         this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(unregisteredMenu.getDisplayed());
+        this.statisticsController = new StatisticsController();
         functionsUnregistered = new Runnable[]{
                 () -> {//0
                     errorCode = askCredentials(unregisteredMenu.getDisplayed());
@@ -168,11 +170,12 @@ public class UnregisteredUserController {
                 () -> {//2
                     errorCode = gameController.askGameQueryByName();
                 },
-                () -> {//3
-                    System.exit(0);
+                () -> {//3 Most active reviewers
+                    unregisteredMenu.getDisplayed().set(false);
+                    statisticsController.findTopReviewersByPostCountLastMonth(unregisteredMenu.getDisplayed());
                 },
-                () -> {//4
-
+                () -> {//4 Top rated games
+                    System.exit(0);
                 },
                 () -> {//5
                     System.exit(0);

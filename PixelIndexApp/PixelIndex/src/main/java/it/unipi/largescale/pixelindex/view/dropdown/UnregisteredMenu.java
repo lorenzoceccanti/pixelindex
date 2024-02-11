@@ -21,6 +21,8 @@ public class UnregisteredMenu
         options.add("Login");
         options.add("Register");
         options.add("Search games");
+        options.add("Most active reviewers");
+        options.add("Top rated games");
         options.add("Exit app");
     }
 
