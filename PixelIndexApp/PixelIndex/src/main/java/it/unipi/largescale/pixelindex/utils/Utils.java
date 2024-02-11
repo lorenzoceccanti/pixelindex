@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +69,19 @@ public class Utils {
             System.exit(1); // The application is un-usable without databases
         }
         return envPayload;
+    }
+
+    public static HashMap<String, String> parseEnv() {
+        HashMap<String, String> params = new HashMap<>();
+        String envPayload = Utils.retrieveEnv();
+        StringTokenizer tokens = new StringTokenizer(envPayload, "\n");
+        while (tokens.hasMoreTokens()) {
+            String[] var = tokens.nextToken().split("=", 2);
+            if (var.length == 2) {
+                params.put(var[0].trim(), var[1].trim());
+            }
+        }
+        return params;
     }
 
     public static Map<String, String> parseSearchString(String search) {
