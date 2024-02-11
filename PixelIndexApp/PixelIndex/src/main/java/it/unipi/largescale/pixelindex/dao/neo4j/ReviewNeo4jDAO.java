@@ -13,43 +13,6 @@ import java.util.Map;
 
 public class ReviewNeo4jDAO extends BaseNeo4jDAO {
 
-    /**
-     * Insert a review in the neo4j database.
-     *
-     * @param reviewId the mongoId of the review
-     * @param gameId   the mongoId of the game the review belongs to
-     * @param author   the username of the author of the review
-     * @throws DAOException if an error occurs
-     */
-    @Deprecated
-    public void insertReview(String reviewId, String gameId, String author) throws DAOException {
-        try (Driver neoDriver = beginConnection()) {
-            String query = """
-                    MATCH (author:User {username: $author})
-                    MATCH (game:Game {mongoId: $gameId})
-                    CREATE (
-                        review:Review {
-                            mongoId: $reviewId
-                            }
-                        )
-                    CREATE (author)-[:WRITES]->(review)
-                    CREATE (review)-[:BELONGS]->(game)
-                    """;
-            Map<String, Object> params = new HashMap<>();
-            params.put("reviewId", reviewId);
-            params.put("gameId", gameId);
-            params.put("author", author);
-
-            try (Session session = neoDriver.session()) {
-                session.executeWrite(tx -> {
-                    tx.run(query, params);
-                    return null;
-                });
-            }
-        } catch (Exception ex) {
-            throw new DAOException(ex);
-        }
-    }
 
     /**
      * Remove a review from the neo4j database.

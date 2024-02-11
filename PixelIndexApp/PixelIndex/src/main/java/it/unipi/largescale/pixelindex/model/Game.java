@@ -1,7 +1,6 @@
 package it.unipi.largescale.pixelindex.model;
 
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
-import jline.internal.Ansi;
 
 import java.time.LocalDate;
 import java.util.Arrays;

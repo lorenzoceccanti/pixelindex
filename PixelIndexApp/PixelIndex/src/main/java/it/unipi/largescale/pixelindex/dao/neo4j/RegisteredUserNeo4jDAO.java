@@ -1,13 +1,10 @@
 package it.unipi.largescale.pixelindex.dao.neo4j;
 
-import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
-import org.w3c.dom.DOMException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +30,7 @@ public class RegisteredUserNeo4jDAO {
      *
      * @param usernameSrc The username that press on follow
      * @param usernameDst The username followed
-     * @throws DAOException
+     * @throws DAOException throws DAOException if errors occur
      */
     public String followUser(String usernameSrc, String usernameDst) throws DAOException {
         // Simplified and cleaner approach using try-with-resources for automatic resource management
@@ -63,7 +60,6 @@ public class RegisteredUserNeo4jDAO {
         } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new DAOException("Error processing followUser operation");
         }
     }
@@ -106,7 +102,7 @@ public class RegisteredUserNeo4jDAO {
     /** Drops an user with all the involved relationships from the graph
      *
      * @param username The username to be removed
-     * @throws DAOException
+     * @throws DAOException throws DAOException if errors occur
      */
     public void deleteUser(String username) throws DAOException{
         try(Driver neoDriver = BaseNeo4jDAO.beginConnection();

@@ -2,7 +2,6 @@ package it.unipi.largescale.pixelindex.service.impl;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.BaseMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.RegisteredUserMongoDAO;
@@ -22,10 +21,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class RegUserServiceImpl implements RegisteredUserService {
-    private RegisteredUserMongoDAO registeredUserMongo;
-    private RegisteredUserNeo4jDAO registeredUserNeo;
-    UserRegistrationDTO registrationDTO = new UserRegistrationDTO();
-
+    private final RegisteredUserMongoDAO registeredUserMongo;
+    private final RegisteredUserNeo4jDAO registeredUserNeo;
 
     public RegUserServiceImpl() {
         this.registeredUserMongo = new RegisteredUserMongoDAO();
@@ -34,7 +31,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
 
     @Override
     public AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, ConnectionException {
-        RegisteredUser registeredUser = null;
+        RegisteredUser registeredUser;
         try {
             registeredUser = registeredUserMongo.makeLogin(username, password);
         } catch (DAOException ex) {
@@ -66,7 +63,6 @@ public class RegUserServiceImpl implements RegisteredUserService {
         RegisteredUser registeredUser;
 
         // Starting a MongoDAO transaction
-        MongoDatabase db;
         try (MongoClient mongoClient = BaseMongoDAO.beginConnection(true)) {
             try (ClientSession clientSession = mongoClient.startSession()) {
                 clientSession.startTransaction();
@@ -112,7 +108,6 @@ public class RegUserServiceImpl implements RegisteredUserService {
                     Map<String, Integer> folCount = registeredUserNeo.getFollowsCount(usernameSrc, usernameDst);
                     registeredUserMongo.updateFollowers(usernameSrc, usernameDst, folCount.get("followingSrc"), folCount.get("followerDst"));
                 }catch(DAOException e){
-                    e.printStackTrace();
                 }
             });
             return outcome;

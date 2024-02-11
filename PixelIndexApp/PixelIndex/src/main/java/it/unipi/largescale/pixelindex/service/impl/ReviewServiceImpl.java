@@ -55,6 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ConnectionException(e);
         }
     }
+
     public Review getReviewDetails(String id) throws ConnectionException{
         try{
             return reviewMongoDAO.getReviewById(id);
@@ -89,6 +90,4 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ConnectionException(e);
         }
     }
-
-
 }
