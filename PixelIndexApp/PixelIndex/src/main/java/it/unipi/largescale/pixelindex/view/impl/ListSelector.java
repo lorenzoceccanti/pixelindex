@@ -29,7 +29,6 @@ public class ListSelector {
         AnsiConsole.systemInstall();
         System.out.println(ansi().render(text));
         // System.out.println(ansi().eraseScreen().render(text));
-        prompt = new ConsolePrompt();
     }
 
     /**
@@ -40,6 +39,7 @@ public class ListSelector {
      * @param choiceMessage The second message you want to display
      */
     public void addOptions(ArrayList<String> options, String id, String choiceMessage) {
+        prompt = new ConsolePrompt();
         PromptBuilder pb = prompt.getPromptBuilder();
         ListPromptBuilder lpb = pb.createListPrompt();
         lpb.name(id);
