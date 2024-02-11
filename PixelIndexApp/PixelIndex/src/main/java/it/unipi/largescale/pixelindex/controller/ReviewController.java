@@ -39,6 +39,7 @@ public class ReviewController {
         opt.add("Go back");
         opt.add(AnsiColor.ANSI_BLUE+"Add like"+ AnsiColor.ANSI_RESET);
         opt.add(AnsiColor.ANSI_RED+"Add dislike"+AnsiColor.ANSI_RESET);
+        opt.add(AnsiColor.ANSI_YELLOW+"Remove review"+AnsiColor.ANSI_RESET);
         // Making the query for get all the details of that specific review
         try{
             String reviewId = revPrev.getId();
@@ -76,11 +77,20 @@ public class ReviewController {
                             exitReviewDetails = 0;
                         }
                         break;
+                    case 3:
+                        if(!sessionUsername.equals(detailedReview.getAuthor()))
+                            reactionResult = "Unathorized";
+                        else{
+                            reviewService.deleteReview(detailedReview.getId(), consistencyThread);
+                            reactionResult = "Review delete successfully!";
+                            exitReviewDetails = 1;
+                        }
+                        break;
                     default:
                         exitReviewDetails = 0;
                         break;
                 }
-            }while(sel != 0);
+            }while(exitReviewDetails == 0);
             return 0;
         }catch(ConnectionException ex)
         {
