@@ -83,7 +83,7 @@ public class ReviewController {
                         else{
                             reviewService.deleteReview(detailedReview.getId(), consistencyThread);
                             reactionResult = "Review delete successfully!";
-                            exitReviewDetails = 1;
+                            exitReviewDetails = 0;
                         }
                         break;
                     default:
