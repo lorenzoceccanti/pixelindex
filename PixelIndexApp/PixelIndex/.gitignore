@@ -39,3 +39,5 @@ build/
 
 workspace.xml
 /.idea/
+
+pom.xml
