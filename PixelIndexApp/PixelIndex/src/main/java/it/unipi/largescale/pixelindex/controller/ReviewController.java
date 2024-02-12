@@ -83,6 +83,7 @@ public class ReviewController {
                         {
                             reviewService.deleteReview(detailedReview.getId(), consistencyThread);
                             reactionResult = "[Operation]: Review removed successfully";
+                            exitReviewDetails = 1;
                         }
                         else
                             reactionResult = "Unauthorized";
