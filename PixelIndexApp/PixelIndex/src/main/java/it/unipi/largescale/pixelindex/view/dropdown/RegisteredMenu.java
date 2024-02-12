@@ -22,6 +22,7 @@ public class RegisteredMenu {
         options.add("Friends you might know");
         options.add("Most active reviewers");
         options.add("Top rated games");
+        options.add("Trending games chart");
         options.add("Exit app");
     }
 

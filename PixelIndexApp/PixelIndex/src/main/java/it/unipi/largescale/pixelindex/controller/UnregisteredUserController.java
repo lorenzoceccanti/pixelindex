@@ -178,6 +178,10 @@ public class UnregisteredUserController {
                     unregisteredMenu.getDisplayed().set(false);
                     statisticsController.top10GamesByPositiveRatingRatio(unregisteredMenu.getDisplayed());
                 },
+                () -> { // Trending games chart
+                    unregisteredMenu.getDisplayed().set(false);
+                    gameController.trendingGamesChart();
+                },
                 () -> {//5
                     System.exit(0);
                 }

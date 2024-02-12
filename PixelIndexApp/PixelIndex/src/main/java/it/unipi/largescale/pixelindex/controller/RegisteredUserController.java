@@ -345,6 +345,10 @@ public class RegisteredUserController {
                     registeredMenu.getDisplayed().set(false);
                     statisticsController.top10GamesByPositiveRatingRatio(registeredMenu.getDisplayed());
                 },
+                () -> {
+                    registeredMenu.getDisplayed().set(false);
+                    gameController.trendingGamesChart();
+                },
                 () ->{
                     System.exit(0);
                 }

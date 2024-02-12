@@ -19,6 +19,7 @@ public class ModeratorMenu {
         options.add("Synchronized games");
         options.add("Most active reviewers");
         options.add("Top rated games");
+        options.add("Trending games chart");
         options.add("User Registrations Stats");
         options.add("Exit app");
     }

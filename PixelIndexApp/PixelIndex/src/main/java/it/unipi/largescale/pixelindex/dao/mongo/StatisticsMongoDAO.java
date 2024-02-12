@@ -184,7 +184,7 @@ public class StatisticsMongoDAO {
                                                                     new Document("case",
                                                                             new Document("$gt", Arrays.asList("$age", 50L)))
                                                                             .append("then", "50+ y.o")))
-                                                                    .append("default", "Altro"))))
+                                                                    .append("default", "Other"))))
                                     .append("count",
                                             new Document("$sum", 1L))),
                     new Document("$group",

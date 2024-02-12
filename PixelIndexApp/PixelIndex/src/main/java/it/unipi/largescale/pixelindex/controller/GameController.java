@@ -1,6 +1,7 @@
 package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
+import it.unipi.largescale.pixelindex.dto.TrendingGamesDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.Game;
 import it.unipi.largescale.pixelindex.model.RatingKind;
@@ -31,6 +32,28 @@ public class GameController{
     private String sessionUsername;
     private int exitGameList;
     private int exitGameDetails;
+    public void trendingGamesChart(){
+        ArrayList<String> o = new ArrayList<>();
+        o.add("Go back");
+        System.out.println("Which year?");
+        Scanner sc = new Scanner(System.in);
+        int year = sc.nextInt();
+        try{
+            List<TrendingGamesDTO> list = gameService.getTrendingGames(year,10);
+            System.out.println("*** TRENDING GAMES CHART ***");
+            for(int i=0; i<list.size(); i++)
+                System.out.print(list.get(i));
+            System.out.println("");
+        }catch(ConnectionException ex)
+        {
+            System.out.println("Connection to Neo4J lost");
+        }
+        ListSelector ls = new ListSelector("");
+        ls.addOptions(o,"backTrendingGames","Make your choice");
+        int choice = ls.askUserInteraction("backTrendingGames");
+        if(choice == 0)
+            menuDisplayed.set(true);
+    }
 
     /** Returns 1 if there have been connection errors,
      * 0 if not error occoured

@@ -20,6 +20,7 @@ public class StatisticsController {
     ArrayList<String> buttons = new ArrayList<>();
     ListSelector ls;
 
+
     private void addDropdown(AtomicBoolean inMainMenu){
         ls.addOptions(buttons, "backStatistics", "Select an option");
         int choice = ls.askUserInteraction("backStatistics");

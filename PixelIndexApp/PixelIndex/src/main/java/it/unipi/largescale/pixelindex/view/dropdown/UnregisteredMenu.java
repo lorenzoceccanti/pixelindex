@@ -23,6 +23,7 @@ public class UnregisteredMenu
         options.add("Search games");
         options.add("Most active reviewers");
         options.add("Top rated games");
+        options.add("Trending games chart");
         options.add("Exit app");
     }
 

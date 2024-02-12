@@ -9,6 +9,7 @@ import org.neo4j.driver.Driver;
 import org.neo4j.driver.Value;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -45,10 +46,12 @@ public class GameNeo4jDAO extends BaseNeo4jDAO {
                     """;
             Value parameters = parameters("startDate", startDate, "endDate", endDate, "limit", limit);
 
+            AtomicInteger rank = new AtomicInteger(0);
             try (Session session = neoDriver.session()) {
                 return session.executeRead(tx -> tx.run(query, parameters)
                         .list(record -> {
                             TrendingGamesDTO game = new TrendingGamesDTO();
+                            game.setRank(rank.incrementAndGet());
                             game.setGameName(record.get("name").asString());
                             game.setCount(record.get("count").asInt());
                             return game;

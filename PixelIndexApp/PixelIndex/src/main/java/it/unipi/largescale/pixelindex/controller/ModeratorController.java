@@ -35,6 +35,7 @@ public class ModeratorController {
     private ModeratorService moderatorService;
     private Runnable[] functionsModerator;
     private GameService gameService;
+    private GameController gameController;
     private int exitReportList;
     private StatisticsController statisticsController;
 
@@ -184,6 +185,7 @@ public class ModeratorController {
         this.moderatorMenu = new ModeratorMenu();
         this.moderatorService = ServiceLocator.getModeratorService();
         this.gameService = ServiceLocator.getGameService();
+        this.gameController = new GameController(moderatorMenu.getDisplayed());
         this.statisticsService = ServiceLocator.getStatisticsService();
         this.statisticsController = new StatisticsController();
         functionsModerator = new Runnable[]{
@@ -205,6 +207,10 @@ public class ModeratorController {
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
                     statisticsController.top10GamesByPositiveRatingRatio(moderatorMenu.getDisplayed());
+                },
+                () -> {
+                    moderatorMenu.getDisplayed().set(false);
+                    gameController.trendingGamesChart();
                 },
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
