@@ -34,19 +34,32 @@ public class ModeratorController {
     private ArrayList<UserReportsDTO> userReportsDTOS;
     private ModeratorService moderatorService;
     private Runnable[] functionsModerator;
+    private Runnable[] normalFunctions;
     private GameService gameService;
+    private RegisteredUserController registeredUserController;
     private GameController gameController;
     private int exitReportList;
     private StatisticsController statisticsController;
 
-    private int showModeratorDropdown(String str){
+    private int showSpecialDropdown(String str){
         int opt = -1;
         do{
             Utils.clearConsole();
             System.out.println(str);
+            moderatorMenu.getSpecialDisplayed().set(true);
+            opt = moderatorMenu.displaySpecialMenu();
+            functionsModerator[opt].run();
+        }while(moderatorMenu.getSpecialDisplayed().get());
+        return opt;
+    }
+
+    private int showModeratorDropdown(){
+        int opt = -1;
+        do{
+            Utils.clearConsole();
             moderatorMenu.getDisplayed().set(true);
             opt = moderatorMenu.displayMenu();
-            functionsModerator[opt].run();
+            normalFunctions[opt].run();
         }while(moderatorMenu.getDisplayed().get());
         return opt;
     }
@@ -79,7 +92,7 @@ public class ModeratorController {
     private int displayReport(){
         int result = 1; int choice = -1;
         String messageDisp = "";
-        moderatorMenu.getDisplayed().set(false);
+        moderatorMenu.getSpecialDisplayed().set(false);
         do{
             Utils.clearConsole();
             System.out.println(messageDisp);
@@ -103,14 +116,14 @@ public class ModeratorController {
                     messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW+user.getUsername()+AnsiColor.ANSI_RESET+" banned successfully":messageDisp;
             }
         }while(exitReportList != 1);
-        moderatorMenu.getDisplayed().set(true);
-        showModeratorDropdown("");
+        moderatorMenu.getSpecialDisplayed().set(true);
+        showSpecialDropdown("");
         return result;
     }
 
     private void promptNewGameForm(){
         Game g = new Game();
-        moderatorMenu.getDisplayed().set(false);
+        moderatorMenu.getSpecialDisplayed().set(false);
         System.out.println("*** INSERTING NEW GAME ***");
         Scanner sc = new Scanner(System.in);
         System.out.println("Specify name:");
@@ -170,35 +183,46 @@ public class ModeratorController {
             System.out.println("Connection lost");
             System.exit(1);
         }
-        moderatorMenu.getDisplayed().set(true);
-        showModeratorDropdown(str);
+        moderatorMenu.getSpecialDisplayed().set(true);
+        showSpecialDropdown(str);
     }
+
     private void synchronizeGames(){
         try{
             moderatorService.synchronizeGames(consistencyThread);
-            showModeratorDropdown("Synchronized performed");
+            showSpecialDropdown("Synchronized performed");
         }catch(ConnectionException ex){
-            showModeratorDropdown("Could not perform synchronization, try later");
+            showSpecialDropdown("Could not perform synchronization, try later");
         }
     }
-    public ModeratorController(){
+    public ModeratorController(String username, LocalDate dateOfBirth){
         this.moderatorMenu = new ModeratorMenu();
         this.moderatorService = ServiceLocator.getModeratorService();
         this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(moderatorMenu.getDisplayed());
         this.statisticsService = ServiceLocator.getStatisticsService();
+        this.registeredUserController = new RegisteredUserController(username, dateOfBirth, true);
         this.statisticsController = new StatisticsController();
-        functionsModerator = new Runnable[]{
+        normalFunctions = new Runnable[]{
                 () -> {
-                    displayReport();
+                    // Mostrare un altro menù
+                    moderatorMenu.getDisplayed().set(false);
+                    showSpecialDropdown("");
                 },
                 () -> {
-                    // Add game
-                    promptNewGameForm();
+                    gameController.askGameQueryByName();
                 },
                 () -> {
-                    // Sync games
-                    synchronizeGames();
+                    registeredUserController.askSearchByUsernameQuery(moderatorMenu.getDisplayed());
+                },
+                () -> {
+                    registeredUserController.displayLibrary(moderatorMenu.getDisplayed());
+                },
+                () -> {
+                    registeredUserController.displayWishlist(moderatorMenu.getDisplayed());
+                },
+                () -> {
+                    registeredUserController.friendsYouMightKnow(moderatorMenu.getDisplayed());
                 },
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
@@ -213,11 +237,29 @@ public class ModeratorController {
                     gameController.trendingGamesChart();
                 },
                 () -> {
-                    moderatorMenu.getDisplayed().set(false);
-                    statisticsController.numberOfRegistrationsByMonth(moderatorMenu.getDisplayed());
+                    System.exit(0);
+                }
+        };
+        functionsModerator = new Runnable[]{
+                () -> {
+                    displayReport();
                 },
                 () -> {
-                    System.exit(0);
+                    // Add game
+                    promptNewGameForm();
+                },
+                () -> {
+                    // Sync games
+                    synchronizeGames();
+                },
+                () -> {
+                    moderatorMenu.getSpecialDisplayed().set(false);
+                    statisticsController.numberOfRegistrationsByMonth(moderatorMenu.getSpecialDisplayed());
+                },
+                () -> {
+                    moderatorMenu.getSpecialDisplayed().set(false);
+                    moderatorMenu.getDisplayed().set(true);
+                    showModeratorDropdown();
                 }
         };
     }
@@ -226,6 +268,6 @@ public class ModeratorController {
         // After the login the consistency thread starts
         consistencyThread.start();
         Utils.clearConsole();
-        int index = showModeratorDropdown("");
+        int index = showModeratorDropdown();
     }
 }

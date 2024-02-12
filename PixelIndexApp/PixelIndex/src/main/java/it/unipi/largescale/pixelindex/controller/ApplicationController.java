@@ -21,10 +21,10 @@ public class ApplicationController {
         int fun = unregisteredUserController.showUnregisteredDropdown();
         if(fun == 0 || fun == 5)
         {
-            registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth());
+            registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth(), false);
             registeredUserController.execute();
         } else if(fun == 6){
-            moderatorController = new ModeratorController();
+            moderatorController = new ModeratorController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth());
             moderatorController.execute();
         }
 

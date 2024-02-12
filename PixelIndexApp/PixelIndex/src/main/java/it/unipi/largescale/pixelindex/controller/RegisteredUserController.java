@@ -39,6 +39,7 @@ public class RegisteredUserController {
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
     List<GamePreviewDTO> gameWishlistDTOs;
     ArrayList<String> rows = new ArrayList<>();
+    boolean isModerator;
 
     private void displayUsers(){
         rows.clear();
@@ -103,7 +104,7 @@ public class RegisteredUserController {
         }
     }
 
-    private int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
+    public int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed){
         int pageSelection = 0;
         int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
@@ -160,16 +161,25 @@ public class RegisteredUserController {
         }while(exit != 1);
         return result;
     }
-    private int friendsYouMightKnow(){
+    public int friendsYouMightKnow(AtomicBoolean inMenu){
         List<String> rows = new ArrayList<>();
-        registeredMenu.getDisplayed().set(false);
+        ListSelector ls = new ListSelector("");
+        ArrayList<String> opt = new ArrayList<>();
+        opt.add("Go back");
+        inMenu.set(false);
         try{
             potentialFriends = suggestionsService.suggestUsers(sessionUsername);
             rows.add("Friends you might know");
             if(potentialFriends.isEmpty())
                 rows.add("*** List empty ***");
             rows.addAll(potentialFriends);
-            showRegisteredDropdown(rows);
+            for(int i = 0; i<rows.size(); i++)
+                System.out.println(rows.get(i));
+            ls.addOptions(opt, "friendsMightKnow", "Make your choice");
+            int choice = ls.askUserInteraction("friendsMightKnow");
+            if(choice == 0) {
+                inMenu.set(true);
+            }
             return 0;
         }catch(ConnectionException ex)
         {
@@ -197,7 +207,7 @@ public class RegisteredUserController {
             System.out.println("*** Empty ***");
         }
     }
-    private int displayLibrary(AtomicBoolean regMenuDisplayed){
+    public int displayLibrary(AtomicBoolean regMenuDisplayed){
         int pageSelection = 0;
         int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
@@ -255,7 +265,7 @@ public class RegisteredUserController {
             System.out.println("*** Empty ***");
         }
     }
-    private int displayWishlist(AtomicBoolean regMenuDisplayed){
+    public int displayWishlist(AtomicBoolean regMenuDisplayed){
         int pageSelection = 0;
         int result = 1; int choice = -1; int exit = 0;
         regMenuDisplayed.set(false);
@@ -306,7 +316,7 @@ public class RegisteredUserController {
         }while(registeredMenu.getDisplayed().get());
         return opt;
     }
-    public RegisteredUserController(String username, LocalDate dateOfBirth)
+    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator)
     {
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
@@ -314,6 +324,7 @@ public class RegisteredUserController {
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
+        this.isModerator = isModerator;
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
         this.dateOfBirth = dateOfBirth;
@@ -336,7 +347,7 @@ public class RegisteredUserController {
                 },
                 () -> {
                     registeredMenu.getDisplayed().set(false);
-                    friendsYouMightKnow();
+                    friendsYouMightKnow(registeredMenu.getDisplayed());
                 },
                 () -> {
                     registeredMenu.getDisplayed().set(false);
