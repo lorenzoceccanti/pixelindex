@@ -7,6 +7,7 @@ import it.unipi.largescale.pixelindex.controller.ConsistencyThread;
 import it.unipi.largescale.pixelindex.dao.mongo.GameMongoDAO;
 import it.unipi.largescale.pixelindex.dao.mongo.ReviewMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.GameNeo4jDAO;
+import it.unipi.largescale.pixelindex.dao.mongo.StatisticsMongoDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.RegisteredUserNeo4jDAO;
 import it.unipi.largescale.pixelindex.dao.neo4j.ReviewNeo4jDAO;
 import it.unipi.largescale.pixelindex.dto.*;
@@ -148,6 +149,18 @@ public class Main {
             Review r = reviewMongoDAO.getReviewById("65b19626c6c1f28b326ea4e2");
             System.out.println(r);
         } catch (DAOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void testHowManyRegistrationAnalytic(){
+        StatisticsMongoDAO statisticsMongoDAO = new StatisticsMongoDAO();
+        try{
+            ArrayList<RegistrationStatsDTO> arrayList = statisticsMongoDAO.numberOfRegistrationsByMonth((long)2023);
+            for(int i=0; i<arrayList.size(); i++){
+                System.out.println(arrayList.get(i));
+            }
+        }catch(DAOException ex){
             ex.printStackTrace();
         }
     }
@@ -305,6 +318,7 @@ public class Main {
 
         Utils.clearConsole();
         ApplicationController applicationController = new ApplicationController();
+        // testHowManyRegistrationAnalytic();
 
         // ===============================================
         /*

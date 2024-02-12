@@ -82,8 +82,7 @@ public class ReviewController {
                             reactionResult = "Unathorized";
                         else{
                             reviewService.deleteReview(detailedReview.getId(), consistencyThread);
-                            reactionResult = "Review delete successfully!";
-                            exitReviewDetails = 0;
+                            exitReviewDetails = 1;
                         }
                         break;
                     default:

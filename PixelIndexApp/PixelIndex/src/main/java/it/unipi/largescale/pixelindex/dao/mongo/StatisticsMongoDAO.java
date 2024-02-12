@@ -11,6 +11,7 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
 import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import org.bson.Document;
@@ -19,9 +20,7 @@ import org.bson.conversions.Bson;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.mongodb.client.model.Accumulators.*;
 import static com.mongodb.client.model.Aggregates.*;
@@ -142,6 +141,81 @@ public class StatisticsMongoDAO {
             }
             return userDTOs;
         } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(long year) throws DAOException{
+        try(MongoClient mongoClient = beginConnection(false)){
+            MongoDatabase database = mongoClient.getDatabase("pixelindex");
+            MongoCollection<Document> collection = database.getCollection("users");
+
+            AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match",
+                            new Document("$expr",
+                                    new Document("$eq", Arrays.asList(new Document("$year", "$registrationDate"), year)))),
+                    new Document("$project",
+                            new Document("month",
+                                    new Document("$month", "$registrationDate"))
+                                    .append("age",
+                                            new Document("$subtract", Arrays.asList(2024L,
+                                                    new Document("$year", "$dateOfBirth"))))),
+                    new Document("$group",
+                            new Document("_id",
+                                    new Document("month", "$month")
+                                            .append("ageGroup",
+                                                    new Document("$switch",
+                                                            new Document("branches", Arrays.asList(new Document("case",
+                                                                            new Document("$lt", Arrays.asList("$age", 18L)))
+                                                                            .append("then", "< 18 y.o."),
+                                                                    new Document("case",
+                                                                            new Document("$and", Arrays.asList(new Document("$gte", Arrays.asList("$age", 18L)),
+                                                                                    new Document("$lte", Arrays.asList("$age", 30L)))))
+                                                                            .append("then", "18-30 y.o."),
+                                                                    new Document("case",
+                                                                            new Document("$and", Arrays.asList(new Document("$gt", Arrays.asList("$age", 30L)),
+                                                                                    new Document("$lte", Arrays.asList("$age", 50L)))))
+                                                                            .append("then", "30-50 y.o."),
+                                                                    new Document("case",
+                                                                            new Document("$gt", Arrays.asList("$age", 50L)))
+                                                                            .append("then", "50+ y.o")))
+                                                                    .append("default", "Altro"))))
+                                    .append("count",
+                                            new Document("$sum", 1L))),
+                    new Document("$group",
+                            new Document("_id",
+                                    new Document("month", "$_id.month"))
+                                    .append("properties",
+                                            new Document("$push",
+                                                    new Document("ageGroup", "$_id.ageGroup")
+                                                            .append("count", "$count")))),
+                    new Document("$project",
+                            new Document("month", "$_id.month")
+                                    .append("properties", 1L)
+                                    .append("_id", 0L)),
+                    new Document("$sort",
+                            new Document("month", 1L))));
+
+            HashMap<Integer, List<Document>> hashMap = new HashMap<>();
+            ArrayList<RegistrationStatsDTO> registrationStatsDTOs = new ArrayList<>();
+            List<Document> properties = new ArrayList<>();
+            for(Document doc : result){
+                hashMap.put(doc.getInteger("month"),doc.getList("properties", Document.class));
+            }
+
+            for(Map.Entry<Integer,List<Document>> entry : hashMap.entrySet()){
+                RegistrationStatsDTO registrationStatsDTO = new RegistrationStatsDTO();
+                registrationStatsDTO.setMonth(entry.getKey());
+
+                HashMap<String, Long> hashMap1 = new HashMap<>();
+                for(int i=0; i<entry.getValue().size(); i++){
+                    hashMap1.put(entry.getValue().get(i).getString("ageGroup"),entry.getValue().get(i).getLong("count"));
+                }
+                registrationStatsDTO.setHashMap(hashMap1);
+                registrationStatsDTOs.add(registrationStatsDTO);
+            }
+            return registrationStatsDTOs;
+        }catch(Exception e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
