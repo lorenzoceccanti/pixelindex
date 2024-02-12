@@ -11,6 +11,7 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class GameController{
     private int rowSelection;
     private String queryName;
     private String sessionUsername;
+    private LocalDate dateOfBirth;
     private int exitGameList;
     private int exitGameDetails;
     public void trendingGamesChart(){
@@ -86,7 +88,6 @@ public class GameController{
         if(rows.size() <= 3){
             System.out.println("*** Empty ***");
         }
-        /* Introdurre qui un eventuale conto del numero totale di giochi*/
     }
 
     private void formNewReview(String gameId, String gameName, Integer gameReleaseYear){
@@ -229,6 +230,7 @@ public class GameController{
      */
     public int askGameQueryByName(){
         int result; int pageSelection = 0;
+        String message = "";
 
         if(queryName.isEmpty())
         {
@@ -240,6 +242,7 @@ public class GameController{
         }
         do{
             Utils.clearConsole();
+            System.out.println(message);
             ListSelector ls = new ListSelector("Query result");
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = gameByName(queryName, pageSelection);
@@ -267,9 +270,27 @@ public class GameController{
                     break;
                 default: // Game selection
                     menuDisplayed.set(false);
-                    exitGameList = 1;
                     GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
-                    viewGameDetail(0, gamePreviewDTO, false);
+                    if(gamePreviewDTO.getPegiRating() != null)
+                    {
+                        // Has PEGI rating
+                        if(sessionUsername.isEmpty()){
+                            message = "This game is age-restricted. Please login";
+                            exitGameList = 0;
+                        }else{
+                            System.out.println("PEGI: " + gamePreviewDTO.getPegiRating());
+                            System.out.println("Date Of Birth: " + this.dateOfBirth.toString());
+                            try{
+                                Thread.sleep(2000);
+                            }catch(Exception ex){
+                                ex.printStackTrace();
+                            }
+                        }
+                    } else {
+                        // Does not have PEGI rating
+                        exitGameList = 1;
+                        viewGameDetail(0, gamePreviewDTO, false);
+                    }
                     break;
             }
         }while(exitGameList != 1);
@@ -285,13 +306,14 @@ public class GameController{
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;
     }
-    public GameController(AtomicBoolean inMenu, String sessionUsername, ConsistencyThread consistencyThread)
+    public GameController(AtomicBoolean inMenu, String sessionUsername, LocalDate dateOfBirth, ConsistencyThread consistencyThread)
     {
         this.gameService = ServiceLocator.getGameService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
         this.reviewService = ServiceLocator.getReviewService();
         this.sessionUsername = sessionUsername;
+        this.dateOfBirth = dateOfBirth;
         this.reviewController = new ReviewController(sessionUsername, consistencyThread);
         this.queryName = "";
         this.rows = new ArrayList<>();

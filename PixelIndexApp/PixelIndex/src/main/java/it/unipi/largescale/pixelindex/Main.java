@@ -313,12 +313,12 @@ public class Main {
 
     public static void main(String[] args) {
         // =================== LORE =====================
-        // Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
-        // mongoLogger.setLevel(Level.OFF);
-        // mongoLogger.setUseParentHandlers(false);
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.OFF);
+        mongoLogger.setUseParentHandlers(false);
 //
-        // Utils.clearConsole();
-        // ApplicationController applicationController = new ApplicationController();
+        Utils.clearConsole();
+        ApplicationController applicationController = new ApplicationController();
         // testHowManyRegistrationAnalytic();
 
         // ===============================================

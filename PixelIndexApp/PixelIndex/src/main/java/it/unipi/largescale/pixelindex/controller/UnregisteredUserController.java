@@ -13,6 +13,7 @@ import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.UnregisteredMenu;
 
 import java.io.Console;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +28,7 @@ public class UnregisteredUserController {
     private GameController gameController;
     private StatisticsController statisticsController;
     private String sessionUsername = "";
+    private LocalDate dateOfBirth;
     private int isModerator;
     int errorCode = -1;
 
@@ -41,6 +43,7 @@ public class UnregisteredUserController {
     private int login(){
         try{
             AuthUserDTO authUserDTO = registeredUserService.makeLogin(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+            dateOfBirth = authUserDTO.getDateOfBirth();
             if(authUserDTO.getRole().equals("moderator"))
                 return 6;
             else
@@ -194,6 +197,9 @@ public class UnregisteredUserController {
         return sessionUsername;
     }
 
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
 
     /**
      * Shows the dropdown and after the user selection proceeds

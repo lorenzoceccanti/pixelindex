@@ -9,6 +9,7 @@ public class Game {
     private String id;
     private String name;
     private String category;
+    private String pegiRating;
     private LocalDate releaseDate;
     private String[] gameModes;
     private Genre[] genres;
@@ -103,6 +104,13 @@ public class Game {
         this.status = status;
     }
 
+    public String getPegiRating() {
+        return pegiRating;
+    }
+
+    public void setPegiRating(String pegiRating) {
+        this.pegiRating = pegiRating;
+    }
 
     @Override
     public String toString(){

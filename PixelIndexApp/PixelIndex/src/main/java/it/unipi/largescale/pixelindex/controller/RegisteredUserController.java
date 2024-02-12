@@ -12,6 +12,7 @@ import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 import jline.internal.Ansi;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,6 +26,7 @@ public class RegisteredUserController {
     private RegisteredMenu registeredMenu;
     private Runnable[] functionsRegistered;
     private String sessionUsername;
+    private LocalDate dateOfBirth;
     private GameController gameController;
     private StatisticsController statisticsController;
     private LibraryService libraryService;
@@ -306,7 +308,7 @@ public class RegisteredUserController {
         }while(registeredMenu.getDisplayed().get());
         return opt;
     }
-    public RegisteredUserController(String username)
+    public RegisteredUserController(String username, LocalDate dateOfBirth)
     {
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
@@ -316,7 +318,8 @@ public class RegisteredUserController {
         this.wishlistService = ServiceLocator.getWishlistService();
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
-        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, consistencyThread);
+        this.dateOfBirth = dateOfBirth;
+        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, dateOfBirth, consistencyThread);
         this.statisticsController = new StatisticsController();
         functionsRegistered = new Runnable[]{
                 () -> {

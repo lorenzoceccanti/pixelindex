@@ -17,7 +17,7 @@ public class GamePreviewDTO {
         return name;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
