@@ -72,9 +72,4 @@ public class GameRatingDTO {
             result.append(separator);
         return result.toString();
     }
-    /*
-    @Override
-    public String toString(){
-        return AnsiColor.ANSI_PURPLE+name+AnsiColor.ANSI_RESET+" "+AnsiColor.ANSI_GREEN+releaseYear+AnsiColor.ANSI_RESET+" "+AnsiColor.ANSI_YELLOW+" "+positiveRatingRatio+AnsiColor.ANSI_RESET;
-    }*/
 }
