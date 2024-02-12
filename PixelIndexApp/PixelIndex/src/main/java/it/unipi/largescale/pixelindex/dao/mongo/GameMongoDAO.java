@@ -17,6 +17,8 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Field;
 import org.bson.conversions.Bson;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +86,19 @@ public class GameMongoDAO extends BaseMongoDAO {
         return game;
     }
 
+    private GamePreviewDTO gamePreviewFromQueryResult(Document result) {
+        GamePreviewDTO game = new GamePreviewDTO();
+        game.setId(result.getObjectId("_id").toString());
+        game.setName(result.getString("name"));
+
+        if (result.containsKey("first_release_date") && result.getDate("first_release_date") != null) {
+            game.setReleaseYear(convertDateToLocalDate(result.getDate("first_release_date")).getYear());
+        }
+
+        game.setPegiRating(result.getString("pegiRating"));
+        return game;
+    }
+
     public List<GamePreviewDTO> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
         List<GamePreviewDTO> games = new ArrayList<>();
         try (MongoClient mongoClient = beginConnection(false)) {
@@ -131,12 +146,7 @@ public class GameMongoDAO extends BaseMongoDAO {
             // Aggregation
             ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
             for (Document result : results) {
-                GamePreviewDTO game = new GamePreviewDTO();
-                game.setId(result.getObjectId("_id").toString());
-                game.setName(result.getString("name"));
-                game.setReleaseYear(convertDateToLocalDate(result.getDate("first_release_date")).getYear());
-                game.setPegiRating(result.getString("pegiRating"));
-
+                GamePreviewDTO game = gamePreviewFromQueryResult(result);
                 games.add(game);
             }
         } catch (Exception e) {

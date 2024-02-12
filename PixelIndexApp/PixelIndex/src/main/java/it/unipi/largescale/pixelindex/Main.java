@@ -294,7 +294,7 @@ public class Main {
         GameMongoDAO gd = new GameMongoDAO();
 
         try {
-            games = gd.getGamesAdvancedSearch("grand", null, null, null, 0);
+            games = gd.getGamesAdvancedSearch("Fort", null, null, null, 0);
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -313,12 +313,12 @@ public class Main {
 
     public static void main(String[] args) {
         // =================== LORE =====================
-        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
-        mongoLogger.setLevel(Level.OFF);
-        mongoLogger.setUseParentHandlers(false);
-
-        Utils.clearConsole();
-        ApplicationController applicationController = new ApplicationController();
+        // Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        // mongoLogger.setLevel(Level.OFF);
+        // mongoLogger.setUseParentHandlers(false);
+//
+        // Utils.clearConsole();
+        // ApplicationController applicationController = new ApplicationController();
         // testHowManyRegistrationAnalytic();
 
         // ===============================================
@@ -343,7 +343,7 @@ public class Main {
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();
-        // testAdvancedSearch();
+        testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
         // testGetReviewById();
