@@ -207,7 +207,8 @@ public class ModeratorController {
                     statisticsController.top10GamesByPositiveRatingRatio(moderatorMenu.getDisplayed());
                 },
                 () -> {
-                    System.exit(0);
+                    moderatorMenu.getDisplayed().set(false);
+                    statisticsController.numberOfRegistrationsByMonth(moderatorMenu.getDisplayed());
                 },
                 () -> {
                     System.exit(0);

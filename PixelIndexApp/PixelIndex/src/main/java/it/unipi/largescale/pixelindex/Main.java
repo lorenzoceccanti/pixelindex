@@ -158,8 +158,9 @@ public class Main {
         try{
             ArrayList<RegistrationStatsDTO> arrayList = statisticsMongoDAO.numberOfRegistrationsByMonth((long)2023);
             for(int i=0; i<arrayList.size(); i++){
-                System.out.println(arrayList.get(i));
+                System.out.print(arrayList.get(i));
             }
+            System.out.println("");
         }catch(DAOException ex){
             ex.printStackTrace();
         }
@@ -318,7 +319,7 @@ public class Main {
 
         Utils.clearConsole();
         ApplicationController applicationController = new ApplicationController();
-        // testHowManyRegistrationAnalytic();
+       // testHowManyRegistrationAnalytic();
 
         // ===============================================
         /*

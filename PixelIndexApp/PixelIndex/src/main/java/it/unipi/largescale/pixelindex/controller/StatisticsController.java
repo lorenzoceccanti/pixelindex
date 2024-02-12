@@ -2,18 +2,21 @@ package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
 import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.service.StatisticsService;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StatisticsController {
     StatisticsService statisticsService;
     ArrayList<MostActiveUserDTO> top10Reviewers;
     ArrayList<GameRatingDTO> top10Games;
+    ArrayList<RegistrationStatsDTO> registrationStatsDTOs;
     ArrayList<String> buttons = new ArrayList<>();
     ListSelector ls;
 
@@ -31,10 +34,10 @@ public class StatisticsController {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 REVIEWERS OF LAST MONTH *** ");
-        System.out.println("|Username|Number of reviews");
         for(int i=0; i<top10Reviewers.size(); i++){
-            System.out.println(top10Reviewers.get(i));
+            System.out.print(top10Reviewers.get(i));
         }
+        System.out.println("");
        addDropdown(inMainMenu);
     }
 
@@ -49,6 +52,23 @@ public class StatisticsController {
         for(int i=0; i<top10Games.size(); i++){
             System.out.println(top10Games.get(i));
         }
+        addDropdown(inMainMenu);
+    }
+
+    public void numberOfRegistrationsByMonth(AtomicBoolean inMainMenu){
+        System.out.println("Which year?");
+        Scanner sc = new Scanner(System.in);
+        int year = sc.nextInt();
+        try{
+            registrationStatsDTOs = statisticsService.numberOfRegistrationsByMonth(year);
+        }catch(ConnectionException ex){
+            System.out.println("MongoDB: connection lost");
+        }
+        System.out.println("*** REGISTRATION STATS: PIXELINDEX ***");
+        for(int i=0; i<registrationStatsDTOs.size(); i++){
+            System.out.print(registrationStatsDTOs.get(i));
+        }
+        System.out.println("");
         addDropdown(inMainMenu);
     }
     public StatisticsController (){

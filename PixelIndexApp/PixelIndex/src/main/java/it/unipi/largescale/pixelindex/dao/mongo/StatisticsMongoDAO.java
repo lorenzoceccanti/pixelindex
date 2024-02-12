@@ -133,11 +133,14 @@ public class StatisticsMongoDAO {
 
             AggregateIterable<Document> result = collection.aggregate(Arrays.asList(matchStage, groupStage, sortStage, limitStage));
             ArrayList<MostActiveUserDTO> userDTOs = new ArrayList<>();
+            int count = 1;
             for(Document user: result){
                 MostActiveUserDTO userDTO = new MostActiveUserDTO();
+                userDTO.setRank(count);
                 userDTO.setUsername(user.getString("_id"));
                 userDTO.setNumOfReviews(user.getInteger("count", 0));
                 userDTOs.add(userDTO);
+                count++;
             }
             return userDTOs;
         } catch (Exception e) {

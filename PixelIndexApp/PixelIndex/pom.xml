@@ -41,7 +41,12 @@
   		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-compiler-plugin</artifactId>
-			<version>2.3.2</version> 
+			<version>2.3.2</version>
+			<configuration>
+				<source>20</source> <!-- Specify your JDK source version -->
+				<target>20</target> <!-- Specify your JDK target version -->
+				<debug>true</debug> <!-- This enables debug information -->
+			</configuration>
 		</plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
