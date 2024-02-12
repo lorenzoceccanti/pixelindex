@@ -80,11 +80,12 @@ public class ReviewMongoDAO extends BaseMongoDAO {
             document.append("review", review.getText());
             document.append("author", review.getAuthor());
             document.append("gameId", new ObjectId(review.getGameId()));
-            if(review.getRating() != RatingKind.NOT_AVAILABLE)
+            if (review.getRating() != RatingKind.NOT_AVAILABLE)
                 document.append("recommended", review.getRating() == RatingKind.RECOMMENDED);
             document.append("postedDate", review.getTimestamp());
             document.append("gameName", gameName);
-            document.append("gameReleaseYear", gameReleaseYear);
+            if (gameReleaseYear != null)
+                document.append("gameReleaseYear", gameReleaseYear);
             collection.insertOne(document);
 
         } catch (Exception e) {
