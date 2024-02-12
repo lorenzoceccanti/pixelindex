@@ -46,11 +46,9 @@ public class GameServiceImpl implements GameService {
             String platform = params.getOrDefault("platform", null);
             Integer releaseYear = params.containsKey("year") ? Integer.parseInt(params.get("year")) : null;
 
-            List<Game> games = gameMongoDAO.getGamesAdvancedSearch(name, company, platform, releaseYear, page);
-            for (Game g : games) {
-                gamePreviews.add(gamePreviewFromModel(g));
-            }
+            gamePreviews = gameMongoDAO.getGamesAdvancedSearch(name, company, platform, releaseYear, page);
             return gamePreviews;
+
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

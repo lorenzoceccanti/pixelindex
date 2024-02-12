@@ -1,6 +1,7 @@
 package it.unipi.largescale.pixelindex.dao.mongo;
 
 import com.mongodb.client.*;
+import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
 import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
@@ -83,8 +84,8 @@ public class GameMongoDAO extends BaseMongoDAO {
         return game;
     }
 
-    public List<Game> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
-        List<Game> games = new ArrayList<>();
+    public List<GamePreviewDTO> getGamesAdvancedSearch(String name, String company, String platform, Integer releaseYear, int page) throws DAOException {
+        List<GamePreviewDTO> games = new ArrayList<>();
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("games");
@@ -121,10 +122,22 @@ public class GameMongoDAO extends BaseMongoDAO {
             aggregationPipeline.add(Aggregates.skip(10 * page));
             aggregationPipeline.add(Aggregates.limit(10));
 
+            // Projection
+            aggregationPipeline.add(Aggregates.project(new Document("_id", 1L)
+                    .append("name", 1L)
+                    .append("first_release_date", 1L)
+                    .append("pegiRating", 1L)));
+
             // Aggregation
             ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
             for (Document result : results) {
-                games.add(gameFromQueryResult(result));
+                GamePreviewDTO game = new GamePreviewDTO();
+                game.setId(result.getObjectId("_id").toString());
+                game.setName(result.getString("name"));
+                game.setReleaseYear(convertDateToLocalDate(result.getDate("first_release_date")).getYear());
+                game.setPegiRating(result.getString("pegiRating"));
+
+                games.add(game);
             }
         } catch (Exception e) {
             throw new DAOException("Error retrieving games: " + e.getMessage());
@@ -172,13 +185,13 @@ public class GameMongoDAO extends BaseMongoDAO {
             List<String> languagesList = Arrays.asList(game.getLanguages());
             List<String> platformsList = Arrays.asList(game.getPlatforms());
 
-            document.append("game_modes",gameModesList);
-            document.append("genres",genresList);
-            document.append("companies",companiesList);
-            document.append("languages",languagesList);
-            document.append("platforms",platformsList);
+            document.append("game_modes", gameModesList);
+            document.append("genres", genresList);
+            document.append("companies", companiesList);
+            document.append("languages", languagesList);
+            document.append("platforms", platformsList);
             document.append("summary", game.getSummary());
-            document.append("consistent",false);
+            document.append("consistent", false);
             collection.insertOne(document);
             return document.get("_id").toString();
         } catch (Exception e) {

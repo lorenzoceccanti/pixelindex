@@ -7,6 +7,7 @@ public class GamePreviewDTO {
     private String id;
     private String name;
     private Integer releaseYear;
+    private String pegiRating;
 
     public String getId() {
         return id;
@@ -32,11 +33,19 @@ public class GamePreviewDTO {
         this.releaseYear = releaseYear;
     }
 
+    public void setPegiRating(String pegiRating) {
+        this.pegiRating = pegiRating;
+    }
+
+    public String getPegiRating() {
+        return pegiRating;
+    }
+
     public String toString() {
         String result = "";
-        result += (AnsiColor.ANSI_BLUE+"Name: " + name+AnsiColor.ANSI_RESET);
+        result += (AnsiColor.ANSI_BLUE + "Name: " + name + AnsiColor.ANSI_RESET);
         if (releaseYear != null)
-            result += (" "+AnsiColor.ANSI_RED+"Release Year: " + releaseYear+AnsiColor.ANSI_RESET);
+            result += (" " + AnsiColor.ANSI_RED + "Release Year: " + releaseYear + AnsiColor.ANSI_RESET);
         return result;
     }
 }

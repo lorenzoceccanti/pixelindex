@@ -153,15 +153,15 @@ public class Main {
         }
     }
 
-    public static void testHowManyRegistrationAnalytic(){
+    public static void testHowManyRegistrationAnalytic() {
         StatisticsMongoDAO statisticsMongoDAO = new StatisticsMongoDAO();
-        try{
-            ArrayList<RegistrationStatsDTO> arrayList = statisticsMongoDAO.numberOfRegistrationsByMonth((long)2023);
-            for(int i=0; i<arrayList.size(); i++){
+        try {
+            ArrayList<RegistrationStatsDTO> arrayList = statisticsMongoDAO.numberOfRegistrationsByMonth((long) 2023);
+            for (int i = 0; i < arrayList.size(); i++) {
                 System.out.print(arrayList.get(i));
             }
             System.out.println("");
-        }catch(DAOException ex){
+        } catch (DAOException ex) {
             ex.printStackTrace();
         }
     }
@@ -290,7 +290,7 @@ public class Main {
 
     // ========== NICCO ==============
     public static void testAdvancedSearch() {
-        List<Game> games = new ArrayList<>();
+        List<GamePreviewDTO> games = new ArrayList<>();
         GameMongoDAO gd = new GameMongoDAO();
 
         try {
@@ -298,7 +298,7 @@ public class Main {
         } catch (DAOException e) {
             e.printStackTrace();
         }
-        for (Game g : games)
+        for (GamePreviewDTO g : games)
             System.out.println(g.getName());
     }
 
@@ -319,7 +319,7 @@ public class Main {
 
         Utils.clearConsole();
         ApplicationController applicationController = new ApplicationController();
-       // testHowManyRegistrationAnalytic();
+        // testHowManyRegistrationAnalytic();
 
         // ===============================================
         /*
