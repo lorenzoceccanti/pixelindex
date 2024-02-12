@@ -7,7 +7,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.Period;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,11 +20,17 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.fusesource.jansi.Ansi.ansi;
-
 public class Utils {
     private static final String ENV_FILE = ".env";
-    private static String envPayload;
+    private static final Map<String, Integer> PEGI_RATINGS = new HashMap<>();
+
+    static {
+        PEGI_RATINGS.put("Three", 3);
+        PEGI_RATINGS.put("Seven", 7);
+        PEGI_RATINGS.put("Twelve", 12);
+        PEGI_RATINGS.put("Sixteen", 16);
+        PEGI_RATINGS.put("Eighteen", 18);
+    }
 
     public static void clearConsole() {
         // System.out.println(ansi().eraseScreen());
@@ -103,6 +109,12 @@ public class Utils {
         }
 
         return params;
+    }
+
+    public static boolean isAgeRestricted(LocalDate dateOfBirth, String pegiRating) {
+        Integer thresholdAge = PEGI_RATINGS.get(pegiRating);
+        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+        return age < thresholdAge;
     }
 
     public static void startTrackingKeyboard(Object o){
