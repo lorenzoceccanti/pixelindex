@@ -50,7 +50,6 @@ public class MostActiveUserDTO {
             /// Japanese chars
             int japaneseBytesLength = username.getBytes().length;
             int japaneseCharsCount = username.length();
-            int restoDivisione = (japaneseBytesLength - japaneseCharsCount) % 2;
             int adjustedWidth = maxWidthUsername - (japaneseBytesLength - japaneseCharsCount) / 2;
             dataRow = String.format("| %-" + (adjustedWidth+2) + "s | %-" + maxWidthNumOfReviews + "d |\n",
                     username, numOfReviews);
