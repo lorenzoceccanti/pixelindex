@@ -148,7 +148,9 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                                                                     .append("else", "$review")))
                                                                     .append("author", 1L)
                                                                     .append("recommended", 1L)
-                                                                    .append("postedDate", 1L)),
+                                                                    .append("postedDate", 1L)
+                                                                    .append("likes", 1L)
+                                                                    .append("dislikes", 1L)),
                                                     new Document("$skip", 10L * page),
                                                     new Document("$limit", 10L)))),
                             new Document("$unwind", "$totalCount"),

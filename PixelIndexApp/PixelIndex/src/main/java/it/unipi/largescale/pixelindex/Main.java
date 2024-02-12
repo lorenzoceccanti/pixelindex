@@ -319,7 +319,7 @@ public class Main {
 //
         Utils.clearConsole();
         ApplicationController applicationController = new ApplicationController();
-        // testHowManyRegistrationAnalytic();
+        //testHowManyRegistrationAnalytic();
 
         // ===============================================
         /*
@@ -339,11 +339,11 @@ public class Main {
         // insertReviewMongo();
         // insertReviewNeo4j();
         // removeReviewNeo4j();
-        // testGetReviewsByGameId();
+        // testGetReviewsByGameId(0);
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();
-       // testAdvancedSearch();
+        // testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
         // testGetReviewById();
