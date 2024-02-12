@@ -275,25 +275,29 @@ public class GameController{
                 default: // Game selection
                     menuDisplayed.set(false);
                     GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
-                    if(!isModerator || gamePreviewDTO.getPegiRating() != null)
+                    if(isModerator)
                     {
-                        // Has PEGI rating
-                        if(sessionUsername.isEmpty()){
-                            message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game is age-restricted. Please login";
-                            exitGameList = 0;
-                        }else{
-                            boolean restricted = Utils.isAgeRestricted(this.dateOfBirth, gamePreviewDTO.getPegiRating());
-                            if(!restricted){
-                                exitGameList = 1;
-                                viewGameDetail(0, gamePreviewDTO, false);
-                            } else {
-                                message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game has been restricted for the users of your age";
-                            }
-                        }
-                    } else {
-                        // Does not have PEGI rating
                         exitGameList = 1;
                         viewGameDetail(0, gamePreviewDTO, false);
+                    } else {
+                        if(gamePreviewDTO.getPegiRating() != null){
+                            // Has PEGI rating
+                            if(sessionUsername.isEmpty()){
+                                message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game is age-restricted. Please login";
+                                exitGameList = 0;
+                            }else{
+                                boolean restricted = Utils.isAgeRestricted(this.dateOfBirth, gamePreviewDTO.getPegiRating());
+                                if(!restricted){
+                                    exitGameList = 1;
+                                    viewGameDetail(0, gamePreviewDTO, false);
+                                } else {
+                                    message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game has been restricted for the users of your age";
+                                }
+                            }
+                        } else {
+                            exitGameList = 1;
+                            viewGameDetail(0, gamePreviewDTO, false);
+                        }
                     }
                     break;
             }
