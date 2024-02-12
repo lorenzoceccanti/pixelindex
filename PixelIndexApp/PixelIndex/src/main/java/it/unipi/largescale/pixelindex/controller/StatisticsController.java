@@ -48,10 +48,10 @@ public class StatisticsController {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 RATED GAMES ***");
-        System.out.println("|Name|Release Year|Positive Review Ratio|");
         for(int i=0; i<top10Games.size(); i++){
-            System.out.println(top10Games.get(i));
+            System.out.print(top10Games.get(i));
         }
+        System.out.println("");
         addDropdown(inMainMenu);
     }
 

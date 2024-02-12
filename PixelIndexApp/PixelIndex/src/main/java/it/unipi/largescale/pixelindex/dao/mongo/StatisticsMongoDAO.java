@@ -96,14 +96,17 @@ public class StatisticsMongoDAO {
             );
 
             AggregateIterable<Document> results = collection.aggregate(aggregationPipeline);
+            int rank = 1;
             for (Document doc : results) {
                 GameRatingDTO dto = new GameRatingDTO();
+                dto.setRank(rank);
                 dto.setName(doc.getString("gameName"));
                 if (doc.get("gameReleaseYear") != null) {
                     dto.setReleaseYear(doc.getInteger("gameReleaseYear"));
                 }
                 dto.setPositiveRatingRatio(doc.getDouble("positiveRatingRatio"));
                 gameRatingDTOs.add(dto);
+                rank++;
             }
         } catch (Exception e) {
             throw new DAOException("Error retrieving games: " + e.getMessage());
