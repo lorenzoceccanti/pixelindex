@@ -199,7 +199,7 @@ public class ModeratorController {
         this.moderatorMenu = new ModeratorMenu();
         this.moderatorService = ServiceLocator.getModeratorService();
         this.gameService = ServiceLocator.getGameService();
-        this.gameController = new GameController(moderatorMenu.getDisplayed());
+        this.gameController = new GameController(moderatorMenu.getDisplayed(), username, dateOfBirth, true, consistencyThread);
         this.statisticsService = ServiceLocator.getStatisticsService();
         this.registeredUserController = new RegisteredUserController(username, dateOfBirth, true);
         this.statisticsController = new StatisticsController();

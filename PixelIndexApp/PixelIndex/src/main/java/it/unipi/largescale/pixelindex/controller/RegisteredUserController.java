@@ -39,7 +39,7 @@ public class RegisteredUserController {
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
     List<GamePreviewDTO> gameWishlistDTOs;
     ArrayList<String> rows = new ArrayList<>();
-    boolean isModerator;
+    private boolean isModerator;
 
     private void displayUsers(){
         rows.clear();
@@ -328,7 +328,7 @@ public class RegisteredUserController {
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
         this.dateOfBirth = dateOfBirth;
-        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, dateOfBirth, consistencyThread);
+        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, this.dateOfBirth, this.isModerator, consistencyThread);
         this.statisticsController = new StatisticsController();
         functionsRegistered = new Runnable[]{
                 () -> {

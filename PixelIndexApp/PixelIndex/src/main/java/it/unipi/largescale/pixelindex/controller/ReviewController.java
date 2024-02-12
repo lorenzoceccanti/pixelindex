@@ -30,6 +30,7 @@ public class ReviewController {
     private int exitReviewDetails;
     private AtomicBoolean menuDisplayed;
     private String sessionUsername;
+    private boolean isModerator;
     public int viewReviewDetails(int indexView){
         AtomicBoolean inGameDetails = new AtomicBoolean(false);
         String reactionResult = "";
@@ -78,12 +79,13 @@ public class ReviewController {
                         }
                         break;
                     case 3:
-                        if(!sessionUsername.equals(detailedReview.getAuthor()))
-                            reactionResult = "Unathorized";
-                        else{
+                        if(isModerator || sessionUsername.equals(detailedReview.getAuthor()))
+                        {
                             reviewService.deleteReview(detailedReview.getId(), consistencyThread);
-                            exitReviewDetails = 1;
+                            reactionResult = "[Operation]: Review removed successfully";
                         }
+                        else
+                            reactionResult = "Unauthorized";
                         break;
                     default:
                         exitReviewDetails = 0;
@@ -159,10 +161,11 @@ public class ReviewController {
         }
     }
 
-    public ReviewController(String sessionUsername, ConsistencyThread consistencyThread){
+    public ReviewController(String sessionUsername, boolean isModerator, ConsistencyThread consistencyThread){
         this.rows = new ArrayList<>();
         this.consistencyThread = consistencyThread;
         this.sessionUsername = sessionUsername;
+        this.isModerator = isModerator;
         this.reviewPreviewDTOs = new ArrayList<>();
         this.reviewService = ServiceLocator.getReviewService();
         this.menuDisplayed = new AtomicBoolean(false);
@@ -170,6 +173,7 @@ public class ReviewController {
     public ReviewController(){
         this.rows = new ArrayList<>();
         this.sessionUsername = "";
+        this.isModerator = false;
         this.reviewPreviewDTOs = new ArrayList<>();
         this.reviewService = ServiceLocator.getReviewService();
         this.menuDisplayed = new AtomicBoolean(false);

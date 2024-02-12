@@ -33,6 +33,7 @@ public class GameController{
     private String queryName;
     private String sessionUsername;
     private LocalDate dateOfBirth;
+    private boolean isModerator;
     private int exitGameList;
     private int exitGameDetails;
     public void trendingGamesChart(){
@@ -272,7 +273,7 @@ public class GameController{
                 default: // Game selection
                     menuDisplayed.set(false);
                     GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
-                    if(gamePreviewDTO.getPegiRating() != null)
+                    if(!isModerator || gamePreviewDTO.getPegiRating() != null)
                     {
                         // Has PEGI rating
                         if(sessionUsername.isEmpty()){
@@ -303,19 +304,21 @@ public class GameController{
         this.reviewController = new ReviewController();
         this.queryName = "";
         this.sessionUsername = "";
+        this.isModerator = false;
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
         this.rowSelection = 0;
     }
-    public GameController(AtomicBoolean inMenu, String sessionUsername, LocalDate dateOfBirth, ConsistencyThread consistencyThread)
+    public GameController(AtomicBoolean inMenu, String sessionUsername, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread)
     {
         this.gameService = ServiceLocator.getGameService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
         this.reviewService = ServiceLocator.getReviewService();
         this.sessionUsername = sessionUsername;
+        this.isModerator = isModerator;
         this.dateOfBirth = dateOfBirth;
-        this.reviewController = new ReviewController(sessionUsername, consistencyThread);
+        this.reviewController = new ReviewController(sessionUsername, isModerator, consistencyThread);
         this.queryName = "";
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
