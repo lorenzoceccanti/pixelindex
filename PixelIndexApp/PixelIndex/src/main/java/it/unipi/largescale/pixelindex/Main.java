@@ -343,7 +343,7 @@ public class Main {
         // testAddReaction();
         // testGetReactionsCount();
         // testAddReaction();
-        testAdvancedSearch();
+       // testAdvancedSearch();
         // testSetReactionsCountMongo();
         // testAddReaction();
         // testGetReviewById();

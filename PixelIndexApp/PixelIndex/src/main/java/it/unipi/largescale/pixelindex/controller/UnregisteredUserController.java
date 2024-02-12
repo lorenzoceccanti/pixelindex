@@ -149,6 +149,7 @@ public class UnregisteredUserController {
         {
             displayed.set(false);
             sessionUsername = userRegistrationDTO.getUsername();
+            dateOfBirth = userRegistrationDTO.getDateOfBirth();
         }
         return ret;
     }

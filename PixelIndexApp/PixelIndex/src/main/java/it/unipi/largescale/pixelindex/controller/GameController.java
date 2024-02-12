@@ -10,6 +10,7 @@ import it.unipi.largescale.pixelindex.service.*;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
+import jline.internal.Ansi;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -275,15 +276,15 @@ public class GameController{
                     {
                         // Has PEGI rating
                         if(sessionUsername.isEmpty()){
-                            message = "This game is age-restricted. Please login";
+                            message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game is age-restricted. Please login";
                             exitGameList = 0;
                         }else{
-                            System.out.println("PEGI: " + gamePreviewDTO.getPegiRating());
-                            System.out.println("Date Of Birth: " + this.dateOfBirth.toString());
-                            try{
-                                Thread.sleep(2000);
-                            }catch(Exception ex){
-                                ex.printStackTrace();
+                            boolean restricted = Utils.isAgeRestricted(this.dateOfBirth, gamePreviewDTO.getPegiRating());
+                            if(!restricted){
+                                exitGameList = 1;
+                                viewGameDetail(0, gamePreviewDTO, false);
+                            } else {
+                                message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game has been restricted for the users of your age";
                             }
                         }
                     } else {

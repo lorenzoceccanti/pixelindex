@@ -168,8 +168,6 @@ public class RegisteredUserController {
             rows.add("Friends you might know");
             if(potentialFriends.isEmpty())
                 rows.add("*** List empty ***");
-            /*for(int i=0; i<potentialFriends.size(); i++)
-                System.out.println((i+1)+") "+potentialFriends.get(i));*/
             rows.addAll(potentialFriends);
             showRegisteredDropdown(rows);
             return 0;
