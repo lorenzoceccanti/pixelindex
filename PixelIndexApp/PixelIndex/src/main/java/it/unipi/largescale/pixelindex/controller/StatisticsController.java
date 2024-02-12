@@ -66,6 +66,8 @@ public class StatisticsController {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** REGISTRATION STATS: PIXELINDEX ***");
+        if(registrationStatsDTOs.isEmpty())
+            System.out.println("No registrations in year: " + year);
         for(int i=0; i<registrationStatsDTOs.size(); i++){
             System.out.print(registrationStatsDTOs.get(i));
         }

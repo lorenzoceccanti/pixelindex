@@ -45,6 +45,8 @@ public class GameController{
         try{
             List<TrendingGamesDTO> list = gameService.getTrendingGames(year,10);
             System.out.println("*** TRENDING GAMES CHART ***");
+            if(list.isEmpty())
+                System.out.println("Trending chart empty.");
             for(int i=0; i<list.size(); i++)
                 System.out.print(list.get(i));
             System.out.println("");
