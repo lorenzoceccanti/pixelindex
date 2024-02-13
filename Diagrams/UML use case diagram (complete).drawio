@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-13T22:46:51.729Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="s_cRYJ-bhVG4kr6fXBKP" version="23.1.4" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-13T22:50:34.746Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="fQOU23UXRUb-1KRsHeqQ" version="23.1.4" type="device">
   <diagram id="yN8YthIKL4q0k0T6N8ZN" name="Pagina-1">
-    <mxGraphModel dx="989" dy="574" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1434" dy="833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -126,7 +126,7 @@
             <mxPoint x="97" y="268" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="J93L3I0hqiAf83k4fNBi-60" value="&lt;font style=&quot;font-size: 12px;&quot; color=&quot;#b85450&quot;&gt;Unregistered&lt;br&gt;User&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="J93L3I0hqiAf83k4fNBi-60" value="&lt;font style=&quot;font-size: 12px;&quot; color=&quot;#b85450&quot;&gt;Unregistered&lt;br&gt;user&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="16" y="57" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="J93L3I0hqiAf83k4fNBi-65" value="Add/remove game to wishlist" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
@@ -469,7 +469,7 @@
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-30" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="430" y="882" width="52.5" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-31" value="Use cases for Registered Users and Moderators" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-31" value="Use cases for Registered users and Moderators" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="514" y="880" width="267.5" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-32" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
@@ -481,7 +481,7 @@
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-34" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="430" y="840" width="52.5" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-35" value="Use cases for Unregistered Users" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-35" value="Use cases for Unregistered users" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="499" y="838" width="218" height="30" as="geometry" />
         </mxCell>
       </root>
