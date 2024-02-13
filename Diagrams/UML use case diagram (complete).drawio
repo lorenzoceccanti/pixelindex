@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-02-13T22:45:01.042Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="KbWor5FeeBahoLxPPYvS" version="23.1.4" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-13T22:46:51.729Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="s_cRYJ-bhVG4kr6fXBKP" version="23.1.4" type="device">
   <diagram id="yN8YthIKL4q0k0T6N8ZN" name="Pagina-1">
     <mxGraphModel dx="989" dy="574" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -464,10 +464,10 @@
           <mxGeometry x="430" y="798" width="52.5" height="28" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-28" value="Use cases for all kind of actors" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="492" y="798" width="218" height="30" as="geometry" />
+          <mxGeometry x="491" y="798" width="218" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-30" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="430" y="880" width="52.5" height="28" as="geometry" />
+          <mxGeometry x="430" y="882" width="52.5" height="28" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-31" value="Use cases for Registered Users and Moderators" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="514" y="880" width="267.5" height="30" as="geometry" />
@@ -479,7 +479,7 @@
           <mxGeometry x="507" y="930" width="160.5" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-34" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="430" y="838" width="52.5" height="28" as="geometry" />
+          <mxGeometry x="430" y="840" width="52.5" height="28" as="geometry" />
         </mxCell>
         <mxCell id="ccNOi4Jt7ap0Bbpy0pkN-35" value="Use cases for Unregistered Users" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="499" y="838" width="218" height="30" as="geometry" />
