@@ -27,6 +27,7 @@ public class ModeratorMenu {
         basicOptions.add("Most active reviewers");
         basicOptions.add("Top rated games");
         basicOptions.add("Trending games chart");
+        basicOptions.add("Show suggested games");
 
         specialOptions = new ArrayList<>();
         specialOptions.add(AnsiColor.ANSI_RED+"View reports"+AnsiColor.ANSI_RESET);

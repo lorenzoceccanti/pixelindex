@@ -23,6 +23,7 @@ public class RegisteredMenu {
         options.add("Most active reviewers");
         options.add("Top rated games");
         options.add("Trending games chart");
+        options.add("Show suggested games");
         options.add("Exit app");
     }
 

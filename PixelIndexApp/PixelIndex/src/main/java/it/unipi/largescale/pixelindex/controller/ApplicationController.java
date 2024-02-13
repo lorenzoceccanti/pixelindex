@@ -27,7 +27,6 @@ public class ApplicationController {
             moderatorController = new ModeratorController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth());
             moderatorController.execute();
         }
-
     }
 
         /*

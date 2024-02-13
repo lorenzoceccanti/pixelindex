@@ -2,6 +2,7 @@ package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
+import it.unipi.largescale.pixelindex.dto.GameSuggestionDTO;
 import it.unipi.largescale.pixelindex.dto.UserSearchDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.model.Whishlist;
@@ -36,6 +37,7 @@ public class RegisteredUserController {
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialFriends;
+    List<GameSuggestionDTO> potentialGames;
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
     List<GamePreviewDTO> gameWishlistDTOs;
     ArrayList<String> rows = new ArrayList<>();
@@ -186,6 +188,30 @@ public class RegisteredUserController {
             return 1;
         }
     }
+    public int getSuggestedGames(AtomicBoolean inMenu){
+        ListSelector ls = new ListSelector("");
+        ArrayList<String> opt = new ArrayList<>();
+        opt.add("Go back");
+        inMenu.set(false);
+        try{
+            potentialGames = suggestionsService.suggestGames(sessionUsername);
+            System.out.println("Games you might like:");
+            if(potentialGames.isEmpty())
+                System.out.println("*** List empty ***");
+            for(int i = 0; i<potentialGames.size(); i++)
+                System.out.println(potentialGames.get(i));
+            System.out.println("");
+            ls.addOptions(opt, "suggestionGames", "Make your choice");
+            int choice = ls.askUserInteraction("suggestionGames");
+            if(choice == 0) {
+                inMenu.set(true);
+            }
+            return 0;
+        }catch(ConnectionException ex)
+        {
+            return 1;
+        }
+    }
     private int queryUserLibrary(String username, int page){
         try{
             gameLibraryElementDTOS = libraryService.getGames(username, page);
@@ -320,6 +346,7 @@ public class RegisteredUserController {
     {
         this.queryName = "";
         this.potentialFriends = new ArrayList<>();
+        this.potentialGames = new ArrayList<>();
         this.suggestionsService = ServiceLocator.getSuggestionsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.libraryService = ServiceLocator.getLibraryService();
@@ -360,6 +387,10 @@ public class RegisteredUserController {
                 () -> {
                     registeredMenu.getDisplayed().set(false);
                     gameController.trendingGamesChart();
+                },
+                () -> {
+                    registeredMenu.getDisplayed().set(false);
+                    getSuggestedGames(registeredMenu.getDisplayed());
                 },
                 () ->{
                     System.exit(0);

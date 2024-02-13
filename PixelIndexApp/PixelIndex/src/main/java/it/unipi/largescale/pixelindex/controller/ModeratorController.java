@@ -237,6 +237,9 @@ public class ModeratorController {
                     gameController.trendingGamesChart();
                 },
                 () -> {
+                    registeredUserController.getSuggestedGames(moderatorMenu.getDisplayed());
+                },
+                () -> {
                     System.exit(0);
                 }
         };
