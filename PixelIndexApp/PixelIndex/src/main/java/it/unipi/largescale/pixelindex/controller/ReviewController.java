@@ -35,7 +35,7 @@ public class ReviewController {
         AtomicBoolean inGameDetails = new AtomicBoolean(false);
         String reactionResult = "";
         ReviewPreviewDTO revPrev = reviewPreviewDTOs.get(indexView-3);
-        ListSelector ls = new ListSelector("Review details");
+        ListSelector ls = new ListSelector("");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Go back");
         opt.add(AnsiColor.ANSI_BLUE+"Add like"+ AnsiColor.ANSI_RESET);
@@ -133,7 +133,6 @@ public class ReviewController {
                 default:
                     exitReviewList = 1;
                     // Details review
-                    System.out.println("choice: " + choice);
                     viewReviewDetails(choice);
                     break;
             }
