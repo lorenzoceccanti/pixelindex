@@ -72,7 +72,7 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                     } else {
                         gameLibraryElementDTO.setReleaseYear(record.get("releaseYear").asInt());
                     }
-                    gameLibraryElementDTO.setAddedDate(Utils.convertStringToLocalDate(record.get("addedDate").asString()));
+                    gameLibraryElementDTO.setAddedDate(record.get("addedDate").asLocalDate());
                     gamePreviewDTOArrayList.add(gameLibraryElementDTO);
                 }
                 return gamePreviewDTOArrayList;
