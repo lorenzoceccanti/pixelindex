@@ -52,7 +52,7 @@ public class WishlistNeo4jDAO {
                         """
                                 MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game)
                                 RETURN g.mongoId AS mongoId, g.name AS name, g.releaseYear as releaseYear
-                                ORDER BY g.name DESC
+                                ORDER BY g.name ASC
                                 SKIP $page * 10
                                 LIMIT 10;
                                 """,
