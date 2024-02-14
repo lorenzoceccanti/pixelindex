@@ -13,17 +13,13 @@ import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.dropdown.ModeratorMenu;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
-import jline.internal.Ansi;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModeratorController {
     BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
@@ -41,87 +37,91 @@ public class ModeratorController {
     private int exitReportList;
     private StatisticsController statisticsController;
 
-    private int showSpecialDropdown(String str){
+    private int showSpecialDropdown(String str) {
         int opt = -1;
-        do{
+        do {
             Utils.clearConsole();
             System.out.println(str);
             moderatorMenu.getSpecialDisplayed().set(true);
             opt = moderatorMenu.displaySpecialMenu();
             functionsModerator[opt].run();
-        }while(moderatorMenu.getSpecialDisplayed().get());
+        } while (moderatorMenu.getSpecialDisplayed().get());
         return opt;
     }
 
-    private int showModeratorDropdown(){
+    private int showModeratorDropdown() {
         int opt = -1;
-        do{
+        do {
             Utils.clearConsole();
             moderatorMenu.getDisplayed().set(true);
             opt = moderatorMenu.displayMenu();
             normalFunctions[opt].run();
-        }while(moderatorMenu.getDisplayed().get());
+        } while (moderatorMenu.getDisplayed().get());
         return opt;
     }
-    private int queryReports(){
-        try{
+
+    private int queryReports() {
+        try {
             userReportsDTOS = statisticsService.topNReportedUser(10);
             return 0;
-        }catch(ConnectionException ex){
+        } catch (ConnectionException ex) {
             return 1;
         }
     }
-    private void buildReport(){
+
+    private void buildReport() {
         rows.clear();
-        rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
         userReportsDTOS.stream().forEach(userReport -> {
             rows.add(userReport.toString());
         });
-        if(rows.size() <= 1){
+        if (rows.size() <= 1) {
             System.out.println("*** Empty ***");
         }
     }
-    private int banUser(String username){
-        try{
+
+    private int banUser(String username) {
+        try {
             moderatorService.banUser(username, consistencyThread);
             return 0;
-        }catch(ConnectionException ex){
+        } catch (ConnectionException ex) {
             return 1;
         }
     }
-    private int displayReport(){
-        int result = 1; int choice = -1;
+
+    private int displayReport() {
+        int result = 1;
+        int choice = -1;
         String messageDisp = "";
         moderatorMenu.getSpecialDisplayed().set(false);
-        do{
+        do {
             Utils.clearConsole();
             System.out.println(messageDisp);
             ListSelector ls = new ListSelector("Most reported users:");
             result = queryReports();
-            if(result != 0)
+            if (result != 0)
                 return result;
             buildReport();
             ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
             choice = ls.askUserInteraction("reportsDropdown");
-            switch(choice)
-            {
+            switch (choice) {
                 case 0:
                     exitReportList = 1;
                     break;
                 default:
                     exitReportList = 0;
                     // Ban the user
-                    UserReportsDTO user = userReportsDTOS.get(choice-1);
+                    UserReportsDTO user = userReportsDTOS.get(choice - 1);
                     int sts = banUser(user.getUsername());
-                    messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW+user.getUsername()+AnsiColor.ANSI_RESET+" banned successfully":messageDisp;
+                    messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW + user.getUsername() + AnsiColor.ANSI_RESET + " banned successfully" : messageDisp;
             }
-        }while(exitReportList != 1);
+        } while (exitReportList != 1);
         moderatorMenu.getSpecialDisplayed().set(true);
         showSpecialDropdown("");
         return result;
     }
 
-    private void promptNewGameForm(){
+    private void promptNewGameForm() {
         Game g = new Game();
         moderatorMenu.getSpecialDisplayed().set(false);
         System.out.println("*** INSERTING NEW GAME ***");
@@ -131,7 +131,7 @@ public class ModeratorController {
         System.out.println("Specify the release date [format YYYY-MM-DD]:");
         String dateAsString = sc.nextLine();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate ld = LocalDate.parse(dateAsString,formatter);
+        LocalDate ld = LocalDate.parse(dateAsString, formatter);
         g.setReleaseDate(ld);
 
         System.out.println("Specify the category:");
@@ -147,7 +147,7 @@ public class ModeratorController {
         String genresString = sc.nextLine();
         String[] tokens = genresString.split(",");
         Genre[] genres = new Genre[tokens.length];
-        for(int i = 0; i<genres.length; i++){
+        for (int i = 0; i < genres.length; i++) {
             genres[i] = new Genre();
             genres[i].setName(tokens[i]);
         }
@@ -162,7 +162,7 @@ public class ModeratorController {
         String companiesString = sc.nextLine();
         tokens = companiesString.split(",");
         Company[] companies = new Company[tokens.length];
-        for(int i=0; i<companies.length; i++){
+        for (int i = 0; i < companies.length; i++) {
             companies[i] = new Company();
             companies[i].setName(tokens[i]);
         }
@@ -177,9 +177,9 @@ public class ModeratorController {
         g.setSummary(sc.nextLine());
 
         String str = "[Message]: Game successfully added";
-        try{
+        try {
             gameService.insertGame(g, consistencyThread);
-        }catch (ConnectionException ex){
+        } catch (ConnectionException ex) {
             System.out.println("Connection lost");
             System.exit(1);
         }
@@ -187,15 +187,16 @@ public class ModeratorController {
         showSpecialDropdown(str);
     }
 
-    private void synchronizeGames(){
-        try{
+    private void synchronizeGames() {
+        try {
             moderatorService.synchronizeGames(consistencyThread);
             showSpecialDropdown("Synchronized performed");
-        }catch(ConnectionException ex){
+        } catch (ConnectionException ex) {
             showSpecialDropdown("Could not perform synchronization, try later");
         }
     }
-    public ModeratorController(String username, LocalDate dateOfBirth){
+
+    public ModeratorController(String username, LocalDate dateOfBirth) {
         this.moderatorMenu = new ModeratorMenu();
         this.moderatorService = ServiceLocator.getModeratorService();
         this.gameService = ServiceLocator.getGameService();
@@ -226,7 +227,7 @@ public class ModeratorController {
                 },
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
-                    statisticsController.findTopReviewersByPostCountLastMonth(moderatorMenu.getDisplayed());
+                    statisticsController.findTopReviewersByReviewsCountLastMonth(moderatorMenu.getDisplayed());
                 },
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
@@ -267,7 +268,7 @@ public class ModeratorController {
         };
     }
 
-    public void execute(){
+    public void execute() {
         // After the login the consistency thread starts
         consistencyThread.start();
         Utils.clearConsole();

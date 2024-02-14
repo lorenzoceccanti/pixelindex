@@ -38,19 +38,19 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public ArrayList<MostActiveUserDTO> findTop10ReviewersByPostCountLastMonth() throws ConnectionException{
-        try{
-            return statisticsMongoDAO.findTopReviewersByPostCountLastMonth(10);
-        }catch(DAOException ex){
+    public ArrayList<MostActiveUserDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException {
+        try {
+            return statisticsMongoDAO.findTopReviewersByReviewsCountLastMonth(10);
+        } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }
     }
 
     @Override
-    public ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(int year) throws ConnectionException{
-        try{
-            return statisticsMongoDAO.numberOfRegistrationsByMonth((long)year);
-        }catch(DAOException ex){
+    public ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(int year) throws ConnectionException {
+        try {
+            return statisticsMongoDAO.numberOfRegistrationsByMonth((long) year);
+        } catch (DAOException ex) {
             throw new ConnectionException(ex);
         }
     }

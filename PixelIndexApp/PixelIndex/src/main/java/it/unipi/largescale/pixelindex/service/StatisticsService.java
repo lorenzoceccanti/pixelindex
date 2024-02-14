@@ -10,7 +10,10 @@ import java.util.ArrayList;
 
 public interface StatisticsService {
     ArrayList<UserReportsDTO> topNReportedUser(int n) throws ConnectionException;
+
     ArrayList<GameRatingDTO> topNRatedGames(int n) throws ConnectionException;
-    ArrayList<MostActiveUserDTO> findTop10ReviewersByPostCountLastMonth() throws ConnectionException;
+
+    ArrayList<MostActiveUserDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException;
+
     ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(int year) throws ConnectionException;
 }

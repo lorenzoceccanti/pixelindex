@@ -32,7 +32,8 @@ public class UnregisteredUserController {
     private int isModerator;
     int errorCode = -1;
 
-    /** Invokes the userService for making the login
+    /**
+     * Invokes the userService for making the login
      *
      * @return 1 if the login failed due to connection errors
      * 2 if the login failed due to wrong username
@@ -40,52 +41,51 @@ public class UnregisteredUserController {
      * 6 if the login succeded as mod
      * 0 if the login succeded
      */
-    private int login(){
-        try{
+    private int login() {
+        try {
             AuthUserDTO authUserDTO = registeredUserService.makeLogin(userLoginDTO.getUsername(), userLoginDTO.getPassword());
             dateOfBirth = authUserDTO.getDateOfBirth();
-            if(authUserDTO.getRole().equals("moderator"))
+            if (authUserDTO.getRole().equals("moderator"))
                 return 6;
             else
                 return 0;
-        }catch(ConnectionException ex)
-        {
+        } catch (ConnectionException ex) {
             System.out.println(ex.getMessage());
             return 1;
-        }catch(UserNotFoundException ex)
-        {
+        } catch (UserNotFoundException ex) {
             System.out.println("User name does not exists. Retry");
             return 2;
-        }catch(WrongPasswordException ex)
-        {
+        } catch (WrongPasswordException ex) {
             System.out.println("Wrong password. Retry");
             return 3;
         }
     }
 
-    /** Invokes the register service for letting the user registering to the platform
+    /**
+     * Invokes the register service for letting the user registering to the platform
+     *
      * @param preferredLanguage The language spoken by the user
      * @return 4 if the registration failed for any reason
      * 5 if the registration succeded
      */
-    private int register(String preferredLanguage){
-        try{
+    private int register(String preferredLanguage) {
+        try {
             registeredUserService.register(userRegistrationDTO, preferredLanguage);
             return 5;
-        }catch(ConnectionException ex)
-        {
+        } catch (ConnectionException ex) {
             return 4;
         }
     }
 
-    /** Asks credentials to the user
+    /**
+     * Asks credentials to the user
      *
      * @return 1 if the login failed due to connection errors
      * 2 if the login failed due to wrong username
      * 3 if the login failed due to wrong password
      * 0 if the login succeded
      */
-    private int askCredentials(AtomicBoolean displayed){
+    private int askCredentials(AtomicBoolean displayed) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Username?");
         String username = sc.nextLine();
@@ -97,28 +97,27 @@ public class UnregisteredUserController {
         userLoginDTO.setPassword(password);
 
         int ret = login();
-        if(ret == 0)
-        {
+        if (ret == 0) {
             displayed.set(false);
             sessionUsername = username;
             isModerator = 0;
-        } else if(ret == 6){
+        } else if (ret == 6) {
             displayed.set(false);
             sessionUsername = username;
             isModerator = 1;
-        } else{
+        } else {
             displayed.set(true);
         }
         return ret;
     }
 
-    /** Asks the user to fill the registration form
+    /**
+     * Asks the user to fill the registration form
      *
      * @return 4 if the registration failed for any reason
      * 5 if the registration succeded
      */
-    private int askRegistrationData(AtomicBoolean displayed)
-    {
+    private int askRegistrationData(AtomicBoolean displayed) {
         Scanner sc = new Scanner(System.in);
         System.out.println("username?");
         userRegistrationDTO.setUsername(sc.nextLine());
@@ -129,9 +128,9 @@ public class UnregisteredUserController {
         System.out.println("Email address?");
         userRegistrationDTO.setEmail(sc.nextLine());
         System.out.println("Date of birth? YYYY-MM-DD");
-        try{
+        try {
             userRegistrationDTO.setDateOfBirth(Utils.convertStringToLocalDate(sc.nextLine()));
-        }catch(DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             displayed.set(true);
             return 4; // Going back to menù
         }
@@ -143,10 +142,9 @@ public class UnregisteredUserController {
         userRegistrationDTO.setPassword(password);
 
         int ret = register(preferredLanguage);
-        if(ret == 4)
+        if (ret == 4)
             displayed.set(true);
-        if(ret == 5)
-        {
+        if (ret == 5) {
             displayed.set(false);
             sessionUsername = userRegistrationDTO.getUsername();
             dateOfBirth = userRegistrationDTO.getDateOfBirth();
@@ -154,8 +152,7 @@ public class UnregisteredUserController {
         return ret;
     }
 
-    public UnregisteredUserController()
-    {
+    public UnregisteredUserController() {
         unregisteredMenu = new UnregisteredMenu();
         userLoginDTO = new UserLoginDTO();
         userRegistrationDTO = new UserRegistrationDTO();
@@ -176,7 +173,7 @@ public class UnregisteredUserController {
                 },
                 () -> {//3 Most active reviewers
                     unregisteredMenu.getDisplayed().set(false);
-                    statisticsController.findTopReviewersByPostCountLastMonth(unregisteredMenu.getDisplayed());
+                    statisticsController.findTopReviewersByReviewsCountLastMonth(unregisteredMenu.getDisplayed());
                 },
                 () -> {//4 Top rated games
                     unregisteredMenu.getDisplayed().set(false);
@@ -193,8 +190,7 @@ public class UnregisteredUserController {
     }
 
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return sessionUsername;
     }
 
@@ -206,8 +202,7 @@ public class UnregisteredUserController {
      * Shows the dropdown and after the user selection proceeds
      * to execute the proper functionality
      */
-    public int showUnregisteredDropdown()
-    {
+    public int showUnregisteredDropdown() {
         /* This condition checks if the login has been successful
         by passing a reference to a boolean wrapper
         When displayed = false, it means login successful and stop looping
@@ -215,10 +210,8 @@ public class UnregisteredUserController {
         String welcomeMessage = "";
         int index = -1;
         String messageText = "";
-        while(unregisteredMenu.getDisplayed().get())
-        {
-            switch(errorCode)
-            {
+        while (unregisteredMenu.getDisplayed().get()) {
+            switch (errorCode) {
 
                 case 0: // No errors
                     break;

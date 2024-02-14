@@ -42,7 +42,7 @@ public class StatisticsMongoDAO {
             // Aggregation Pipeline
             results = usersCollection.aggregate(
                     Arrays.asList(
-                            Aggregates.match(Filters.exists("isBanned",false)),
+                            Aggregates.match(Filters.exists("isBanned", false)),
                             Aggregates.match(Filters.exists("reported_by")),
                             Aggregates.project(Projections.fields(
                                     Projections.excludeId(),
@@ -114,13 +114,13 @@ public class StatisticsMongoDAO {
         return gameRatingDTOs;
     }
 
-    public ArrayList<MostActiveUserDTO> findTopReviewersByPostCountLastMonth(int n) throws DAOException {
+    public ArrayList<MostActiveUserDTO> findTopReviewersByReviewsCountLastMonth(int n) throws DAOException {
 
-        try(MongoClient mongoClient = beginConnection(false)){
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("reviews");
 
-            // For the sake of setting, we set the month to November 2023
+            // For the sake of testing, we set the month to November 2023
             ZonedDateTime now = ZonedDateTime.of(2023, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
             ZonedDateTime firstDayLastMonth =
                     now.with(TemporalAdjusters.firstDayOfMonth()).toLocalDate().atStartOfDay(ZoneId.of("UTC"));
@@ -137,7 +137,7 @@ public class StatisticsMongoDAO {
             AggregateIterable<Document> result = collection.aggregate(Arrays.asList(matchStage, groupStage, sortStage, limitStage));
             ArrayList<MostActiveUserDTO> userDTOs = new ArrayList<>();
             int count = 1;
-            for(Document user: result){
+            for (Document user : result) {
                 MostActiveUserDTO userDTO = new MostActiveUserDTO();
                 userDTO.setRank(count);
                 userDTO.setUsername(user.getString("_id"));
@@ -151,8 +151,8 @@ public class StatisticsMongoDAO {
         }
     }
 
-    public ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(long year) throws DAOException{
-        try(MongoClient mongoClient = beginConnection(false)){
+    public ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(long year) throws DAOException {
+        try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> collection = database.getCollection("users");
 
@@ -204,23 +204,23 @@ public class StatisticsMongoDAO {
             HashMap<Integer, List<Document>> hashMap = new HashMap<>();
             ArrayList<RegistrationStatsDTO> registrationStatsDTOs = new ArrayList<>();
             List<Document> properties = new ArrayList<>();
-            for(Document doc : result){
-                hashMap.put(doc.getInteger("month"),doc.getList("properties", Document.class));
+            for (Document doc : result) {
+                hashMap.put(doc.getInteger("month"), doc.getList("properties", Document.class));
             }
 
-            for(Map.Entry<Integer,List<Document>> entry : hashMap.entrySet()){
+            for (Map.Entry<Integer, List<Document>> entry : hashMap.entrySet()) {
                 RegistrationStatsDTO registrationStatsDTO = new RegistrationStatsDTO();
                 registrationStatsDTO.setMonth(entry.getKey());
 
                 HashMap<String, Long> hashMap1 = new HashMap<>();
-                for(int i=0; i<entry.getValue().size(); i++){
-                    hashMap1.put(entry.getValue().get(i).getString("ageGroup"),entry.getValue().get(i).getLong("count"));
+                for (int i = 0; i < entry.getValue().size(); i++) {
+                    hashMap1.put(entry.getValue().get(i).getString("ageGroup"), entry.getValue().get(i).getLong("count"));
                 }
                 registrationStatsDTO.setHashMap(hashMap1);
                 registrationStatsDTOs.add(registrationStatsDTO);
             }
             return registrationStatsDTOs;
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new DAOException(e);
         }

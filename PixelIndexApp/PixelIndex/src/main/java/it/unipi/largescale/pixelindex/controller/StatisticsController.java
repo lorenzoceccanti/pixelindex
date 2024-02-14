@@ -21,60 +21,61 @@ public class StatisticsController {
     ListSelector ls;
 
 
-    private void addDropdown(AtomicBoolean inMainMenu){
+    private void addDropdown(AtomicBoolean inMainMenu) {
         ls.addOptions(buttons, "backStatistics", "Select an option");
         int choice = ls.askUserInteraction("backStatistics");
-        if(choice == 0) // The button has been pressed
+        if (choice == 0) // The button has been pressed
             inMainMenu.set(true);
     }
 
-    public void findTopReviewersByPostCountLastMonth(AtomicBoolean inMainMenu){
-        try{
-            top10Reviewers = statisticsService.findTop10ReviewersByPostCountLastMonth();
-        }catch (ConnectionException ex){
+    public void findTopReviewersByReviewsCountLastMonth(AtomicBoolean inMainMenu) {
+        try {
+            top10Reviewers = statisticsService.findTop10ReviewersByReviewsCountLastMonth();
+        } catch (ConnectionException ex) {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 REVIEWERS OF LAST MONTH *** ");
-        for(int i=0; i<top10Reviewers.size(); i++){
+        for (int i = 0; i < top10Reviewers.size(); i++) {
             System.out.print(top10Reviewers.get(i));
         }
         System.out.println("");
-       addDropdown(inMainMenu);
+        addDropdown(inMainMenu);
     }
 
-    public void top10GamesByPositiveRatingRatio(AtomicBoolean inMainMenu){
-        try{
+    public void top10GamesByPositiveRatingRatio(AtomicBoolean inMainMenu) {
+        try {
             top10Games = statisticsService.topNRatedGames(10);
-        }catch (ConnectionException ex){
+        } catch (ConnectionException ex) {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 RATED GAMES ***");
-        for(int i=0; i<top10Games.size(); i++){
+        for (int i = 0; i < top10Games.size(); i++) {
             System.out.print(top10Games.get(i));
         }
         System.out.println("");
         addDropdown(inMainMenu);
     }
 
-    public void numberOfRegistrationsByMonth(AtomicBoolean inMainMenu){
+    public void numberOfRegistrationsByMonth(AtomicBoolean inMainMenu) {
         System.out.println("Which year?");
         Scanner sc = new Scanner(System.in);
         int year = sc.nextInt();
-        try{
+        try {
             registrationStatsDTOs = statisticsService.numberOfRegistrationsByMonth(year);
-        }catch(ConnectionException ex){
+        } catch (ConnectionException ex) {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** REGISTRATION STATS: PIXELINDEX ***");
-        if(registrationStatsDTOs.isEmpty())
+        if (registrationStatsDTOs.isEmpty())
             System.out.println("No registrations in year: " + year);
-        for(int i=0; i<registrationStatsDTOs.size(); i++){
+        for (int i = 0; i < registrationStatsDTOs.size(); i++) {
             System.out.print(registrationStatsDTOs.get(i));
         }
         System.out.println("");
         addDropdown(inMainMenu);
     }
-    public StatisticsController (){
+
+    public StatisticsController() {
         this.ls = new ListSelector("");
         this.statisticsService = ServiceLocator.getStatisticsService();
         buttons.add("Go back");
