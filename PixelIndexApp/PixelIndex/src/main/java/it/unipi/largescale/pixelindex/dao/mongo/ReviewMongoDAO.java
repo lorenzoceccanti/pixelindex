@@ -166,7 +166,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                             .append("totalCount", 1L)))).into(new ArrayList<>());
 
             ReviewPageDTO reviewPage = new ReviewPageDTO();
-            // controllo se ci sono recensioni
+            // check if the result is empty
             if (result.isEmpty()) {
                 reviewPage.setTotalReviewsCount(0);
                 reviewPage.setReviews(new ArrayList<>());
