@@ -173,7 +173,6 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                 return reviewPage;
             } else {
                 reviewPage.setTotalReviewsCount(result.get(0).getInteger("totalCount"));
-                reviewPage.setTotalReviewsCount(result.get(0).getInteger("totalCount"));
 
                 List<ReviewPreviewDTO> reviews = new ArrayList<>();
                 for (Document res : result.get(0).getList("data", Document.class)) {
