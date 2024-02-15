@@ -231,6 +231,7 @@ public class ModeratorController {
                     registeredUserController.getSuggestedGames(moderatorMenu.getDisplayed());
                 },
                 () -> {
+                    consistencyThread.stopThread();
                     System.exit(0);
                 }
         };

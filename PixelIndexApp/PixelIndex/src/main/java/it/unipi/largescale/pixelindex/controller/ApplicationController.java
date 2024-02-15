@@ -1,10 +1,8 @@
 package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.view.dropdown.RegisteredMenu;
-import it.unipi.largescale.pixelindex.view.dropdown.UnregisteredMenu;
 
 public class ApplicationController {
-    private UnregisteredMenu unregisteredMenu;
     private UnregisteredUserController unregisteredUserController;
     private RegisteredUserController registeredUserController;
     private ModeratorController moderatorController;

@@ -395,6 +395,7 @@ public class RegisteredUserController {
                     getSuggestedGames(registeredMenu.getDisplayed());
                 },
                 () -> {
+                    consistencyThread.stopThread();
                     System.exit(0);
                 }
         };
