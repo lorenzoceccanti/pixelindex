@@ -31,7 +31,6 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         user.setName(document.getString("name"));
         user.setSurname(document.getString("surname"));
         user.setRole(document.getString("role"));
-        user.setLanguage(document.getString("language"));
         user.setEmail(document.getString("email"));
         user.setDateOfBirth(Utils.convertDateToLocalDate(document.getDate("dateOfBirth")));
     }
@@ -47,7 +46,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             Bson myMatch = (eq("username", username));
             Bson projectionFields = Projections.fields(
                     Projections.include("hashedPassword", "username", "name", "surname",
-                            "role", "language", "dateOfBirth", "email")
+                            "role","dateOfBirth", "email")
             );
             results = usersCollection.find(myMatch).projection(projectionFields).into(new ArrayList<>());
         } catch (MongoSocketException e) {
@@ -86,9 +85,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
                 .append("email", u.getEmail())
                 .append("name", u.getName())
                 .append("surname", u.getSurname())
-                .append("role", u.getRole())
-                .append("language", u.getLanguage());
-
+                .append("role", u.getRole());
         try {
             usersCollection.insertOne(clientSession, doc);
         } catch (MongoWriteException ex) {

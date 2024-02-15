@@ -68,9 +68,9 @@ public class UnregisteredUserController {
      * @return 4 if the registration failed for any reason
      * 5 if the registration succeded
      */
-    private int register(String preferredLanguage) {
+    private int register() {
         try {
-            registeredUserService.register(userRegistrationDTO, preferredLanguage);
+            registeredUserService.register(userRegistrationDTO);
             return 5;
         } catch (ConnectionException ex) {
             return 4;
@@ -134,14 +134,12 @@ public class UnregisteredUserController {
             displayed.set(true);
             return 4; // Going back to menù
         }
-        System.out.println("Preferred language?");
-        String preferredLanguage = sc.nextLine();
         System.out.println("Choose your password:");
         Console console = System.console();
         String password = String.valueOf(console.readPassword());
         userRegistrationDTO.setPassword(password);
 
-        int ret = register(preferredLanguage);
+        int ret = register();
         if (ret == 4)
             displayed.set(true);
         if (ret == 5) {

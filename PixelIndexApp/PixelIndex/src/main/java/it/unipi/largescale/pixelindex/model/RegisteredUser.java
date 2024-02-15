@@ -12,11 +12,7 @@ public class RegisteredUser extends User{
     private String email;
 
     public RegisteredUser(){
-    }
-
-    public RegisteredUser(String language){
         String role = "user";
-        super.setLanguage(language);
         super.setRole(role);
     }
 

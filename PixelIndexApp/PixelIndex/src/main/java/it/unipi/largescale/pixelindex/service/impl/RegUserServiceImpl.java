@@ -50,8 +50,8 @@ public class RegUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage) throws ConnectionException {
-        RegisteredUser registeringUser = new RegisteredUser(preferredLanguage);
+    public AuthUserDTO register(UserRegistrationDTO userRegistrationDTO) throws ConnectionException {
+        RegisteredUser registeringUser = new RegisteredUser();
         registeringUser.setUsername(userRegistrationDTO.getUsername());
         registeringUser.setName(userRegistrationDTO.getName());
         registeringUser.setSurname(userRegistrationDTO.getSurname());

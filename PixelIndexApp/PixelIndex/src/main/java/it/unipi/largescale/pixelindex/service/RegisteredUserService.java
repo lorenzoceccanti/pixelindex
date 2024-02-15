@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public interface RegisteredUserService {
     AuthUserDTO makeLogin(String username, String password) throws WrongPasswordException, UserNotFoundException, ConnectionException;
-    AuthUserDTO register(UserRegistrationDTO userRegistrationDTO, String preferredLanguage) throws ConnectionException;
+    AuthUserDTO register(UserRegistrationDTO userRegistrationDTO) throws ConnectionException;
     ArrayList<UserSearchDTO> searchUser(String username, int page) throws ConnectionException;
     String followUser(String usernameSrc, String usernameDst, ConsistencyThread consistencyThread) throws ConnectionException;
     int reportUser(String usernameReporting, String usernameReported) throws ConnectionException;
