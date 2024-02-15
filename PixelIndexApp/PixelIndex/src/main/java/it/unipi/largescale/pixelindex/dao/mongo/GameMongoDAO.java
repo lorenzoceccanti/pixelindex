@@ -87,32 +87,38 @@ public class GameMongoDAO extends BaseMongoDAO {
             MongoCollection<Document> collection = database.getCollection("games");
 
             List<Bson> aggregationPipeline = new ArrayList<>();
+
             // Filter only documents with consistent equal to true
-            aggregationPipeline.add(Aggregates.match(Filters.eq("consistent", true)));
-            // Search criteria
+            Document matchCriteria = new Document("consistent", true);
+            // Text search for name
             if (name != null && !name.isEmpty()) {
-                aggregationPipeline.add(Aggregates.match(Filters.regex("name", name, "i")));
+                matchCriteria.append("$text", new Document("$search", name));
             }
             if (releaseYear != null) {
                 Date startDate = new GregorianCalendar(releaseYear, Calendar.JANUARY, 1).getTime();
                 Date endDate = new GregorianCalendar(releaseYear + 1, Calendar.JANUARY, 1).getTime();
-                aggregationPipeline.add(Aggregates.match(Filters.and(Filters.gte("first_release_date", startDate),
-                        Filters.lt("first_release_date", endDate))));
+                matchCriteria.append("first_release_date", new Document("$gte", startDate).append("$lt", endDate));
             }
             if (company != null && !company.isEmpty()) {
-                aggregationPipeline.add(Aggregates.match(Filters.regex("companies", company, "i")));
+                matchCriteria.append("companies", new Document("$regex", company).append("$options", "i"));
             }
             if (platform != null && !platform.isEmpty()) {
-                aggregationPipeline.add(Aggregates.match(Filters.regex("platforms", platform, "i")));
+                matchCriteria.append("platforms", new Document("$regex", platform).append("$options", "i"));
             }
 
-            // Prioritizing main_games
+            aggregationPipeline.add(Aggregates.match(matchCriteria));
+
+            // Add textScore for sorting
+            aggregationPipeline.add(Aggregates.addFields(new Field<>("textScore", new Document("$meta", "textScore"))));
+
+            // Prioritizing main_games and textScore
             aggregationPipeline.add(
                     Aggregates.addFields(new Field<>("isMainGame",
-                            new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$category", "main_game")), 1, 0)))));
+                            new Document("$cond", Arrays.asList(new Document("$eq", Arrays.asList("$category", "main_game")), 1, 0))))
+            );
 
-            // Sorting stage
-            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.descending("isMainGame"), Sorts.ascending("name"))));
+            // Sorting stage modified to textScore and main games
+            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.descending("textScore", "isMainGame"))));
 
             // Pagination
             aggregationPipeline.add(Aggregates.skip(10 * page));
@@ -126,6 +132,7 @@ public class GameMongoDAO extends BaseMongoDAO {
 
             // Aggregation
             ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
+
             for (Document result : results) {
                 GamePreviewDTO game = gamePreviewFromQueryResult(result);
                 games.add(game);

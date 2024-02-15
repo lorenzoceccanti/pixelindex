@@ -46,7 +46,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             Bson myMatch = (eq("username", username));
             Bson projectionFields = Projections.fields(
                     Projections.include("hashedPassword", "username", "name", "surname",
-                            "role","dateOfBirth", "email")
+                            "role", "dateOfBirth", "email")
             );
             results = usersCollection.find(myMatch).projection(projectionFields).into(new ArrayList<>());
         } catch (MongoSocketException e) {
@@ -74,26 +74,27 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
         }
     }
 
-    public RegisteredUser register(MongoClient mc, RegisteredUser u, ClientSession clientSession) throws DAOException {
-        MongoDatabase db;
-        db = mc.getDatabase("pixelindex");
-        MongoCollection<Document> usersCollection = db.getCollection("users");
+public RegisteredUser register(MongoClient mc, RegisteredUser u, ClientSession clientSession) throws DAOException {
+    MongoDatabase db = mc.getDatabase("pixelindex");
+    MongoCollection<Document> usersCollection = db.getCollection("users");
 
-        Document doc = new Document("username", u.getUsername())
-                .append("hashedPassword", u.getHashedPassword())
-                .append("dateOfBirth", u.getDateOfBirth())
-                .append("email", u.getEmail())
-                .append("name", u.getName())
-                .append("surname", u.getSurname())
-                .append("role", u.getRole());
-        try {
-            usersCollection.insertOne(clientSession, doc);
-        } catch (MongoWriteException ex) {
-            throw new DAOException("Already registered user [" + u.getUsername() + "]");
-        }
+    Document doc = new Document("username", u.getUsername())
+            .append("hashedPassword", u.getHashedPassword())
+            .append("dateOfBirth", u.getDateOfBirth())
+            .append("email", u.getEmail())
+            .append("name", u.getName())
+            .append("surname", u.getSurname())
+            .append("role", u.getRole());
 
-        return u;
+    try {
+        usersCollection.insertOne(clientSession, doc);
+    } catch (MongoWriteException ex) {
+        throw new DAOException("Already registered user [" + u.getUsername() + "]");
+    } catch (MongoSocketException e) {
+        throw new DAOException("Error in connecting to MongoDB");
     }
+    return u;
+}
 
     /**
      * @return 1 if the user reports itself, -1 if you are trying to report a mod,
@@ -158,28 +159,24 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
 
             List<Bson> aggregationPipeline = new ArrayList<>();
 
-            aggregationPipeline.add(Aggregates.match(Filters.exists("isBanned",false)));
+            aggregationPipeline.add(Aggregates.match(
+                    Filters.and(
+                            Filters.exists("isBanned", false),
+                            Filters.text(username) // Use text search instead of regex
+                    )
+            ));
 
-            // Add field for similarity score based on string lengths
-            aggregationPipeline.add(Aggregates.addFields(new Field<>("similarityScore",
-                    new Document("$divide", Arrays.asList(
-                            new Document("$strLenCP", "$username"),
-                            username.length())))));
+            aggregationPipeline.add(Aggregates.addFields(new Field<>("textScore", new Document("$meta", "textScore"))));
 
-            // Ensure the document matches the regex
-            aggregationPipeline.add(Aggregates.match(Filters.regex("username", username, "i")));
-
-            // Sort by similarityScore in descending order, then by followers count
-            // If two or more users have the same similarity score
-            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.ascending("similarityScore"),
+            aggregationPipeline.add(Aggregates.sort(Sorts.orderBy(Sorts.metaTextScore("textScore"),
                     Sorts.descending("followers"))));
 
             // Implement pagination
             int pageSize = 10;
             aggregationPipeline.add(Aggregates.skip(pageSize * page));
             aggregationPipeline.add(Aggregates.limit(pageSize));
-
             ArrayList<Document> results = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
+
             for (Document result : results) {
                 UserSearchDTO userSearchDTO = new UserSearchDTO();
                 userSearchDTO.setUsername(result.getString("username"));
