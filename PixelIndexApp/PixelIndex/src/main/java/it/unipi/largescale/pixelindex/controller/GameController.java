@@ -240,7 +240,6 @@ public class GameController{
         {
             Scanner sc = new Scanner(System.in);
             System.out.println("Query? Possibile syntax:");
-            System.out.println(AnsiColor.ANSI_CYAN+"<name>"+AnsiColor.ANSI_RESET);
             System.out.println(AnsiColor.ANSI_CYAN+"<name> [-c <company> | -p <platform> | -y <releaseYear>]"+AnsiColor.ANSI_RESET);
             queryName = sc.nextLine();
         }
