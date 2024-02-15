@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 public class ConsistencyThread extends Thread{
     private boolean running = true;
     private final BlockingQueue<Runnable> taskQueue;
+    private final int DELAY = 5000;
     public ConsistencyThread (BlockingQueue<Runnable> taskQueue) {
         this.taskQueue = taskQueue;
     }
@@ -15,7 +16,7 @@ public class ConsistencyThread extends Thread{
             while(running || !taskQueue.isEmpty()){
                 Runnable task = taskQueue.take();
                 task.run();
-                Thread.sleep(5000);
+                Thread.sleep(DELAY);
             }
         }catch(InterruptedException ex)
         {

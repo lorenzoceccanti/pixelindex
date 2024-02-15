@@ -34,15 +34,14 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException {
         // TODO: da testare
         try {
-            reviewMongoDAO.deleteReview(reviewId);
-            consistencyThread.addTask(() -> {
-                try {
-                    reviewNeo4jDAO.deleteReview(reviewId);
-                } catch (DAOException e) {
-                    e.printStackTrace();
-                }
-            });
-
+        reviewMongoDAO.deleteReview(reviewId);
+        consistencyThread.addTask(() -> {
+            try {
+                reviewNeo4jDAO.deleteReview(reviewId);
+            } catch (DAOException e) {
+                e.printStackTrace();
+            }
+        });
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

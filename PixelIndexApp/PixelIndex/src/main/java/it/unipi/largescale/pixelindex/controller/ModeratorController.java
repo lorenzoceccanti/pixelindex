@@ -2,9 +2,7 @@ package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
-import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
-import it.unipi.largescale.pixelindex.model.Genre;
 import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.ModeratorService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -146,11 +144,7 @@ public class ModeratorController {
         System.out.println("Specify the genres [comma separated]:");
         String genresString = sc.nextLine();
         String[] tokens = genresString.split(",");
-        Genre[] genres = new Genre[tokens.length];
-        for (int i = 0; i < genres.length; i++) {
-            genres[i] = new Genre();
-            genres[i].setName(tokens[i]);
-        }
+        String[] genres = tokens;
         g.setGenres(genres);
 
         System.out.println("Specify the platforms [comma separated]:");
@@ -161,11 +155,7 @@ public class ModeratorController {
         System.out.println("Specify the companies [comma separated]:");
         String companiesString = sc.nextLine();
         tokens = companiesString.split(",");
-        Company[] companies = new Company[tokens.length];
-        for (int i = 0; i < companies.length; i++) {
-            companies[i] = new Company();
-            companies[i].setName(tokens[i]);
-        }
+        String[] companies = tokens;
         g.setCompanies(companies);
 
         System.out.println("Specify the languages [comma separated]:");

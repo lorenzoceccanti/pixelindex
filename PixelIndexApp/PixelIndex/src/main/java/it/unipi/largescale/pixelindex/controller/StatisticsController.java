@@ -1,7 +1,7 @@
 package it.unipi.largescale.pixelindex.controller;
 
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
-import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.MostActiveReviewerDTO;
 import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StatisticsController {
     StatisticsService statisticsService;
-    ArrayList<MostActiveUserDTO> top10Reviewers;
+    ArrayList<MostActiveReviewerDTO> top10Reviewers;
     ArrayList<GameRatingDTO> top10Games;
     ArrayList<RegistrationStatsDTO> registrationStatsDTOs;
     ArrayList<String> buttons = new ArrayList<>();

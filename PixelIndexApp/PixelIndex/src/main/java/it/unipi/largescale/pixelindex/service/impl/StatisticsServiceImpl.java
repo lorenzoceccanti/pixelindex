@@ -2,7 +2,7 @@ package it.unipi.largescale.pixelindex.service.impl;
 
 import it.unipi.largescale.pixelindex.dao.mongo.StatisticsMongoDAO;
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
-import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.MostActiveReviewerDTO;
 import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -38,7 +38,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public ArrayList<MostActiveUserDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException {
+    public ArrayList<MostActiveReviewerDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException {
         try {
             return statisticsMongoDAO.findTopReviewersByReviewsCountLastMonth(10);
         } catch (DAOException ex) {

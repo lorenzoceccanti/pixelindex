@@ -12,8 +12,8 @@ public class Game {
     private String pegiRating;
     private LocalDate releaseDate;
     private String[] gameModes;
-    private Genre[] genres;
-    private Company[] companies;
+    private String[] genres;
+    private String[] companies;
     private String[] languages;
     private String[] platforms;
     private String summary;
@@ -60,19 +60,19 @@ public class Game {
         this.gameModes = gameModes;
     }
 
-    public Genre[] getGenres() {
+    public String[] getGenres() {
         return genres;
     }
 
-    public void setGenres(Genre[] genres) {
+    public void setGenres(String[] genres) {
         this.genres = genres;
     }
 
-    public Company[] getCompanies() {
+    public String[] getCompanies() {
         return companies;
     }
 
-    public void setCompanies(Company[] companies) {
+    public void setCompanies(String[] companies) {
         this.companies = companies;
     }
 

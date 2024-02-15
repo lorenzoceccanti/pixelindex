@@ -3,9 +3,7 @@ package it.unipi.largescale.pixelindex.dao.mongo;
 import com.mongodb.client.*;
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
-import it.unipi.largescale.pixelindex.model.Company;
 import it.unipi.largescale.pixelindex.model.Game;
-import it.unipi.largescale.pixelindex.model.Genre;
 
 import static it.unipi.largescale.pixelindex.utils.Utils.convertDateToLocalDate;
 
@@ -48,26 +46,12 @@ public class GameMongoDAO extends BaseMongoDAO {
             game.setGameModes(gameModes.toArray(new String[0]));
         }
         if (result.containsKey("genres") && result.getList("genres", String.class) != null) {
-            List<String> genresNames = result.getList("genres", String.class);
-            List<Genre> genres = genresNames.stream()
-                    .map(name -> {
-                        Genre genre = new Genre();
-                        genre.setName(name);
-                        return genre;
-                    })
-                    .toList();
-            game.setGenres(genres.toArray(new Genre[0]));
+            List<String> genres = result.getList("genres", String.class);
+            game.setGenres(genres.toArray(new String[0]));
         }
         if (result.containsKey("companies") && result.getList("companies", String.class) != null) {
-            List<String> companiesNames = result.getList("companies", String.class);
-            List<Company> companies = (companiesNames.stream()
-                    .map(name -> {
-                        Company company = new Company();
-                        company.setName(name);
-                        return company;
-                    })
-                    .toList());
-            game.setCompanies(companies.toArray(new Company[0]));
+            List<String> companies = result.getList("companies", String.class);
+            game.setCompanies(companies.toArray(new String[0]));
         }
         if (result.containsKey("language_supports") && result.getList("language_supports", String.class) != null) {
             List<String> languages = result.getList("language_supports", String.class);
@@ -185,13 +169,9 @@ public class GameMongoDAO extends BaseMongoDAO {
 
             // I have to convert the arrays in list of strings
             List<String> gameModesList = Arrays.asList(game.getGameModes());
-            List<String> genresList = Arrays.stream(game.getGenres())
-                    .map(Genre::toString)
-                    .collect(Collectors.toList());
+            List<String> genresList = Arrays.asList(game.getGenres());
 
-            List<String> companiesList = Arrays.stream(game.getCompanies())
-                    .map(Company::toString)
-                    .collect(Collectors.toList());
+            List<String> companiesList = Arrays.asList(game.getCompanies());
             List<String> languagesList = Arrays.asList(game.getLanguages());
             List<String> platformsList = Arrays.asList(game.getPlatforms());
 

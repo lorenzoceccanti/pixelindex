@@ -1,8 +1,6 @@
 package it.unipi.largescale.pixelindex.dto;
 
-import it.unipi.largescale.pixelindex.utils.AnsiColor;
-
-public class MostActiveUserDTO {
+public class MostActiveReviewerDTO {
     int rank;
     String username;
     int numOfReviews;

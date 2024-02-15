@@ -1,7 +1,7 @@
 package it.unipi.largescale.pixelindex.service;
 
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
-import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.MostActiveReviewerDTO;
 import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
@@ -13,7 +13,7 @@ public interface StatisticsService {
 
     ArrayList<GameRatingDTO> topNRatedGames(int n) throws ConnectionException;
 
-    ArrayList<MostActiveUserDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException;
+    ArrayList<MostActiveReviewerDTO> findTop10ReviewersByReviewsCountLastMonth() throws ConnectionException;
 
     ArrayList<RegistrationStatsDTO> numberOfRegistrationsByMonth(int year) throws ConnectionException;
 }

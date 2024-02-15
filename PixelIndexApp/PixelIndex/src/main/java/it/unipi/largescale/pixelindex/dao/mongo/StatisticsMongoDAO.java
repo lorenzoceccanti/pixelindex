@@ -10,7 +10,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import it.unipi.largescale.pixelindex.dto.GameRatingDTO;
-import it.unipi.largescale.pixelindex.dto.MostActiveUserDTO;
+import it.unipi.largescale.pixelindex.dto.MostActiveReviewerDTO;
 import it.unipi.largescale.pixelindex.dto.RegistrationStatsDTO;
 import it.unipi.largescale.pixelindex.dto.UserReportsDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
@@ -114,7 +114,7 @@ public class StatisticsMongoDAO {
         return gameRatingDTOs;
     }
 
-    public ArrayList<MostActiveUserDTO> findTopReviewersByReviewsCountLastMonth(int n) throws DAOException {
+    public ArrayList<MostActiveReviewerDTO> findTopReviewersByReviewsCountLastMonth(int n) throws DAOException {
 
         try (MongoClient mongoClient = beginConnection(false)) {
             MongoDatabase database = mongoClient.getDatabase("pixelindex");
@@ -135,10 +135,10 @@ public class StatisticsMongoDAO {
             Bson limitStage = limit(n);
 
             AggregateIterable<Document> result = collection.aggregate(Arrays.asList(matchStage, groupStage, sortStage, limitStage));
-            ArrayList<MostActiveUserDTO> userDTOs = new ArrayList<>();
+            ArrayList<MostActiveReviewerDTO> userDTOs = new ArrayList<>();
             int count = 1;
             for (Document user : result) {
-                MostActiveUserDTO userDTO = new MostActiveUserDTO();
+                MostActiveReviewerDTO userDTO = new MostActiveReviewerDTO();
                 userDTO.setRank(count);
                 userDTO.setUsername(user.getString("_id"));
                 userDTO.setNumOfReviews(user.getInteger("count", 0));
