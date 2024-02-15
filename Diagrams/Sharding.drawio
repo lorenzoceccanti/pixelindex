@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" modified="2024-02-15T11:18:35.564Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="oMoBVgx978rYftMFQQyl" version="23.1.4" type="device">
+  <diagram name="Pagina-1" id="3PgHQCbmo3uNA50UTBOE">
+    <mxGraphModel dx="1195" dy="694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="583" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-1" value="{yearRegistration: 2020}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-2" value="{yearRegistration: 2021}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="570" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-3" value="{yearRegistration: 2022}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-4" value="{yearRegistration: 2019}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-5" value="{yearRegistration: 2023}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-6" value="{yearRegistration: 2024}&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="570" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-7" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="89" y="290" width="650" height="228" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-8" value="Logical Database" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="629" y="250" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-9" value="Shard 0" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="140" y="339" width="100" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-11" value="Shard 1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="360" y="339" width="100" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-12" value="Shard 2" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="339" width="100" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-14" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="130" y="210" as="sourcePoint" />
+            <mxPoint x="670" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-15" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="_yH9LJgjnyopOXQLVmeo-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="130" y="210" as="sourcePoint" />
+            <mxPoint x="160" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-16" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="399.71" y="210" as="sourcePoint" />
+            <mxPoint x="399.71" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-17" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="670" y="210" as="sourcePoint" />
+            <mxPoint x="670" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-19" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="210" as="sourcePoint" />
+            <mxPoint x="400" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_yH9LJgjnyopOXQLVmeo-20" value="&lt;i&gt;yearRegistration % 3&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="240" width="130" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
