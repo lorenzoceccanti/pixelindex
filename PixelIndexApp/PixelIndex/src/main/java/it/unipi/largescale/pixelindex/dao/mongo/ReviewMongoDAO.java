@@ -126,7 +126,7 @@ public class ReviewMongoDAO extends BaseMongoDAO {
                                     new Document("gameId",
                                             new ObjectId(gameId))),
                             new Document("$facet",
-                                    new Document("totalCount", Arrays.asList(new Document("$count", "count")))
+                                    new Document("totalCount", List.of(new Document("$count", "count")))
                                             .append("data", Arrays.asList(
                                                     new Document("$addFields",
                                                             new Document("byUser",
