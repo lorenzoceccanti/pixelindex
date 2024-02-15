@@ -263,6 +263,6 @@ public class ModeratorController {
         // After the login the consistency thread starts
         consistencyThread.start();
         Utils.clearConsole();
-        int index = showModeratorDropdown();
+        showModeratorDropdown();
     }
 }

@@ -10,7 +10,6 @@ import it.unipi.largescale.pixelindex.service.*;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
-import jline.internal.Ansi;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,14 +27,12 @@ public class GameController{
     private WishlistService wishlistService;
     private AtomicBoolean menuDisplayed;
     private ReviewController reviewController;
-    private ConsistencyThread consistencyThread;
     private int rowSelection;
     private String queryName;
     private String sessionUsername;
     private LocalDate dateOfBirth;
     private boolean isModerator;
     private int exitGameList;
-    private int exitGameDetails;
     public void trendingGamesChart(){
         ArrayList<String> o = new ArrayList<>();
         o.add("Go back");

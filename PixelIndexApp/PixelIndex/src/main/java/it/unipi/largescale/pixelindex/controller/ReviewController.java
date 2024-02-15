@@ -10,7 +10,6 @@ import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.AnsiColor;
 import it.unipi.largescale.pixelindex.utils.Utils;
 import it.unipi.largescale.pixelindex.view.impl.ListSelector;
-import jline.internal.Ansi;
 
 import java.util.ArrayList;
 import java.util.List;

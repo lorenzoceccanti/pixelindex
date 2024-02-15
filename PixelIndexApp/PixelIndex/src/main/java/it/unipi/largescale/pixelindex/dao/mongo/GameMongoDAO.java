@@ -15,8 +15,6 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Field;
 import org.bson.conversions.Bson;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
-import java.util.stream.Collectors;
 
 public class GameMongoDAO extends BaseMongoDAO {
 
