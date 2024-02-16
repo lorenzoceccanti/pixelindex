@@ -64,7 +64,6 @@ public class UnregisteredUserController {
     /**
      * Invokes the register service for letting the user registering to the platform
      *
-     * @param preferredLanguage The language spoken by the user
      * @return 4 if the registration failed for any reason
      * 5 if the registration succeded
      */
