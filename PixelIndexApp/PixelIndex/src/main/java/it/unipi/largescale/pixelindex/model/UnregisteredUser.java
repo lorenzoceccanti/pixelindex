@@ -1,6 +1,5 @@
 package it.unipi.largescale.pixelindex.model;
 
-import it.unipi.largescale.pixelindex.utils.Utils;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
