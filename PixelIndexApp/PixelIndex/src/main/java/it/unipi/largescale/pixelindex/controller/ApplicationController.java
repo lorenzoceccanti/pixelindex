@@ -4,13 +4,15 @@ public class ApplicationController {
 
     public ApplicationController() {
 
+    }
+
+    public void run() {
         UnregisteredUserController unregisteredUserController = new UnregisteredUserController();
         int fun = unregisteredUserController.showUnregisteredDropdown();
-        if(fun == 0 || fun == 5)
-        {
+        if (fun == 0 || fun == 5) {
             RegisteredUserController registeredUserController = new RegisteredUserController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth(), false);
             registeredUserController.execute();
-        } else if(fun == 6){
+        } else if (fun == 6) {
             ModeratorController moderatorController = new ModeratorController(unregisteredUserController.getUsername(), unregisteredUserController.getDateOfBirth());
             moderatorController.execute();
         }

@@ -7,5 +7,6 @@ public class Main {
     public static void main(String[] args) {
         UnregisteredUser unregisteredUser = new UnregisteredUser();
         ApplicationController applicationController = new ApplicationController();
+        applicationController.run();
     }
 }
