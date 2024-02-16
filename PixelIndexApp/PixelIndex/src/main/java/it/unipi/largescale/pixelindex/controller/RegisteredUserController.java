@@ -20,8 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisteredUserController {
-    BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
-    ConsistencyThread consistencyThread = new ConsistencyThread(queue);
+    ConsistencyThread consistencyThread;
     private RegisteredMenu registeredMenu;
     private Runnable[] functionsRegistered;
     private String sessionUsername;
@@ -345,8 +344,9 @@ public class RegisteredUserController {
         return opt;
     }
 
-    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator) {
+    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread) {
         this.queryName = "";
+        this.consistencyThread = consistencyThread;
         this.potentialFriends = new ArrayList<>();
         this.potentialGames = new ArrayList<>();
         this.suggestionsService = ServiceLocator.getSuggestionsService();
@@ -401,6 +401,9 @@ public class RegisteredUserController {
         };
     }
 
+    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator){
+        this(username, dateOfBirth, isModerator, new ConsistencyThread());
+    }
     public void execute() {
         // After the login the thread starts
         consistencyThread.start();

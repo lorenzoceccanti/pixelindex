@@ -1,14 +1,12 @@
 package it.unipi.largescale.pixelindex.controller;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConsistencyThread extends Thread{
     private boolean running = true;
-    private final BlockingQueue<Runnable> taskQueue;
+    private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();;
     private final int DELAY = 5000;
-    public ConsistencyThread (BlockingQueue<Runnable> taskQueue) {
-        this.taskQueue = taskQueue;
-    }
 
     @Override
     public void run(){

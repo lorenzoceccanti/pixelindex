@@ -30,7 +30,6 @@ public class ModeratorServiceImpl implements ModeratorService {
      *
      * @param username The username to be removed
      */
-
     @Override
     public void banUser(String username, ConsistencyThread consistencyThread) throws ConnectionException {
         try{

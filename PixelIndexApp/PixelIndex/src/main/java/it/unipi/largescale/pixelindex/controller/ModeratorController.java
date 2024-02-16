@@ -20,8 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ModeratorController {
-    BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
-    ConsistencyThread consistencyThread = new ConsistencyThread(queue);
+    ConsistencyThread consistencyThread = new ConsistencyThread();
     private ArrayList<String> rows = new ArrayList<>();
     private ModeratorMenu moderatorMenu;
     private StatisticsService statisticsService;
@@ -192,7 +191,7 @@ public class ModeratorController {
         this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(moderatorMenu.getDisplayed(), username, dateOfBirth, true, consistencyThread);
         this.statisticsService = ServiceLocator.getStatisticsService();
-        this.registeredUserController = new RegisteredUserController(username, dateOfBirth, true);
+        this.registeredUserController = new RegisteredUserController(username, dateOfBirth, true, consistencyThread);
         this.statisticsController = new StatisticsController();
         normalFunctions = new Runnable[]{
                 () -> {
