@@ -1,7 +1,5 @@
 package it.unipi.largescale.pixelindex.dto;
 
-import it.unipi.largescale.pixelindex.utils.AnsiColor;
-
 public class GameRatingDTO {
     private int rank;
     private String name;
@@ -16,24 +14,12 @@ public class GameRatingDTO {
         this.name = name;
     }
 
-    public double getPositiveRatingRatio() {
-        return positiveRatingRatio;
-    }
-
     public void setPositiveRatingRatio(double positiveRatingRatio) {
         this.positiveRatingRatio = positiveRatingRatio;
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
     public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
-    }
-
-    public int getRank() {
-        return rank;
     }
 
     public void setRank(int rank) {
@@ -43,8 +29,8 @@ public class GameRatingDTO {
     @Override
     public String toString(){
         int maxWidthName = 80;
-        int maxWidthYear = String.valueOf("Release Year").length();
-        int maxWidthRatio = String.valueOf("Rating Ratio").length();
+        int maxWidthYear = "Release Year".length();
+        int maxWidthRatio = "Rating Ratio".length();
 
         String header = String.format("| %-" + maxWidthName + "s | %-" + maxWidthYear + "s | %-" + maxWidthRatio + "s |\n",
                 "Name", "Release Year", "Rating Ratio");

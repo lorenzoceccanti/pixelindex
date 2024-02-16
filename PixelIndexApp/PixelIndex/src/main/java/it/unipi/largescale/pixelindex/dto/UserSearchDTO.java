@@ -13,16 +13,8 @@ public class UserSearchDTO {
         this.username = username;
     }
 
-    public int getFollowersCount() {
-        return followersCount;
-    }
-
     public void setFollowersCount(int followersCount) {
         this.followersCount = followersCount;
-    }
-
-    public int getFollowingsCount() {
-        return followingsCount;
     }
 
     public void setFollowingsCount(int followingsCount) {

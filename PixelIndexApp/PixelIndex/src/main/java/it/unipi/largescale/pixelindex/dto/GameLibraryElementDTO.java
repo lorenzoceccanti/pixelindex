@@ -7,10 +7,6 @@ import java.time.LocalDate;
 public class GameLibraryElementDTO extends GamePreviewDTO {
     private LocalDate addedDate;
 
-    public LocalDate getAddedDate() {
-        return addedDate;
-    }
-
     public void setAddedDate(LocalDate addedDate) {
         this.addedDate = addedDate;
     }

@@ -16,18 +16,6 @@ public class ReviewPreviewDTO {
         return id;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public RatingKind getRating() {
-        return rating;
-    }
-
-    public String getText() {
-        return excerpt;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -44,16 +32,8 @@ public class ReviewPreviewDTO {
         this.excerpt = text;
     }
 
-    public Integer getLikes() {
-        return likes;
-    }
-
     public void setLikes(Integer likes) {
         this.likes = likes;
-    }
-
-    public Integer getDislikes() {
-        return dislikes;
     }
 
     public void setDislikes(Integer dislikes) {

@@ -23,16 +23,8 @@ public class AuthUserDTO {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setId(String id) {

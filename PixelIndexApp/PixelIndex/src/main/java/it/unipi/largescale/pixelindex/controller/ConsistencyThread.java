@@ -5,8 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConsistencyThread extends Thread{
     private boolean running = true;
-    private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();;
-    private final int DELAY = 5000;
+    private final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
 
     @Override
     public void run(){
@@ -14,6 +13,7 @@ public class ConsistencyThread extends Thread{
             while(running || !taskQueue.isEmpty()){
                 Runnable task = taskQueue.take();
                 task.run();
+                int DELAY = 2500;
                 Thread.sleep(DELAY);
             }
         }catch(InterruptedException ex)

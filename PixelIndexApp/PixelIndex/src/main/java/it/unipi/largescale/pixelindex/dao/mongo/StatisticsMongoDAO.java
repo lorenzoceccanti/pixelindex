@@ -207,7 +207,6 @@ public class StatisticsMongoDAO {
 
             HashMap<Integer, List<Document>> hashMap = new HashMap<>();
             ArrayList<RegistrationStatsDTO> registrationStatsDTOs = new ArrayList<>();
-            List<Document> properties = new ArrayList<>();
             for (Document doc : result) {
                 hashMap.put(doc.getInteger("month"), doc.getList("properties", Document.class));
             }
@@ -225,7 +224,6 @@ public class StatisticsMongoDAO {
             }
             return registrationStatsDTOs;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException(e);
         }
     }

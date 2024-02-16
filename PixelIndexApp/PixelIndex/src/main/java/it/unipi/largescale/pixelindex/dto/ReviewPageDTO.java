@@ -1,6 +1,5 @@
 package it.unipi.largescale.pixelindex.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewPageDTO {

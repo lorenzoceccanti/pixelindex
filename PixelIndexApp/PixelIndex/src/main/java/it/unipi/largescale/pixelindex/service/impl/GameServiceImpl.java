@@ -24,15 +24,6 @@ public class GameServiceImpl implements GameService {
         this.gameNeo4jDAO = new GameNeo4jDAO();
     }
 
-    private GamePreviewDTO gamePreviewFromModel(Game game) {
-        GamePreviewDTO gamePreview = new GamePreviewDTO();
-        gamePreview.setId(game.getId());
-        gamePreview.setName(game.getName());
-        if (game.getReleaseDate() != null)
-            gamePreview.setReleaseYear(game.getReleaseDate().getYear());
-        return gamePreview;
-    }
-
     public List<GamePreviewDTO> search(String searchSting, int page) throws ConnectionException {
         try {
             List<GamePreviewDTO> gamePreviews = new ArrayList<>();
@@ -71,7 +62,7 @@ public class GameServiceImpl implements GameService {
                     gameNeo4jDAO.insertGame(game);
                     gameMongoDAO.updateConsistencyFlag(game.getId());
                 } catch (DAOException e) {
-                    e.printStackTrace();
+                    System.out.println("Consistency update failed while inserting game.");
                 }
             });
         } catch (DAOException e) {

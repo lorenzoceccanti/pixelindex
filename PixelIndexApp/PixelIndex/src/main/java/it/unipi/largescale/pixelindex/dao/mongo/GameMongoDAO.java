@@ -10,7 +10,6 @@ import static it.unipi.largescale.pixelindex.utils.Utils.convertDateToLocalDate;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Field;
 import org.bson.conversions.Bson;
@@ -63,6 +62,9 @@ public class GameMongoDAO extends BaseMongoDAO {
         }
         if (result.containsKey("status") && result.getString("status") != null) {
             game.setStatus(result.getString("status"));
+        }
+        if (result.containsKey("pegiRating") && result.getString("pegiRating") != null) {
+            game.setPegiRating(result.getString("pegiRating"));
         }
         return game;
     }

@@ -38,6 +38,7 @@ public class ModeratorServiceImpl implements ModeratorService {
                 try {
                     registeredUserNeo.deleteUser(username);
                 } catch (DAOException e) {
+                    System.out.println("Consistency update failed while banning user.");
                 }
             });
         }catch(DAOException ex)
@@ -57,6 +58,7 @@ public class ModeratorServiceImpl implements ModeratorService {
                         gameNeo4jDAO.insertGame(game);
                         gameMongoDAO.updateConsistencyFlag(game.getId());
                     } catch (DAOException e) {
+                        System.out.println("Consistency update failed while synchronizing games.");
                     }
                 });
             }

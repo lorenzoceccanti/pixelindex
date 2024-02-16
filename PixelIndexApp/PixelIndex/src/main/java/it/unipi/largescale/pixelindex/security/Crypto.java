@@ -36,7 +36,7 @@ public class Crypto {
             SecretKey secretKey = factory.generateSecret(spec);
             return secretKey.getEncoded();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            System.out.println("Password hasing failed.");
         }
         return null;
     }

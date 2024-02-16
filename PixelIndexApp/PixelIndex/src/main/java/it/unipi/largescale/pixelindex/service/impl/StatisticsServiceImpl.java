@@ -32,7 +32,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         try {
             return statisticsMongoDAO.topGamesByPositiveRatingRatio(n);
         } catch (DAOException ex) {
-            ex.printStackTrace();
             throw new ConnectionException(ex);
         }
     }

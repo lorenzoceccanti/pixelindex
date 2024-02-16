@@ -37,7 +37,6 @@ public class SuggestionsNeo4jDAO extends BaseNeo4jDAO {
                 return games;
             });
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new DAOException(ex);
         }
         return suggestedGames;

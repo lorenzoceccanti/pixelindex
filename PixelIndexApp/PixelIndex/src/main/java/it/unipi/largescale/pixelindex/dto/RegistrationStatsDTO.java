@@ -1,42 +1,18 @@
 package it.unipi.largescale.pixelindex.dto;
 
-import org.bson.Document;
-
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.lang.Long.valueOf;
 
 public class RegistrationStatsDTO {
     private int month;
     private HashMap<String, Long> hashMap;
 
-    public int getMonth() {
-        return month;
-    }
-
     public void setMonth(int month) {
         this.month = month;
-    }
-
-    public HashMap<String, Long> getHashMap() {
-        return hashMap;
     }
 
     public void setHashMap(HashMap<String, Long> hashMap) {
         this.hashMap = hashMap;
     }
-
-    /*
-    public String toString(){
-        String result = "month: " + month;
-        result += " <18.y.o.: " + hashMap.get("< 18 y.o.");
-        result += " 18-30 y.o.: " + hashMap.get("18-30 y.o.");
-        result += " 30-50 y.o.: " + hashMap.get("30-50 y.o.");
-        result += " 50+ y.o.: " + hashMap.get("50+ y.o");
-        return result;
-    }*/
 
     public String toString(){
         Long lessThan18 = 0L; Long moreThan18 = 0L;

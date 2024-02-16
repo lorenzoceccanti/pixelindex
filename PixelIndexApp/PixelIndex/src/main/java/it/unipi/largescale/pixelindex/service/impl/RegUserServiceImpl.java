@@ -108,6 +108,7 @@ public class RegUserServiceImpl implements RegisteredUserService {
                     Map<String, Integer> folCount = registeredUserNeo.getFollowsCount(usernameSrc, usernameDst);
                     registeredUserMongo.updateFollowers(usernameSrc, usernameDst, folCount.get("followingSrc"), folCount.get("followerDst"));
                 }catch(DAOException e){
+                    System.out.println("Consistency update failed while updating followers count.");
                 }
             });
             return outcome;

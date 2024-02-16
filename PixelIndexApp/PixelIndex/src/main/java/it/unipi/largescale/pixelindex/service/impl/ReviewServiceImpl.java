@@ -32,14 +32,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public void deleteReview(String reviewId, ConsistencyThread consistencyThread) throws ConnectionException {
-        // TODO: da testare
         try {
         reviewMongoDAO.deleteReview(reviewId);
         consistencyThread.addTask(() -> {
             try {
                 reviewNeo4jDAO.deleteReview(reviewId);
             } catch (DAOException e) {
-                e.printStackTrace();
+                System.out.println("Consistency update failed while deleting a review.");
             }
         });
         } catch (DAOException e) {
@@ -71,20 +70,12 @@ public class ReviewServiceImpl implements ReviewService {
                     Map<String, Integer> reactions = reviewNeo4jDAO.getReactionsCount(reviewId);
                     reviewMongoDAO.setReactionsCount(reviewId, reactions.get("likes"), reactions.get("dislikes"));
                 } catch (DAOException e) {
-                    e.printStackTrace();
+                    System.out.println("Consistency update failed while updating review reactions.");
                 }
             });
 
             return outcome;
 
-        } catch (DAOException e) {
-            throw new ConnectionException(e);
-        }
-    }
-
-    public Map<String, Integer> getReactionsCount(String reviewId) throws ConnectionException {
-        try {
-            return reviewNeo4jDAO.getReactionsCount(reviewId);
         } catch (DAOException e) {
             throw new ConnectionException(e);
         }

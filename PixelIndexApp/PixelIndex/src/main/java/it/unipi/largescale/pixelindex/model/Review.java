@@ -62,16 +62,8 @@ public class Review {
         this.timestamp = timestamp;
     }
 
-    public Integer getLikes() {
-        return likes;
-    }
-
     public void setLikes(Integer likes) {
         this.likes = likes;
-    }
-
-    public Integer getDislikes() {
-        return dislikes;
     }
 
     public void setDislikes(Integer dislikes) {

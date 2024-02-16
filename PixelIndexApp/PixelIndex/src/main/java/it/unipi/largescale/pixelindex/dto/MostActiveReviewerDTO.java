@@ -12,16 +12,8 @@ public class MostActiveReviewerDTO {
         this.username = username;
     }
 
-    public int getNumOfReviews() {
-        return numOfReviews;
-    }
-
     public void setNumOfReviews(int numOfReviews) {
         this.numOfReviews = numOfReviews;
-    }
-
-    public int getRank() {
-        return rank;
     }
 
     public void setRank(int rank) {

@@ -125,6 +125,7 @@ public class Game {
         result += (languages == null ? "" :"\nLanguages: " + Arrays.toString(languages));
         result += (platforms == null ? "":"\nPlatforms: " + Arrays.toString(platforms));
         result += (status == null ? "":"\nStatus: " + getStatus());
+        result += (pegiRating == null ? "":"\nPEGI Rating: " + getPegiRating());
         result += (summary == null ? "" : ("\nSummary: " + summary));
 
         return result;

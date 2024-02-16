@@ -14,10 +14,6 @@ public class UserReportsDTO {
         this.username = username;
     }
 
-    public int getNumberReports() {
-        return numberReports;
-    }
-
     public void setNumberReports(int numberReports) {
         this.numberReports = numberReports;
     }
