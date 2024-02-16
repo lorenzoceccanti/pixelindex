@@ -16,8 +16,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ModeratorController {
     ConsistencyThread consistencyThread = new ConsistencyThread();
@@ -212,7 +210,7 @@ public class ModeratorController {
                     registeredUserController.displayWishlist(moderatorMenu.getDisplayed());
                 },
                 () -> {
-                    registeredUserController.friendsYouMightKnow(moderatorMenu.getDisplayed());
+                    registeredUserController.usersYouMightFollow(moderatorMenu.getDisplayed());
                 },
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
