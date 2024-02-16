@@ -19,7 +19,7 @@ public class RegisteredMenu {
         options.add("Search users");
         options.add("View your library");
         options.add("View your wishlist");
-        options.add("Friends you might know");
+        options.add("Users you might follow");
         options.add("Most active reviewers");
         options.add("Top rated games");
         options.add("Trending games chart");

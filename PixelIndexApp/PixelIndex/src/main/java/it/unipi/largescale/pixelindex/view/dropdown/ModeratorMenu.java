@@ -23,7 +23,7 @@ public class ModeratorMenu {
         basicOptions.add("Search users");
         basicOptions.add("View your library");
         basicOptions.add("View your whishlist");
-        basicOptions.add("Friends you might know");
+        basicOptions.add("Users you might follow");
         basicOptions.add("Most active reviewers");
         basicOptions.add("Top rated games");
         basicOptions.add("Trending games chart");

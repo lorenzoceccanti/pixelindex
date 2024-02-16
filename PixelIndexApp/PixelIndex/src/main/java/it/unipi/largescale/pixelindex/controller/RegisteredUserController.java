@@ -146,11 +146,12 @@ public class RegisteredUserController {
                     ArrayList<String> userOpt = new ArrayList<>();
                     userOpt.add(AnsiColor.ANSI_BLUE + "Edit your follow" + AnsiColor.ANSI_RESET);
                     userOpt.add(AnsiColor.ANSI_RED + "Report" + AnsiColor.ANSI_RESET);
+                    userOpt.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
                     ls1.addOptions(userOpt, "selectedUserDrop", "Make your choice");
                     int sel = ls1.askUserInteraction("selectedUserDrop");
                     if (sel == 0)
                         pressFollow(u.getUsername(), followMessage);
-                    else
+                    else if(sel == 1)
                         reportUser(u.getUsername(), followMessage);
                     exit = 0;
             }
@@ -166,7 +167,7 @@ public class RegisteredUserController {
         inMenu.set(false);
         try {
             potentialFriends = suggestionsService.suggestUsers(sessionUsername);
-            rows.add("Friends you might know");
+            rows.add("Users you might follow:");
             if (potentialFriends.isEmpty())
                 rows.add("*** List empty ***");
             rows.addAll(potentialFriends);
