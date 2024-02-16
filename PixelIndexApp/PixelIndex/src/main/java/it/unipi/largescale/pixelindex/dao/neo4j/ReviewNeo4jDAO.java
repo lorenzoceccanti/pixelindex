@@ -60,7 +60,6 @@ public class ReviewNeo4jDAO extends BaseNeo4jDAO {
                     MATCH (g:Game {mongoId: $gameId})
                     MERGE (r:Review {mongoId: $reviewId})
                     MERGE (a)-[:WRITES]->(r)
-                    MERGE (r)-[:BELONGS]->(g)
                                         
                     // Passo 2: Gestire la relazione LIKES
                     WITH r
