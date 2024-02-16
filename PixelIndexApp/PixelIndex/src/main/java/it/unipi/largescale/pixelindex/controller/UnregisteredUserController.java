@@ -209,7 +209,7 @@ public class UnregisteredUserController {
                     messageText = "Connection error";
                     break;
                 case 2:
-                    messageText = "Login failed: wrong username";
+                    messageText = "Login failed: wrong username or invalid user";
                     break;
                 case 3:
                     messageText = "Login failed: wrong password";

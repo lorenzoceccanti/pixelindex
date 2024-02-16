@@ -43,7 +43,7 @@ public class RegisteredUserMongoDAO extends BaseMongoDAO {
             db = mongoClient.getDatabase("pixelindex");
             MongoCollection<Document> usersCollection = db.getCollection("users");
 
-            Bson myMatch = (eq("username", username));
+            Bson myMatch = (and(eq("username", username),exists("isBanned",false)));
             Bson projectionFields = Projections.fields(
                     Projections.include("hashedPassword", "username", "name", "surname",
                             "role", "dateOfBirth", "email")
