@@ -89,7 +89,11 @@ public class StatisticsMongoDAO {
                             computed("positiveRatingRatio",
                                     new Document("$multiply", Arrays.asList(
                                             new Document("$divide", Arrays.asList("$positiveReviews",
-                                                    new Document("$add", Arrays.asList("$positiveReviews", "$negativeReviews")))), 100)))
+                                                    new Document("$cond", Arrays.asList(
+                                                            new Document("$eq", Arrays.asList(
+                                                                    new Document("$add", Arrays.asList("$positiveReviews", "$negativeReviews")), 0)),
+                                                            1, // Use 1 if the sum is 0 to avoid division by zero
+                                                            new Document("$add", Arrays.asList("$positiveReviews", "$negativeReviews")))))), 100)))
                     )),
                     sort(descending("positiveRatingRatio")),
                     limit(n)
