@@ -1,9 +1,5 @@
 package it.unipi.largescale.pixelindex.utils;
 
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyListener;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -115,28 +111,5 @@ public class Utils {
         Integer thresholdAge = PEGI_RATINGS.get(pegiRating);
         int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
         return age < thresholdAge;
-    }
-
-    public static void startTrackingKeyboard(Object o){
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(Level.OFF);
-        logger.setUseParentHandlers(false);
-        try {
-            /* Register jNativeHook */
-            GlobalScreen.registerNativeHook();
-            GlobalScreen.addNativeKeyListener((NativeKeyListener) o);
-        } catch (NativeHookException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public static void stopTrackingKeyboard(Object o){
-        try{
-            GlobalScreen.removeNativeKeyListener((NativeKeyListener) o);
-            GlobalScreen.unregisterNativeHook();
-        }catch(NativeHookException e)
-        {
-            e.printStackTrace();
-        }
     }
 }
