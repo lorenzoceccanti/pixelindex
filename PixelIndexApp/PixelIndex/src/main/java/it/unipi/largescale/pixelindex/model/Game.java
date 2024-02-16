@@ -124,6 +124,7 @@ public class Game {
         result += (companies == null ? "" :"\nCompanies: " + Arrays.toString(companies));
         result += (languages == null ? "" :"\nLanguages: " + Arrays.toString(languages));
         result += (platforms == null ? "":"\nPlatforms: " + Arrays.toString(platforms));
+        result += (status == null ? "":"\nStatus: " + getStatus());
         result += (summary == null ? "" : ("\nSummary: " + summary));
 
         return result;
