@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisteredUserController {
@@ -33,7 +31,7 @@ public class RegisteredUserController {
     private SuggestionsService suggestionsService;
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
-    List<String> potentialFriends;
+    List<String> potentialUsersToFollow;
     List<GameSuggestionDTO> potentialGames;
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
     List<GamePreviewDTO> gameWishlistDTOs;
@@ -159,22 +157,21 @@ public class RegisteredUserController {
         return result;
     }
 
-    public int friendsYouMightKnow(AtomicBoolean inMenu) {
+    public int usersYouMightFollow(AtomicBoolean inMenu) {
         List<String> rows = new ArrayList<>();
         ListSelector ls = new ListSelector("");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Go back");
         inMenu.set(false);
         try {
-            potentialFriends = suggestionsService.suggestUsers(sessionUsername);
+            potentialUsersToFollow = suggestionsService.suggestUsers(sessionUsername);
             rows.add("Users you might follow:");
-            if (potentialFriends.isEmpty())
+            if (potentialUsersToFollow.isEmpty())
                 rows.add("*** List empty ***");
-            rows.addAll(potentialFriends);
-            for (int i = 0; i < rows.size(); i++)
-                System.out.println(rows.get(i));
-            ls.addOptions(opt, "friendsMightKnow", "Make your choice");
-            int choice = ls.askUserInteraction("friendsMightKnow");
+            rows.addAll(potentialUsersToFollow);
+            for (String row : rows) System.out.println(row);
+            ls.addOptions(opt, "usersYouMightFollow", "Make your choice");
+            int choice = ls.askUserInteraction("usersYouMightFollow");
             if (choice == 0) {
                 inMenu.set(true);
             }
@@ -348,7 +345,7 @@ public class RegisteredUserController {
     public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread) {
         this.queryName = "";
         this.consistencyThread = consistencyThread;
-        this.potentialFriends = new ArrayList<>();
+        this.potentialUsersToFollow = new ArrayList<>();
         this.potentialGames = new ArrayList<>();
         this.suggestionsService = ServiceLocator.getSuggestionsService();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
@@ -377,7 +374,7 @@ public class RegisteredUserController {
                 },
                 () -> {
                     registeredMenu.getDisplayed().set(false);
-                    friendsYouMightKnow(registeredMenu.getDisplayed());
+                    usersYouMightFollow(registeredMenu.getDisplayed());
                 },
                 () -> {
                     registeredMenu.getDisplayed().set(false);
