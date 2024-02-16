@@ -1,18 +1,19 @@
 package it.unipi.largescale.pixelindex.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Library {
-    private ArrayList<Game> gameList;
-    private Library(){
-        gameList = new ArrayList<>();
+    private final List<LibraryEntry> entries = new ArrayList<>();
+
+    public List<LibraryEntry> getEntries() {
+        return entries;
     }
 
-    public ArrayList<Game> getGameList() {
-        return gameList;
+    public void addEntry(LibraryEntry libraryEntry) {
+        entries.add(libraryEntry);
     }
 
-    public void setGameList(ArrayList<Game> gameList) {
-        this.gameList = gameList;
-    }
+    public record LibraryEntry(Game game, LocalDate addedDate, Integer releaseYear) {}
 }

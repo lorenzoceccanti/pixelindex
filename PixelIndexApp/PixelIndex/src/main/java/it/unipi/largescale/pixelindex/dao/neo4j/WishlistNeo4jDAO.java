@@ -2,12 +2,15 @@ package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.GamePreviewDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
+import it.unipi.largescale.pixelindex.model.Game;
+import it.unipi.largescale.pixelindex.model.Wishlist;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.neo4j.driver.Values.parameters;
@@ -44,10 +47,10 @@ public class WishlistNeo4jDAO {
     }
 
     public ArrayList<GamePreviewDTO> getGames(String username, int page) throws DAOException {
-        ArrayList<GamePreviewDTO> returnObject;
+        Wishlist wishlist = new Wishlist();
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
-            returnObject = session.executeRead(tx -> {
+            session.executeRead(tx -> {
                 Result result = tx.run(
                         """
                                 MATCH(u:User{username:$username})-[:ADDS_TO_WISHLIST]->(g:Game)
@@ -57,24 +60,30 @@ public class WishlistNeo4jDAO {
                                 LIMIT 10;
                                 """,
                         parameters("username", username, "page", page));
-                ArrayList<GamePreviewDTO> gamePreviewDTOs = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    GamePreviewDTO gamePreviewDTO = new GamePreviewDTO();
-                    gamePreviewDTO.setId(r.get("mongoId").asString());
-                    gamePreviewDTO.setName(r.get("name").asString());
-                    if (r.get("releaseYear").isNull()) {
-                        gamePreviewDTO.setReleaseYear(null);
-                    } else {
-                        gamePreviewDTO.setReleaseYear(r.get("releaseYear").asInt());
-                    }
-                    gamePreviewDTOs.add(gamePreviewDTO);
+                    Game game = new Game(); // Assuming Game has setters
+                    game.setId(r.get("mongoId").asString());
+                    game.setName(r.get("name").asString());
+                    LocalDate addedDate = LocalDate.now(); // Assuming current date as addedDate or fetch from result if available
+                    Integer releaseYear = r.get("releaseYear").isNull() ? null : r.get("releaseYear").asInt();
+                    wishlist.addEntry(new Wishlist.WishListEntry(game, addedDate, releaseYear));
                 }
-                return gamePreviewDTOs;
+                return null;
             });
         } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         }
-        return returnObject;
+
+        ArrayList<GamePreviewDTO> dtos = new ArrayList<>();
+        for (Wishlist.WishListEntry entry : wishlist.getEntries()) {
+            GamePreviewDTO dto = new GamePreviewDTO();
+            dto.setId(entry.game().getId());
+            dto.setName(entry.game().getName());
+            dto.setReleaseYear(entry.releaseYear());
+            dtos.add(dto);
+        }
+        return dtos;
     }
+
 }
