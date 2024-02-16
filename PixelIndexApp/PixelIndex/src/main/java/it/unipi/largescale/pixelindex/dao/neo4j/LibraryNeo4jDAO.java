@@ -2,12 +2,15 @@ package it.unipi.largescale.pixelindex.dao.neo4j;
 
 import it.unipi.largescale.pixelindex.dto.GameLibraryElementDTO;
 import it.unipi.largescale.pixelindex.exceptions.DAOException;
+import it.unipi.largescale.pixelindex.model.Game;
+import it.unipi.largescale.pixelindex.model.Library;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -46,10 +49,10 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
     }
 
     public List<GameLibraryElementDTO> getGames(String username, Integer page) throws DAOException {
-        ArrayList<GameLibraryElementDTO> games;
+        Library library = new Library();
         try (Driver neoDriver = BaseNeo4jDAO.beginConnection();
              Session session = neoDriver.session()) {
-            games = session.executeRead(tx -> {
+             session.executeRead(tx -> {
                 Result result = tx.run(
                         """
                                 MATCH (u:User {username: $username})-[a:ADDS_TO_LIBRARY]->(g:Game)
@@ -60,25 +63,32 @@ public class LibraryNeo4jDAO extends BaseNeo4jDAO {
                                 """,
                         parameters("username", username, "page", page));
 
-                ArrayList<GameLibraryElementDTO> gamePreviewDTOArrayList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
-                    GameLibraryElementDTO gameLibraryElementDTO = new GameLibraryElementDTO();
-                    gameLibraryElementDTO.setId(record.get("id").asString());
-                    gameLibraryElementDTO.setName(record.get("name").asString());
-                    if (record.get("releaseYear").isNull()) {
-                        gameLibraryElementDTO.setReleaseYear(null);
-                    } else {
-                        gameLibraryElementDTO.setReleaseYear(record.get("releaseYear").asInt());
-                    }
-                    gameLibraryElementDTO.setAddedDate(record.get("addedDate").asLocalDate());
-                    gamePreviewDTOArrayList.add(gameLibraryElementDTO);
+                    Game game = new Game();
+                    game.setId(record.get("id").asString());
+                    game.setName(record.get("name").asString());
+
+                    LocalDate addedDate = record.get("addedDate").asLocalDate();
+                    Integer releaseYear = record.get("releaseYear").isNull() ? null : record.get("releaseYear").asInt();
+                    library.addEntry(new Library.LibraryEntry(game, addedDate, releaseYear));
+
                 }
-                return gamePreviewDTOArrayList;
+                return null;
             });
         } catch (ServiceUnavailableException ex) {
             throw new DAOException("Cannot reach Neo4j Server");
         }
-        return games;
+
+        List<GameLibraryElementDTO> dtos = new ArrayList<>();
+        for (Library.LibraryEntry entry : library.getEntries()) {
+            GameLibraryElementDTO dto = new GameLibraryElementDTO();
+            dto.setId(entry.game().getId());
+            dto.setName(entry.game().getName());
+            dto.setReleaseYear(entry.releaseYear());
+            dto.setAddedDate(entry.addedDate());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }
