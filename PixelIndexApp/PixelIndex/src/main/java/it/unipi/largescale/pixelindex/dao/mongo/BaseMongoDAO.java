@@ -20,8 +20,6 @@ public abstract class BaseMongoDAO {
         String MONGO_PASS = params.getOrDefault("MONGO_PASS" + envSuffix, "");
 
         List<String> replicas = new ArrayList<>();
-        replicas.add(String.format("%s:%d", params.get("MONGO_PRIMARY"+envSuffix),
-                Integer.parseInt(params.get("MONGO_PRIMARY_PORT"+envSuffix))));
 
         for (int i = 1; params.containsKey("MONGO_REPLICA_" + i + envSuffix); i++) {
             String address = params.get("MONGO_REPLICA_" + i + envSuffix);
