@@ -19,16 +19,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisteredUserController {
     ConsistencyThread consistencyThread;
-    private RegisteredMenu registeredMenu;
-    private Runnable[] functionsRegistered;
-    private String sessionUsername;
-    private LocalDate dateOfBirth;
-    private GameController gameController;
-    private StatisticsController statisticsController;
-    private LibraryService libraryService;
-    private WishlistService wishlistService;
-    private RegisteredUserService registeredUserService;
-    private SuggestionsService suggestionsService;
+    private final RegisteredMenu registeredMenu;
+    private final Runnable[] functionsRegistered;
+    private final String sessionUsername;
+    private final GameController gameController;
+    private final StatisticsController statisticsController;
+    private final LibraryService libraryService;
+    private final WishlistService wishlistService;
+    private final RegisteredUserService registeredUserService;
+    private final SuggestionsService suggestionsService;
     private String queryName;
     ArrayList<UserSearchDTO> userSearchDTOs;
     List<String> potentialUsersToFollow;
@@ -36,16 +35,13 @@ public class RegisteredUserController {
     List<GameLibraryElementDTO> gameLibraryElementDTOS;
     List<GamePreviewDTO> gameWishlistDTOs;
     ArrayList<String> rows = new ArrayList<>();
-    private boolean isModerator;
 
     private void displayUsers() {
         rows.clear();
         rows.add(AnsiColor.ANSI_YELLOW + "Previous page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Next page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
-        userSearchDTOs.stream().forEach(userSearchDTO -> {
-            rows.add(userSearchDTO.toString());
-        });
+        userSearchDTOs.forEach(userSearchDTO -> rows.add(userSearchDTO.toString()));
         if (rows.size() <= 3) {
             System.out.println("*** Empty ***");
         }
@@ -66,26 +62,25 @@ public class RegisteredUserController {
         }
     }
 
-    private int pressFollow(String username, StringBuilder message) {
+    private void pressFollow(String username, StringBuilder message) {
         // Checking if the user is following by itself
         if (sessionUsername.equals(username)) {
             message.replace(0, message.toString().length(), "[Message]: Cannot follow by yourself!");
-            return 1;
+            return;
         }
         try {
             String operation = registeredUserService.followUser(sessionUsername, username, consistencyThread);
             message.replace(0, message.toString().length(), "[Operation]: " + operation);
-            return 0;
         } catch (ConnectionException ex) {
-            return 1;
+            System.out.println(ex.getMessage());
         }
     }
 
-    private int reportUser(String username, StringBuilder message) {
+    private void reportUser(String username, StringBuilder message) {
         // Check if the user is reporting by itself
         if (sessionUsername.equals(username)) {
             message.replace(0, message.toString().length(), "[Message]: Cannot report by yourself!");
-            return 1;
+            return;
         }
         try {
             int sts = registeredUserService.reportUser(sessionUsername, username);
@@ -93,16 +88,15 @@ public class RegisteredUserController {
                 message.replace(0, message.toString().length(), "[Operation]: " + AnsiColor.ANSI_YELLOW + username + AnsiColor.ANSI_RESET + " reported successfully");
             else if (sts == -1)
                 message.replace(0, message.toString().length(), "[Message]: Cannot report a moderator!");
-            return 0;
         } catch (ConnectionException ex) {
-            return 1;
+            System.out.println(ex.getMessage());
         }
     }
 
-    public int askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed) {
+    public void askSearchByUsernameQuery(AtomicBoolean regMenuDisplayed) {
         int pageSelection = 0;
-        int result = 1;
-        int choice = -1;
+        int result;
+        int choice;
         int exit = 0;
         regMenuDisplayed.set(false);
         StringBuilder followMessage = new StringBuilder();
@@ -119,17 +113,15 @@ public class RegisteredUserController {
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = usersByName(queryName, pageSelection);
             if (result != 0)
-                return result;
+                return;
             displayUsers();
             ls.addOptions(rows, "searchUserByUsername", "Select an user:");
             choice = ls.askUserInteraction("searchUserByUsername");
             switch (choice) {
                 case 0: // Previous page
-                    exit = 0;
                     pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
                     break;
                 case 1: // Next page
-                    exit = 0;
                     pageSelection = (rows.size() > 3) ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
@@ -149,15 +141,13 @@ public class RegisteredUserController {
                     int sel = ls1.askUserInteraction("selectedUserDrop");
                     if (sel == 0)
                         pressFollow(u.getUsername(), followMessage);
-                    else if(sel == 1)
+                    else if (sel == 1)
                         reportUser(u.getUsername(), followMessage);
-                    exit = 0;
             }
         } while (exit != 1);
-        return result;
     }
 
-    public int usersYouMightFollow(AtomicBoolean inMenu) {
+    public void usersYouMightFollow(AtomicBoolean inMenu) {
         List<String> rows = new ArrayList<>();
         ListSelector ls = new ListSelector("");
         ArrayList<String> opt = new ArrayList<>();
@@ -175,13 +165,12 @@ public class RegisteredUserController {
             if (choice == 0) {
                 inMenu.set(true);
             }
-            return 0;
         } catch (ConnectionException ex) {
-            return 1;
+            System.out.println(ex.getMessage());
         }
     }
 
-    public int getSuggestedGames(AtomicBoolean inMenu) {
+    public void getSuggestedGames(AtomicBoolean inMenu) {
         ListSelector ls = new ListSelector("");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Go back");
@@ -191,17 +180,15 @@ public class RegisteredUserController {
             System.out.println("Games you might like:");
             if (potentialGames.isEmpty())
                 System.out.println("*** List empty ***");
-            for (int i = 0; i < potentialGames.size(); i++)
-                System.out.println(potentialGames.get(i));
-            System.out.println("");
+            for (GameSuggestionDTO potentialGame : potentialGames) System.out.println(potentialGame);
+            System.out.println();
             ls.addOptions(opt, "suggestionGames", "Make your choice");
             int choice = ls.askUserInteraction("suggestionGames");
             if (choice == 0) {
                 inMenu.set(true);
             }
-            return 0;
         } catch (ConnectionException ex) {
-            return 1;
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -219,18 +206,16 @@ public class RegisteredUserController {
         rows.add(AnsiColor.ANSI_YELLOW + "Previous page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Next page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
-        gameLibraryElementDTOS.stream().forEach(GameLibraryElementDTO -> {
-            rows.add(GameLibraryElementDTO.toString());
-        });
+        gameLibraryElementDTOS.forEach(GameLibraryElementDTO -> rows.add(GameLibraryElementDTO.toString()));
         if (rows.size() <= 3) {
             System.out.println("*** Empty ***");
         }
     }
 
-    public int displayLibrary(AtomicBoolean regMenuDisplayed) {
+    public void displayLibrary(AtomicBoolean regMenuDisplayed) {
         int pageSelection = 0;
-        int result = 1;
-        int choice = -1;
+        int result;
+        int choice;
         int exit = 0;
         regMenuDisplayed.set(false);
         do {
@@ -239,17 +224,15 @@ public class RegisteredUserController {
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = queryUserLibrary(sessionUsername, pageSelection);
             if (result != 0)
-                return result;
+                return;
             buildUserLibrary();
             ls.addOptions(rows, "libraryDropdown", "Press enter to view game details");
             choice = ls.askUserInteraction("libraryDropdown");
             switch (choice) {
                 case 0: // Previous page
-                    exit = 0;
                     pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
                     break;
                 case 1: // Next page
-                    exit = 0;
                     pageSelection = (rows.size() > 3) ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
@@ -263,7 +246,6 @@ public class RegisteredUserController {
                     break;
             }
         } while (exit != 1);
-        return result;
     }
 
     private int queryUserWishlist(String username, int page) {
@@ -280,18 +262,16 @@ public class RegisteredUserController {
         rows.add(AnsiColor.ANSI_YELLOW + "Previous page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Next page" + AnsiColor.ANSI_RESET);
         rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
-        gameWishlistDTOs.stream().forEach(gameWishlist -> {
-            rows.add(gameWishlist.toString());
-        });
+        gameWishlistDTOs.forEach(gameWishlist -> rows.add(gameWishlist.toString()));
         if (rows.size() <= 3) {
             System.out.println("*** Empty ***");
         }
     }
 
-    public int displayWishlist(AtomicBoolean regMenuDisplayed) {
+    public void displayWishlist(AtomicBoolean regMenuDisplayed) {
         int pageSelection = 0;
-        int result = 1;
-        int choice = -1;
+        int result;
+        int choice;
         int exit = 0;
         regMenuDisplayed.set(false);
         do {
@@ -300,17 +280,15 @@ public class RegisteredUserController {
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = queryUserWishlist(sessionUsername, pageSelection);
             if (result != 0)
-                return result;
+                return;
             buildUserWishlist();
             ls.addOptions(rows, "wishlistDropdown", "Press enter to view game details");
             choice = ls.askUserInteraction("wishlistDropdown");
             switch (choice) {
                 case 0: // Previous page
-                    exit = 0;
                     pageSelection = pageSelection > 0 ? --pageSelection : pageSelection;
                     break;
                 case 1: // Next page
-                    exit = 0;
                     pageSelection = (rows.size() > 3) ? ++pageSelection : pageSelection;
                     break;
                 case 2: // Go back
@@ -324,22 +302,18 @@ public class RegisteredUserController {
                     break;
             }
         } while (exit != 1);
-        return result;
     }
 
-    private int showRegisteredDropdown(List<String> view) {
-        int opt = -1;
+    private void showRegisteredDropdown(List<String> view) {
+        int opt;
         do {
             Utils.clearConsole();
-            view.stream().forEach(elem -> {
-                System.out.println(elem);
-            });
+            view.forEach(System.out::println);
             registeredMenu.getDisplayed().set(true);
             opt = registeredMenu.displayMenu(sessionUsername);
             functionsRegistered[opt].run();
             view.clear();
         } while (registeredMenu.getDisplayed().get());
-        return opt;
     }
 
     public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread) {
@@ -351,19 +325,13 @@ public class RegisteredUserController {
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
-        this.isModerator = isModerator;
         registeredMenu = new RegisteredMenu();
         this.sessionUsername = username;
-        this.dateOfBirth = dateOfBirth;
-        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, this.dateOfBirth, this.isModerator, consistencyThread);
+        this.gameController = new GameController(registeredMenu.getDisplayed(), sessionUsername, dateOfBirth, isModerator, consistencyThread);
         this.statisticsController = new StatisticsController();
         functionsRegistered = new Runnable[]{
-                () -> {
-                    gameController.askGameQueryByName();
-                },
-                () -> {
-                    askSearchByUsernameQuery(registeredMenu.getDisplayed());
-                },
+                gameController::askGameQueryByName,
+                () -> askSearchByUsernameQuery(registeredMenu.getDisplayed()),
                 () -> {
                     // View your library
                     displayLibrary(registeredMenu.getDisplayed());
@@ -399,14 +367,15 @@ public class RegisteredUserController {
         };
     }
 
-    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator){
+    public RegisteredUserController(String username, LocalDate dateOfBirth, boolean isModerator) {
         this(username, dateOfBirth, isModerator, new ConsistencyThread());
     }
+
     public void execute() {
         // After the login the thread starts
         consistencyThread.start();
         Utils.clearConsole();
-        int index = showRegisteredDropdown(new ArrayList<>());
+        showRegisteredDropdown(new ArrayList<>());
     }
 
 }

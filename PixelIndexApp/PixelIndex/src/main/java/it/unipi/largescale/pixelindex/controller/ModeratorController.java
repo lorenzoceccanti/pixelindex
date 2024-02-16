@@ -19,21 +19,20 @@ import java.util.Scanner;
 
 public class ModeratorController {
     ConsistencyThread consistencyThread = new ConsistencyThread();
-    private ArrayList<String> rows = new ArrayList<>();
-    private ModeratorMenu moderatorMenu;
-    private StatisticsService statisticsService;
+    private final ArrayList<String> rows = new ArrayList<>();
+    private final ModeratorMenu moderatorMenu;
+    private final StatisticsService statisticsService;
     private ArrayList<UserReportsDTO> userReportsDTOS;
-    private ModeratorService moderatorService;
-    private Runnable[] functionsModerator;
-    private Runnable[] normalFunctions;
-    private GameService gameService;
-    private RegisteredUserController registeredUserController;
-    private GameController gameController;
-    private int exitReportList;
-    private StatisticsController statisticsController;
+    private final ModeratorService moderatorService;
+    private final Runnable[] functionsModerator;
+    private final Runnable[] normalFunctions;
+    private final GameService gameService;
+    private final RegisteredUserController registeredUserController;
+    private final GameController gameController;
+    private final StatisticsController statisticsController;
 
-    private int showSpecialDropdown(String str) {
-        int opt = -1;
+    private void showSpecialDropdown(String str) {
+        int opt;
         do {
             Utils.clearConsole();
             System.out.println(str);
@@ -41,18 +40,16 @@ public class ModeratorController {
             opt = moderatorMenu.displaySpecialMenu();
             functionsModerator[opt].run();
         } while (moderatorMenu.getSpecialDisplayed().get());
-        return opt;
     }
 
-    private int showModeratorDropdown() {
-        int opt = -1;
+    private void showModeratorDropdown() {
+        int opt;
         do {
             Utils.clearConsole();
             moderatorMenu.getDisplayed().set(true);
             opt = moderatorMenu.displayMenu();
             normalFunctions[opt].run();
         } while (moderatorMenu.getDisplayed().get());
-        return opt;
     }
 
     private int queryReports() {
@@ -67,9 +64,7 @@ public class ModeratorController {
     private void buildReport() {
         rows.clear();
         rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
-        userReportsDTOS.stream().forEach(userReport -> {
-            rows.add(userReport.toString());
-        });
+        userReportsDTOS.forEach(userReport -> rows.add(userReport.toString()));
         if (rows.size() <= 1) {
             System.out.println("*** Empty ***");
         }
@@ -84,36 +79,34 @@ public class ModeratorController {
         }
     }
 
-    private int displayReport() {
-        int result = 1;
-        int choice = -1;
+    private void displayReport() {
+        int result;
+        int choice;
         String messageDisp = "";
         moderatorMenu.getSpecialDisplayed().set(false);
+        int exitReportList;
         do {
             Utils.clearConsole();
             System.out.println(messageDisp);
             ListSelector ls = new ListSelector("Most reported users:");
             result = queryReports();
             if (result != 0)
-                return result;
+                return;
             buildReport();
             ls.addOptions(rows, "reportsDropdown", "Press enter to ban the user");
             choice = ls.askUserInteraction("reportsDropdown");
-            switch (choice) {
-                case 0:
-                    exitReportList = 1;
-                    break;
-                default:
-                    exitReportList = 0;
-                    // Ban the user
-                    UserReportsDTO user = userReportsDTOS.get(choice - 1);
-                    int sts = banUser(user.getUsername());
-                    messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW + user.getUsername() + AnsiColor.ANSI_RESET + " banned successfully" : messageDisp;
+            if (choice == 0) {
+                exitReportList = 1;
+            } else {
+                exitReportList = 0;
+                // Ban the user
+                UserReportsDTO user = userReportsDTOS.get(choice - 1);
+                int sts = banUser(user.getUsername());
+                messageDisp = (sts == 0) ? "User " + AnsiColor.ANSI_YELLOW + user.getUsername() + AnsiColor.ANSI_RESET + " banned successfully" : messageDisp;
             }
         } while (exitReportList != 1);
         moderatorMenu.getSpecialDisplayed().set(true);
         showSpecialDropdown("");
-        return result;
     }
 
     private void promptNewGameForm() {
@@ -197,21 +190,11 @@ public class ModeratorController {
                     moderatorMenu.getDisplayed().set(false);
                     showSpecialDropdown("");
                 },
-                () -> {
-                    gameController.askGameQueryByName();
-                },
-                () -> {
-                    registeredUserController.askSearchByUsernameQuery(moderatorMenu.getDisplayed());
-                },
-                () -> {
-                    registeredUserController.displayLibrary(moderatorMenu.getDisplayed());
-                },
-                () -> {
-                    registeredUserController.displayWishlist(moderatorMenu.getDisplayed());
-                },
-                () -> {
-                    registeredUserController.usersYouMightFollow(moderatorMenu.getDisplayed());
-                },
+                gameController::askGameQueryByName,
+                () -> registeredUserController.askSearchByUsernameQuery(moderatorMenu.getDisplayed()),
+                () -> registeredUserController.displayLibrary(moderatorMenu.getDisplayed()),
+                () -> registeredUserController.displayWishlist(moderatorMenu.getDisplayed()),
+                () -> registeredUserController.usersYouMightFollow(moderatorMenu.getDisplayed()),
                 () -> {
                     moderatorMenu.getDisplayed().set(false);
                     statisticsController.findTopReviewersByReviewsCountLastMonth(moderatorMenu.getDisplayed());
@@ -224,26 +207,18 @@ public class ModeratorController {
                     moderatorMenu.getDisplayed().set(false);
                     gameController.trendingGamesChart();
                 },
-                () -> {
-                    registeredUserController.getSuggestedGames(moderatorMenu.getDisplayed());
-                },
+                () -> registeredUserController.getSuggestedGames(moderatorMenu.getDisplayed()),
                 () -> {
                     consistencyThread.stopThread();
                     System.exit(0);
                 }
         };
+        // Add game
+        // Sync games
         functionsModerator = new Runnable[]{
-                () -> {
-                    displayReport();
-                },
-                () -> {
-                    // Add game
-                    promptNewGameForm();
-                },
-                () -> {
-                    // Sync games
-                    synchronizeGames();
-                },
+                this::displayReport,
+                this::promptNewGameForm,
+                this::synchronizeGames,
                 () -> {
                     moderatorMenu.getSpecialDisplayed().set(false);
                     statisticsController.numberOfRegistrationsByMonth(moderatorMenu.getSpecialDisplayed());

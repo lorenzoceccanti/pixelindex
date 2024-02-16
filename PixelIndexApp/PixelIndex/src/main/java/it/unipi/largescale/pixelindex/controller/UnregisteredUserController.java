@@ -6,7 +6,6 @@ import it.unipi.largescale.pixelindex.dto.UserRegistrationDTO;
 import it.unipi.largescale.pixelindex.exceptions.ConnectionException;
 import it.unipi.largescale.pixelindex.exceptions.UserNotFoundException;
 import it.unipi.largescale.pixelindex.exceptions.WrongPasswordException;
-import it.unipi.largescale.pixelindex.service.GameService;
 import it.unipi.largescale.pixelindex.service.RegisteredUserService;
 import it.unipi.largescale.pixelindex.service.ServiceLocator;
 import it.unipi.largescale.pixelindex.utils.Utils;
@@ -19,17 +18,15 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UnregisteredUserController {
-    private UserLoginDTO userLoginDTO;
-    private UserRegistrationDTO userRegistrationDTO;
-    private UnregisteredMenu unregisteredMenu;
-    private RegisteredUserService registeredUserService;
-    private GameService gameService;
-    private Runnable[] functionsUnregistered;
-    private GameController gameController;
-    private StatisticsController statisticsController;
+    private final UserLoginDTO userLoginDTO;
+    private final UserRegistrationDTO userRegistrationDTO;
+    private final UnregisteredMenu unregisteredMenu;
+    private final RegisteredUserService registeredUserService;
+    private final Runnable[] functionsUnregistered;
+    private final GameController gameController;
+    private final StatisticsController statisticsController;
     private String sessionUsername = "";
     private LocalDate dateOfBirth;
-    private int isModerator;
     int errorCode = -1;
 
     /**
@@ -99,11 +96,9 @@ public class UnregisteredUserController {
         if (ret == 0) {
             displayed.set(false);
             sessionUsername = username;
-            isModerator = 0;
         } else if (ret == 6) {
             displayed.set(false);
             sessionUsername = username;
-            isModerator = 1;
         } else {
             displayed.set(true);
         }
@@ -154,8 +149,6 @@ public class UnregisteredUserController {
         userLoginDTO = new UserLoginDTO();
         userRegistrationDTO = new UserRegistrationDTO();
         this.registeredUserService = ServiceLocator.getRegisteredUserService();
-        this.isModerator = -1;
-        this.gameService = ServiceLocator.getGameService();
         this.gameController = new GameController(unregisteredMenu.getDisplayed());
         this.statisticsController = new StatisticsController();
         functionsUnregistered = new Runnable[]{
@@ -205,7 +198,7 @@ public class UnregisteredUserController {
         When displayed = false, it means login successful and stop looping
          */
         String welcomeMessage = "";
-        int index = -1;
+        int index;
         String messageText = "";
         while (unregisteredMenu.getDisplayed().get()) {
             switch (errorCode) {

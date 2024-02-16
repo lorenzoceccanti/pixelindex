@@ -18,80 +18,75 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GameController{
+public class GameController {
     private List<GamePreviewDTO> searchResult;
-    private ArrayList<String> rows;
-    private GameService gameService;
+    private final ArrayList<String> rows;
+    private final GameService gameService;
     private LibraryService libraryService;
     private ReviewService reviewService;
     private WishlistService wishlistService;
-    private AtomicBoolean menuDisplayed;
-    private ReviewController reviewController;
-    private int rowSelection;
+    private final AtomicBoolean menuDisplayed;
+    private final ReviewController reviewController;
     private String queryName;
-    private String sessionUsername;
+    private final String sessionUsername;
     private LocalDate dateOfBirth;
-    private boolean isModerator;
+    private final boolean isModerator;
     private int exitGameList;
-    public void trendingGamesChart(){
+
+    public void trendingGamesChart() {
         ArrayList<String> o = new ArrayList<>();
         o.add("Go back");
         System.out.println("Which year?");
         Scanner sc = new Scanner(System.in);
         int year = sc.nextInt();
-        try{
-            List<TrendingGamesDTO> list = gameService.getTrendingGames(year,10);
+        try {
+            List<TrendingGamesDTO> list = gameService.getTrendingGames(year, 10);
             System.out.println("*** TRENDING GAMES CHART ***");
-            if(list.isEmpty())
+            if (list.isEmpty())
                 System.out.println("Trending chart empty.");
-            for(int i=0; i<list.size(); i++)
-                System.out.print(list.get(i));
-            System.out.println("");
-        }catch(ConnectionException ex)
-        {
+            for (TrendingGamesDTO trendingGamesDTO : list) System.out.print(trendingGamesDTO);
+            System.out.println();
+        } catch (ConnectionException ex) {
             System.out.println("Connection to Neo4J lost");
         }
         ListSelector ls = new ListSelector("");
-        ls.addOptions(o,"backTrendingGames","Make your choice");
+        ls.addOptions(o, "backTrendingGames", "Make your choice");
         int choice = ls.askUserInteraction("backTrendingGames");
-        if(choice == 0)
+        if (choice == 0)
             menuDisplayed.set(true);
     }
 
-    /** Returns 1 if there have been connection errors,
+    /**
+     * Returns 1 if there have been connection errors,
      * 0 if not error occoured
      *
      * @param queryName The query search
-     * @param page The page to be displayed, for example
-     * if you are interested in the elements n.10, ..., 19
-     * you will pass 1 to the page parameter
+     * @param page      The page to be displayed, for example
+     *                  if you are interested in the elements n.10, ..., 19
+     *                  you will pass 1 to the page parameter
      */
-    private int gameByName(String queryName, int page)
-    {
-        try{
+    private int gameByName(String queryName, int page) {
+        try {
             searchResult = gameService.search(queryName, page);
             return 0;
-        }catch(ConnectionException ex)
-        {
-            ex.getMessage();
+        } catch (ConnectionException ex) {
+            System.out.println(ex.getMessage());
             return 1;
         }
     }
 
-    private void displayGames(){
+    private void displayGames() {
         rows.clear();
-        rows.add(AnsiColor.ANSI_YELLOW+"Previous page"+AnsiColor.ANSI_RESET);
-        rows.add(AnsiColor.ANSI_YELLOW+"Next page"+AnsiColor.ANSI_RESET);
-        rows.add(AnsiColor.ANSI_YELLOW+"Go back"+AnsiColor.ANSI_RESET);
-        searchResult.stream().forEach(gamePreviewDTO -> {
-            rows.add(gamePreviewDTO.toString());
-        });
-        if(rows.size() <= 3){
+        rows.add(AnsiColor.ANSI_YELLOW + "Previous page" + AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW + "Next page" + AnsiColor.ANSI_RESET);
+        rows.add(AnsiColor.ANSI_YELLOW + "Go back" + AnsiColor.ANSI_RESET);
+        searchResult.forEach(gamePreviewDTO -> rows.add(gamePreviewDTO.toString()));
+        if (rows.size() <= 3) {
             System.out.println("*** Empty ***");
         }
     }
 
-    private void formNewReview(String gameId, String gameName, Integer gameReleaseYear){
+    private void formNewReview(String gameId, String gameName, Integer gameReleaseYear) {
         ListSelector ls = new ListSelector("*** Inserting new review ***");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Yes");
@@ -104,9 +99,9 @@ public class GameController{
         String text = sc.nextLine();
 
         Review r = new Review();
-        if(choice == 0)
+        if (choice == 0)
             r.setRating(RatingKind.RECOMMENDED);
-        else if(choice == 1)
+        else if (choice == 1)
             r.setRating(RatingKind.NOT_RECOMMENDED);
         else
             r.setRating(RatingKind.NOT_AVAILABLE);
@@ -115,19 +110,21 @@ public class GameController{
         r.setGameId(gameId);
         r.setTimestamp(LocalDateTime.now());
 
-        try{
-            reviewService.insertReview(r,gameName, gameReleaseYear);
-        }catch (ConnectionException ex){
-            ex.printStackTrace();
+        try {
+            reviewService.insertReview(r, gameName, gameReleaseYear);
+        } catch (ConnectionException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
-    public int viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary){
+    public void viewGameDetail(Integer exitGameDetails, GamePreviewDTO gamePreviewDTO, boolean fromLibrary) {
         /* Sfasamento di 3 posizioni in avanti
         dovuto ai primi 3 pulsanti dell'anteprima dei giochi
          */
-        int addToLibrarySts = -1; String message = "";
-        Game g; ListSelector ls = new ListSelector("Game details:");
+        int addToLibrarySts = -1;
+        String message = "";
+        Game g;
+        ListSelector ls = new ListSelector("Game details:");
         ArrayList<String> opt = new ArrayList<>();
         opt.add("Show top 10 most relevant reviews");
         opt.add("Add this game to library");
@@ -138,25 +135,24 @@ public class GameController{
         opt.add("Go back");
         // Making the query for get all the details of that specific game
 
-        do{
+        do {
             String gameId = gamePreviewDTO.getId();
             String gameName = gamePreviewDTO.getName();
             Integer gameReleaseYear = gamePreviewDTO.getReleaseYear();
-            try{
+            try {
                 Utils.clearConsole();
-                System.out.println((addToLibrarySts == -1)?"":message);
+                System.out.println((addToLibrarySts == -1) ? "" : message);
                 g = gameService.getGameById(gameId);
                 System.out.println(g);
                 ls.addOptions(opt, "gameDetailsDropdown", "Please select");
                 int sel = ls.askUserInteraction("gameDetailsDropdown");
-                switch(sel)
-                {
+                switch (sel) {
                     case 0:
                         addToLibrarySts = -1;
-                        reviewController.displayExcerpt(gameId, exitGameDetails);
+                        reviewController.displayExcerpt(gameId);
                         break;
                     case 1:
-                        if(sessionUsername.isEmpty()){
+                        if (sessionUsername.isEmpty()) {
                             addToLibrarySts = 1;
                             message = "Unauthorized";
                         } else {
@@ -166,7 +162,7 @@ public class GameController{
                         }
                         break;
                     case 2:
-                        if(sessionUsername.isEmpty()){
+                        if (sessionUsername.isEmpty()) {
                             addToLibrarySts = 1;
                             message = "Unauthorized";
                         } else {
@@ -176,7 +172,7 @@ public class GameController{
                         }
                         break;
                     case 3:
-                        if(sessionUsername.isEmpty()){
+                        if (sessionUsername.isEmpty()) {
                             addToLibrarySts = 1;
                             message = "Unauthorized";
                         } else {
@@ -186,7 +182,7 @@ public class GameController{
                         }
                         break;
                     case 4:
-                        if(sessionUsername.isEmpty()){
+                        if (sessionUsername.isEmpty()) {
                             addToLibrarySts = 1;
                             message = "Unauthorized";
                         } else {
@@ -196,7 +192,7 @@ public class GameController{
                         }
                         break;
                     case 5:
-                        if(sessionUsername.isEmpty()){
+                        if (sessionUsername.isEmpty()) {
                             addToLibrarySts = 1;
                             message = "Unauthorized";
                         } else {
@@ -211,48 +207,46 @@ public class GameController{
                         addToLibrarySts = -1;
                         exitGameDetails = 1;
                         exitGameList = 0;
-                        if(!fromLibrary)
+                        if (!fromLibrary)
                             askGameQueryByName();
                         break;
                     default:
                         break;
                 }
-            }catch(ConnectionException ex){
-                return 1;
+            } catch (ConnectionException ex) {
+                return;
             }
-        }while(exitGameDetails != 1);
-        return 0;
+        } while (exitGameDetails != 1);
     }
 
-    /** Returns 1 if there have been connection errors,
+    /**
+     * Returns 1 if there have been connection errors,
      * 0 if not error occoured,
      * 6 if there's the need to go back to the menù
-     *
      */
-    public int askGameQueryByName(){
-        int result; int pageSelection = 0;
+    public int askGameQueryByName() {
+        int result;
+        int pageSelection = 0;
         String message = "";
 
-        if(queryName.isEmpty())
-        {
+        if (queryName.isEmpty()) {
             Scanner sc = new Scanner(System.in);
             System.out.println("Query? Possibile syntax:");
-            System.out.println(AnsiColor.ANSI_CYAN+"<name> [-c <company> | -p <platform> | -y <releaseYear>]"+AnsiColor.ANSI_RESET);
+            System.out.println(AnsiColor.ANSI_CYAN + "<name> [-c <company> | -p <platform> | -y <releaseYear>]" + AnsiColor.ANSI_RESET);
             queryName = sc.nextLine();
         }
-        do{
+        do {
             Utils.clearConsole();
             System.out.println(message);
             ListSelector ls = new ListSelector("Query result");
             System.out.println("Page displayed: " + (pageSelection + 1));
             result = gameByName(queryName, pageSelection);
-            if(result != 0)
+            if (result != 0)
                 break;
             displayGames();
             ls.addOptions(rows, "searchGameByName", "Press enter to view game details");
             int choice = ls.askUserInteraction("searchGameByName");
-            switch(choice)
-            {
+            switch (choice) {
                 case 0: // Previous page
                     exitGameList = 0;
                     menuDisplayed.set(false);
@@ -270,24 +264,23 @@ public class GameController{
                     break;
                 default: // Game selection
                     menuDisplayed.set(false);
-                    GamePreviewDTO gamePreviewDTO = searchResult.get(choice-3);
-                    if(isModerator)
-                    {
+                    GamePreviewDTO gamePreviewDTO = searchResult.get(choice - 3);
+                    if (isModerator) {
                         exitGameList = 1;
                         viewGameDetail(0, gamePreviewDTO, false);
                     } else {
-                        if(gamePreviewDTO.getPegiRating() != null){
+                        if (gamePreviewDTO.getPegiRating() != null) {
                             // Has PEGI rating
-                            if(sessionUsername.isEmpty()){
-                                message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game is age-restricted. Please login";
+                            if (sessionUsername.isEmpty()) {
+                                message = AnsiColor.ANSI_RED + "[Warning]:" + AnsiColor.ANSI_RESET + " This game is age-restricted. Please login";
                                 exitGameList = 0;
-                            }else{
+                            } else {
                                 boolean restricted = Utils.isAgeRestricted(this.dateOfBirth, gamePreviewDTO.getPegiRating());
-                                if(!restricted){
+                                if (!restricted) {
                                     exitGameList = 1;
                                     viewGameDetail(0, gamePreviewDTO, false);
                                 } else {
-                                    message = AnsiColor.ANSI_RED+"[Warning]:"+AnsiColor.ANSI_RESET+" This game has been restricted for the users of your age";
+                                    message = AnsiColor.ANSI_RED + "[Warning]:" + AnsiColor.ANSI_RESET + " This game has been restricted for the users of your age";
                                 }
                             }
                         } else {
@@ -297,11 +290,11 @@ public class GameController{
                     }
                     break;
             }
-        }while(exitGameList != 1);
+        } while (exitGameList != 1);
         return result;
     }
-    public GameController(AtomicBoolean inMenu)
-    {
+
+    public GameController(AtomicBoolean inMenu) {
         this.gameService = ServiceLocator.getGameService();
         this.reviewController = new ReviewController();
         this.queryName = "";
@@ -309,10 +302,9 @@ public class GameController{
         this.isModerator = false;
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
-        this.rowSelection = 0;
     }
-    public GameController(AtomicBoolean inMenu, String sessionUsername, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread)
-    {
+
+    public GameController(AtomicBoolean inMenu, String sessionUsername, LocalDate dateOfBirth, boolean isModerator, ConsistencyThread consistencyThread) {
         this.gameService = ServiceLocator.getGameService();
         this.libraryService = ServiceLocator.getLibraryService();
         this.wishlistService = ServiceLocator.getWishlistService();
@@ -324,6 +316,5 @@ public class GameController{
         this.queryName = "";
         this.rows = new ArrayList<>();
         this.menuDisplayed = inMenu;
-        this.rowSelection = 0;
     }
 }

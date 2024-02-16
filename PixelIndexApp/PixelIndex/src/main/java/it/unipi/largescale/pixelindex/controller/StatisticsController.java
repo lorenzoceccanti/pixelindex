@@ -35,10 +35,10 @@ public class StatisticsController {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 REVIEWERS OF LAST MONTH *** ");
-        for (int i = 0; i < top10Reviewers.size(); i++) {
-            System.out.print(top10Reviewers.get(i));
+        for (MostActiveReviewerDTO top10Reviewer : top10Reviewers) {
+            System.out.print(top10Reviewer);
         }
-        System.out.println("");
+        System.out.println();
         addDropdown(inMainMenu);
     }
 
@@ -49,10 +49,10 @@ public class StatisticsController {
             System.out.println("MongoDB: connection lost");
         }
         System.out.println("*** TOP 10 RATED GAMES ***");
-        for (int i = 0; i < top10Games.size(); i++) {
-            System.out.print(top10Games.get(i));
+        for (GameRatingDTO top10Game : top10Games) {
+            System.out.print(top10Game);
         }
-        System.out.println("");
+        System.out.println();
         addDropdown(inMainMenu);
     }
 
@@ -68,10 +68,10 @@ public class StatisticsController {
         System.out.println("*** REGISTRATION STATS: PIXELINDEX ***");
         if (registrationStatsDTOs.isEmpty())
             System.out.println("No registrations in year: " + year);
-        for (int i = 0; i < registrationStatsDTOs.size(); i++) {
-            System.out.print(registrationStatsDTOs.get(i));
+        for (RegistrationStatsDTO registrationStatsDTO : registrationStatsDTOs) {
+            System.out.print(registrationStatsDTO);
         }
-        System.out.println("");
+        System.out.println();
         addDropdown(inMainMenu);
     }
 
