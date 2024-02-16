@@ -16,7 +16,6 @@ public class UnregisteredMenu
     public UnregisteredMenu() {
 
         displayed = new AtomicBoolean(true);
-
         options = new ArrayList<>();
         options.add("Login");
         options.add("Register");
